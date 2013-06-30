@@ -1,0 +1,64 @@
+syntax: glob
+
+# Ignore Visual Studio 2008 files
+# from http://stackoverflow.com/questions/34784/mercurial-hgignore-for-visual-studio-2008-projects
+# used for Visual Studio 2003 Projects
+*.obj
+*.exe
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.scc
+[Bb]in
+[Dd]ebug*/
+obj/
+[Rr]elease*/
+_ReSharper*/
+[Tt]est[Rr]esult*
+[Bb]uild[Ll]og.*
+*.[Pp]ublish.xml
+
+# second source, same site as above
+*.FileListAbsolute.txt
+*.[Cc]ache
+*.clw
+*.eto
+*.fb6lck
+*.fbl6
+*.fbpInf
+*.patch
+*.pch
+*.pdb    
+*.plg
+*.rdl.data
+*.sig
+*.sqlsuo
+.svclog
+*.tli
+*.tmp
+*.vshost.*
+*DXCore.Solution
+[Bb]ackup*
+UpgradeLog*.*
+[Tt]humbs.db
+_UpgradeReport_Files
+_[Rr]e[Ss]harper.*/
+lint.db
+
+# own modifications
+hg[Rr]evision.cs
+
