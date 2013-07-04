@@ -111,7 +111,7 @@ namespace SCI.IO.Compression
 		}
 		private Int32 GetNode(Node[] node, ref byte[] value, Int32 maxbits)
 		{
-			Int32 result = -1;
+			//Int32 result = -1;
 			Int32 allBits = ReadBits(pksrcbuf, maxbits, ref value, ref pksrcidx);
 
 			while ( true /*TODO*/ )

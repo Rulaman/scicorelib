@@ -167,12 +167,12 @@ namespace SCI.Data
 			Types = types;
 		}
 	}
-	public class Game
+	public class GameInfo
 	{
-		string		Path;
-		string		Name;
-		UInt16		Flags;
-		byte		DefaultPack;
-		SCIVersion	Version;
+		public string Path;
+		public string Name;
+		public UInt16 Flags;
+		public byte DefaultPack;
+		public SCIVersion Version;
 	}
 }

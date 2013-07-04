@@ -35,10 +35,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SCI\Data\resources.cs" />
     <Compile Include="SCI\Data\Types.cs" />
     <Compile Include="SCI\Drawing\Picture.cs" />
     <Compile Include="SCI\Drawing\PictureRow.cs" />
     <Compile Include="SCI\Game.cs" />
+    <Compile Include="SCI\Game\gametypes.cs" />
+    <Compile Include="SCI\Game\interface.cs" />
+    <Compile Include="SCI\Game\Load.cs" />
+    <Compile Include="SCI\Install\installer.cs" />
     <Compile Include="SCI\IO\Compression\dcl.cs" />
     <Compile Include="SCI\IO\Compression\lzs.cs" />
   </ItemGroup>
