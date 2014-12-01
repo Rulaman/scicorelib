@@ -22,8 +22,12 @@ namespace SCI.Drawing
 			{
 				return ResourceType;
 			}
+			set
+			{
+				ResourceType = value;
+			}
 		}
-		public int Number
+		public UInt16 Number
 		{
 			get
 			{
@@ -64,7 +68,7 @@ namespace SCI.Drawing
 		#endregion
 	}
 
-	public sealed class Picture
+	public sealed class Picture: ISciResource
 	{
 		private Size			InternalSize			= new Size();
 		
@@ -151,5 +155,39 @@ namespace SCI.Drawing
 		{
 			get { return InternalSize; }
 		}
+
+		#region ISciResource Member
+
+		public EResourceType Type
+		{
+			get
+			{
+				return EResourceType.Picture;
+			}
+		}
+		
+		public ECompressionType CompressionType
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		public int CompressedSize
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public int UncompressedSize
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		#endregion
 	}
 }

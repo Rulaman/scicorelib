@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SCI.IO.Compression
 {
-	class DCL
+	public static class DCL
 	{
 		private struct Node
 		{
@@ -21,7 +21,7 @@ namespace SCI.IO.Compression
 		}
 
 		#region Nodes (Literals, Lengths, Distances
-		Node[] Literals = new Node[]
+		static Node[] Literals = new Node[]
 		{
 			new Node(0xf   , 4,0x20),new Node(0x17  , 5,0x45),new Node(0x7   , 5,0x61),new Node(0x1b  , 5,0x65),new Node(0xb   , 5,0x69),new Node(0x13  , 5,0x6c),new Node(0x3   , 5,0x6e),new Node(0x1d  , 5,0x6f),
 			new Node(0xd   , 5,0x72),new Node(0x15  , 5,0x73),new Node(0x5   , 5,0x74),new Node(0x19  , 5,0x75),new Node(0x29  , 6,0x2d),new Node(0x9   , 6,0x31),new Node(0x31  , 6,0x41),new Node(0x11  , 6,0x43),
@@ -57,7 +57,7 @@ namespace SCI.IO.Compression
 			new Node(0x1c00,13,0xf8),new Node(0xc00 ,13,0xf9),new Node(0x1400,13,0xfa),new Node(0x400 ,13,0xfb),new Node(0x1800,13,0xfc),new Node(0x800 ,13,0xfd),new Node(0x1000,13,0xfe),new Node(0x0   ,13,0xff),
 			new Node(0,255,0) // ursprünglich (0,-1,0)
 		};
-		Node[] Lengths = new Node[] 
+		static Node[] Lengths = new Node[] 
 		{
 			new Node(0x3   , 2,(0<<12)+  3),new Node(0x5   , 3,(0<<12)+  2),new Node(0x1   , 3,(0<<12)+  4),new Node(0x6   , 3,(0<<12)+  5),
 			new Node(0xa   , 4,(0<<12)+  6),new Node(0x2   , 4,(0<<12)+  7),new Node(0xc   , 4,(0<<12)+  8),new Node(0x14  , 5,(0<<12)+  9),
@@ -65,7 +65,7 @@ namespace SCI.IO.Compression
 			new Node(0x10  , 6,(5<<12)+ 40),new Node(0x20  , 6,(6<<12)+ 72),new Node(0x40  , 7,(7<<12)+136),new Node(0x0   , 7,(8<<12)+264),
 			new Node(0,255,0) // ursprünglich (0,-1,0)
 		};
-		Node[] Distances = new Node[]
+		static Node[] Distances = new Node[]
 		{
 			new Node(0x3   , 2,0x00),new Node(0xd   , 4,0x01),new Node(0x5   , 4,0x02),new Node(0x19  , 5,0x03),new Node(0x9   , 5,0x04),new Node(0x11  , 5,0x05),new Node(0x1   , 5,0x06),new Node(0x3e  , 6,0x07),
 			new Node(0x1e  , 6,0x08),new Node(0x2e  , 6,0x09),new Node(0xe   , 6,0x0a),new Node(0x36  , 6,0x0b),new Node(0x16  , 6,0x0c),new Node(0x26  , 6,0x0d),new Node(0x6   , 6,0x0e),new Node(0x3a  , 6,0x0f),
@@ -79,12 +79,12 @@ namespace SCI.IO.Compression
 		};
 		#endregion
 
-		private Int32 pksrcidx = 0;
+		private static Int32 pksrcidx = 0;
 		//private Int32 pkdstidx = 0;
-		private Int32 pksrcbuf = 0;
-		private Int32 pkdstbuf = 0;
+		private static Int32 pksrcbuf = 0;
+		private static Int32 pkdstbuf = 0;
 
-		private Int32 GetBits(Int32 bufPos, Int32 numbits, ref byte[] value, ref Int32 index)
+		private static Int32 GetBits(Int32 bufPos, Int32 numbits, ref byte[] value, ref Int32 index)
 		{
 			Int32 bits = 0;
 			Int32 bytpos = (Int32)(index / 8);
@@ -103,13 +103,13 @@ namespace SCI.IO.Compression
 
 			return bits;
 		}
-		private Int32 ReadBits(Int32 bufPos, Int32 numbits, ref byte[] value, ref Int32 index)
+		private static Int32 ReadBits(Int32 bufPos, Int32 numbits, ref byte[] value, ref Int32 index)
 		{
 			Int32 temp = index;
 
 			return GetBits(bufPos, numbits, ref value, ref temp);
 		}
-		private Int32 GetNode(Node[] node, ref byte[] value, Int32 maxbits)
+		private static Int32 GetNode(Node[] node, ref byte[] value, Int32 maxbits)
 		{
 			//Int32 result = -1;
 			Int32 allBits = ReadBits(pksrcbuf, maxbits, ref value, ref pksrcidx);
@@ -119,7 +119,7 @@ namespace SCI.IO.Compression
 			}
 		}
 
-		public Int32 Unpack(byte[] inbuf, ref byte[] outbuf)
+		public static Int32 Unpack(byte[] inbuf, ref byte[] outbuf)
 		{
 			Int32 inBufPosition = 0;
 			Int32 outBufPosition = 0;

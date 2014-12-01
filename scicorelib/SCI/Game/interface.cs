@@ -12,9 +12,15 @@ namespace SCI.Interface
 	public interface ISciResource
 	{
 		EResourceType Type { get; }
-		Int32 Number { get; set; }
+//		UInt16 Number { get; set; }
 		ECompressionType CompressionType { get; set;  }
 		Int32 CompressedSize { get; }
 		Int32 UncompressedSize { get; }
+	}
+
+	public interface ISciType
+	{
+		bool Load(string path);
+		List<CResource> ResourceList { get; }
 	}
 }

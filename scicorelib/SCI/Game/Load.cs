@@ -4,170 +4,36 @@ using System.Text;
 
 using SCI.Data;
 using SCI.GameVersion;
+using SCI.Interface;
 
 namespace SCI
 {
 	public class Game
 	{
-		private CMapResourceIndex ReadSCI1(System.IO.Stream stream)
-		{
-			SCI.SciBinaryReader mapFileReader = new SciBinaryReader(stream);
-
-			/* ? muss noch geswappt werden ? */
-			mapFileReader.ReverseReading = false;
-
-			CMapResourceIndex resourceindex = new CMapResourceIndex();
-
-			byte restype = 0;
-			/*SCI 1*/
-			Dictionary<byte,int> resourcearray = new Dictionary<byte, int>();
-			List<int> offsetlist = new List<int>();
-			while ( 0xFF != (restype = mapFileReader.ReadByte()) )
-			{
-				UInt16 offset = mapFileReader.ReadUInt16();
-
-				resourcearray.Add(restype, offset);
-				offsetlist.Add(offset);
-			}
-
-			int i = 0;
-			foreach ( KeyValuePair<byte,int> item in resourcearray )
-			{
-				mapFileReader.BaseStream.Position = item.Value;
-
-				long off2;
-
-				if(i < offsetlist.Count-1)
-				{
-					off2 = offsetlist[(byte)(i + 1)];
-				}
-				else
-				{
-					off2 = mapFileReader.BaseStream.Length;
-				}
-
-
-				while ( mapFileReader.BaseStream.Position < off2 )
-				{
-					CResource resource = new CResource();
-
-					resource.ResourceType = item.Key;
-					resource.ResourceType2 = (EResourceType)item.Key;
-
-					resource.ResourceNumber = mapFileReader.ReadUInt16();
-					UInt32 temp = mapFileReader.ReadUInt32();
-
-					resource.FileNumber = (byte)(temp >> 28);
-					resource.Offset = (Int32)(temp & 0xFFFFFFF);
-
-					resourceindex.ResourceList.Add(resource);
-				}
-				i++;
-			}
-			
-			return resourceindex;
-		}
 
 		/// <summary>
 		/// load a compiled game and not the sources and the project file
 		/// </summary>
-		public CGameData LoadGame(string path)
+		public CGame LoadGame(string path)
 		{
-			CGameData gamedata = new CGameData();
+			CGame gamedata = new CGame();
 			gamedata.Type = EGameType.None;
 
-			string gamedir = System.IO.Path.GetDirectoryName(path);
-			string filename = System.IO.Path.GetFileName(path);
-			
-
-			if ( filename.IsNullOrEmpty() )
+			if ( System.IO.File.Exists(System.IO.Path.Combine(path, "RESOURCE.MAP")) )
 			{
-				/* try to open RESOURCE.MAP or RESMAP.000 */
-				if ( System.IO.File.Exists(System.IO.Path.Combine(gamedir, "RESOURCE.MAP")) )
+				SCI1 game = new SCI1();
+				if ( game.Load(path) )
 				{
-					filename = "RESOURCE.MAP";
-				}
-				else if ( System.IO.File.Exists(System.IO.Path.Combine(gamedir, "RESMAP.000")) )
-				{
-					filename = "RESMAP.000";
+					gamedata.Type = EGameType.SCI1;
+					gamedata.ResourceList = game.ResourceList;
+					gamedata.GameData = game;
 				}
 			}
-			else if ( !System.IO.File.Exists(System.IO.Path.Combine(gamedir, filename)) )
-			{
-				filename = "";
-			}
-
-			if ( filename.IsNullOrEmpty() )
-			{
-			}
-			else
-			{
-				/* try to load game now */
-				System.IO.FileStream fs = System.IO.File.Open(System.IO.Path.Combine(gamedir, filename), System.IO.FileMode.Open);
-				byte[] filearray = new byte[fs.Length];
-				fs.Read(filearray, 0, filearray.Length);
-				fs.Close();
-
-				System.IO.MemoryStream ms = new System.IO.MemoryStream(filearray);
-
-				gamedata.ResourcenIndex = ReadSCI1(ms);
-				
-
-
-
-
-
-				//for ( int i = 0; i < Common.TOTAL_RES_TYPES; i++ )
-				//{
-				//	mapFileReader.BaseStream.Position = 0;
-				//	bool first = true;
-
-				//	for ( int j = 0; j < gamedata.MapFileEntries; j++ )
-				//	{
-				//		UInt16 type = mapFileReader.ReadUInt16();
-
-				//		if ( i == GetType(type) )
-				//		{
-				//			/* Add Resource */
-				//			CResourceInfo ri = new CResourceInfo();
-
-
-
-				//			if ( first )
-				//			{
-				//				first = false;
-				//				//gamedata.ResourcenIndex.ResourceInfo = new List<CResourceInfo>();
-				//				//gamedata.ResourcenIndex.ResourceInfo.Add(ri);
-				//			}
-				//		}
-				//	}
-				//}
-
-
-			}
-
 
 			return gamedata;
 		}
 
-		public static CResourceInfo AddResInfo(CResourceIndex residx)
-		{
-			CResourceInfo ri = new CResourceInfo();
-
-			if ( !(residx.LastAlloc == null) || (residx.AllocPtr + 1) >= Common.rsALLOCBUFSZ )
-			{
-			}
-			else
-			{
-				residx.AllocPtr++;
-			}
-
-			//residx.LastAlloc++;
-
-
-
-			return ri;
-		}
+		
 
 
 		public static byte GetType(UInt16 value)

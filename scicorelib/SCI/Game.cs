@@ -81,14 +81,15 @@ namespace SCI
 		STACpack,		// RFC 1974
 	}
 
-	public class CGameData
+	public class CGame
 	{
 		public EGameType			Type;
-		public UInt16				Identifier;		// Typ des MapFiles
-		public UInt32				Address;
-		public Int32				MapFileEntries;
-		public CMapResourceIndex	ResourcenIndex;
-		public List<ISciResource>	ResourceList;
+		//public UInt16				Identifier;		// Typ des MapFiles
+		//public UInt32				Address;
+		//public Int32				MapFileEntries;
+		public List<CResource>		ResourceList = new List<CResource>();
+		//public List<ISciResource>	ResourceList;
+		public ISciType				GameData;
 	}
 
 	//public class CResourceIndex
@@ -148,16 +149,57 @@ namespace SCI
 	public class CResource
 	{
 		/*SCI 1*/
-		public EResourceType ResourceType2;
+		private EResourceType ResourceType2;
+		private UInt16 ResourceNumber; /// the number of the resource (0...999)
+		
 		public byte ResourceType;
-		public UInt16 ResourceNumber; /// the number of the resource (0...999)
 		public byte FileNumber; /// in this resource file are the data (RESOURCE.<nr>)
 		public Int32 Offset; /// absolute offset withini the resource file
-	}
+		public ISciResource ResourceData;
 
-	public class CMapResourceIndex
-	{
-		public List<CResource> ResourceList = new List<CResource>();
+		#region ISciResource Member
+
+		public EResourceType Type
+		{
+			get { return ResourceType2; }
+			set { ResourceType2 = value;  }
+		}
+
+		public UInt16 Number
+		{
+			get
+			{
+				return ResourceNumber;
+			}
+			set
+			{
+				ResourceNumber = value;
+			}
+		}
+
+		public ECompressionType CompressionType
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		public int CompressedSize
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public int UncompressedSize
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		#endregion
 	}
 
 }
