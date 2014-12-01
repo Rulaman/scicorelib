@@ -4,10 +4,70 @@ using System.Drawing.Imaging;
 
 namespace SCI.Drawing
 {
+	using SCI.Interface;
+
+	public sealed class SciPicture: ISciResource
+	{
+		private EResourceType ResourceType;
+
+		internal SciPicture(EResourceType resourcetype)
+		{
+			ResourceType = resourcetype;
+		}
+
+		#region ISciResource Member
+		public EResourceType Type
+		{
+			get
+			{
+				return ResourceType;
+			}
+		}
+		public int Number
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+		public ECompressionType CompressionType
+		{
+			get { throw new NotImplementedException(); }
+			set { throw new NotImplementedException(); }
+		}
+		public int CompressedSize
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+		public int UncompressedSize
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+		#endregion
+	}
+
 	public sealed class Picture
 	{
 		private Size			InternalSize			= new Size();
-		private object			Object;
+		
 		private Point			ScreenPosition			= new Point();
 		private byte			TransparentKey;
 		private byte			Compression;
@@ -15,12 +75,13 @@ namespace SCI.Drawing
 		public Bitmap			Image;
 		public Int32			OffsetRLE;
 		public byte[]			ColorData;
+		public object			Tag;
 
 		public Image FromFile(string filename)
 		{
 			return Image;
 		}
-		public void HeaderFromStream(System.IO.Stream stream)
+		public void ReadHeaderFromStream(System.IO.Stream stream)
 		{
 			System.IO.BinaryReader br = new System.IO.BinaryReader(stream);
 
@@ -36,7 +97,7 @@ namespace SCI.Drawing
 
 			br.ReadBytes(14); // Dummy-Bytes ??
 		}
-		public void ColorDataFromStream(System.IO.Stream stream)
+		public void ReadColorDataFromStream(System.IO.Stream stream)
 		{
 			System.IO.BinaryReader br = new System.IO.BinaryReader(stream);
 
@@ -85,11 +146,6 @@ namespace SCI.Drawing
 		public Int32 Width
 		{
 			get { return InternalSize.Width; }
-		}
-		public object Tag
-		{
-			get { return Object; }
-			set { Object = value; }
 		}
 		public Size Size
 		{

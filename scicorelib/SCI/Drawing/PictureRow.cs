@@ -42,8 +42,7 @@ namespace SCI.Drawing
 			for ( int entry = 0; entry < NumOfLoops; entry++ )
 			{
 				Picture pict = new Picture();
-				pict.HeaderFromStream(stream);
-
+				pict.ReadHeaderFromStream(stream);
 				PictureList.Add(pict);
 			}
 
@@ -55,7 +54,7 @@ namespace SCI.Drawing
 
 			for ( int entry = 0; entry < NumOfLoops; entry++ )
 			{
-				PictureList[entry].ColorDataFromStream(stream);
+				PictureList[entry].ReadColorDataFromStream(stream);
 			}
 
 			foreach(Picture item in PictureList)

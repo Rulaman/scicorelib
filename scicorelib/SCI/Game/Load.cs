@@ -3,12 +3,220 @@ using System.Collections.Generic;
 using System.Text;
 
 using SCI.Data;
+using SCI.GameVersion;
 
 namespace SCI
 {
-	public static class Game
+	public class Game
 	{
-		public static SCI.GameVersion.IGameType Load(string mapfilepath)
+		private CMapResourceIndex ReadSCI1(System.IO.Stream stream)
+		{
+			SCI.SciBinaryReader mapFileReader = new SciBinaryReader(stream);
+
+			/* ? muss noch geswappt werden ? */
+			mapFileReader.ReverseReading = false;
+
+			CMapResourceIndex resourceindex = new CMapResourceIndex();
+
+			byte restype = 0;
+			/*SCI 1*/
+			Dictionary<byte,int> resourcearray = new Dictionary<byte, int>();
+			List<int> offsetlist = new List<int>();
+			while ( 0xFF != (restype = mapFileReader.ReadByte()) )
+			{
+				UInt16 offset = mapFileReader.ReadUInt16();
+
+				resourcearray.Add(restype, offset);
+				offsetlist.Add(offset);
+			}
+
+			int i = 0;
+			foreach ( KeyValuePair<byte,int> item in resourcearray )
+			{
+				mapFileReader.BaseStream.Position = item.Value;
+
+				long off2;
+
+				if(i < offsetlist.Count-1)
+				{
+					off2 = offsetlist[(byte)(i + 1)];
+				}
+				else
+				{
+					off2 = mapFileReader.BaseStream.Length;
+				}
+
+
+				while ( mapFileReader.BaseStream.Position < off2 )
+				{
+					CResource resource = new CResource();
+
+					resource.ResourceType = item.Key;
+					resource.ResourceType2 = (EResourceType)item.Key;
+
+					resource.ResourceNumber = mapFileReader.ReadUInt16();
+					UInt32 temp = mapFileReader.ReadUInt32();
+
+					resource.FileNumber = (byte)(temp >> 28);
+					resource.Offset = (Int32)(temp & 0xFFFFFFF);
+
+					resourceindex.ResourceList.Add(resource);
+				}
+				i++;
+			}
+			
+			return resourceindex;
+		}
+
+		/// <summary>
+		/// load a compiled game and not the sources and the project file
+		/// </summary>
+		public CGameData LoadGame(string path)
+		{
+			CGameData gamedata = new CGameData();
+			gamedata.Type = EGameType.None;
+
+			string gamedir = System.IO.Path.GetDirectoryName(path);
+			string filename = System.IO.Path.GetFileName(path);
+			
+
+			if ( filename.IsNullOrEmpty() )
+			{
+				/* try to open RESOURCE.MAP or RESMAP.000 */
+				if ( System.IO.File.Exists(System.IO.Path.Combine(gamedir, "RESOURCE.MAP")) )
+				{
+					filename = "RESOURCE.MAP";
+				}
+				else if ( System.IO.File.Exists(System.IO.Path.Combine(gamedir, "RESMAP.000")) )
+				{
+					filename = "RESMAP.000";
+				}
+			}
+			else if ( !System.IO.File.Exists(System.IO.Path.Combine(gamedir, filename)) )
+			{
+				filename = "";
+			}
+
+			if ( filename.IsNullOrEmpty() )
+			{
+			}
+			else
+			{
+				/* try to load game now */
+				System.IO.FileStream fs = System.IO.File.Open(System.IO.Path.Combine(gamedir, filename), System.IO.FileMode.Open);
+				byte[] filearray = new byte[fs.Length];
+				fs.Read(filearray, 0, filearray.Length);
+				fs.Close();
+
+				System.IO.MemoryStream ms = new System.IO.MemoryStream(filearray);
+
+				gamedata.ResourcenIndex = ReadSCI1(ms);
+				
+
+
+
+
+
+				//for ( int i = 0; i < Common.TOTAL_RES_TYPES; i++ )
+				//{
+				//	mapFileReader.BaseStream.Position = 0;
+				//	bool first = true;
+
+				//	for ( int j = 0; j < gamedata.MapFileEntries; j++ )
+				//	{
+				//		UInt16 type = mapFileReader.ReadUInt16();
+
+				//		if ( i == GetType(type) )
+				//		{
+				//			/* Add Resource */
+				//			CResourceInfo ri = new CResourceInfo();
+
+
+
+				//			if ( first )
+				//			{
+				//				first = false;
+				//				//gamedata.ResourcenIndex.ResourceInfo = new List<CResourceInfo>();
+				//				//gamedata.ResourcenIndex.ResourceInfo.Add(ri);
+				//			}
+				//		}
+				//	}
+				//}
+
+
+			}
+
+
+			return gamedata;
+		}
+
+		public static CResourceInfo AddResInfo(CResourceIndex residx)
+		{
+			CResourceInfo ri = new CResourceInfo();
+
+			if ( !(residx.LastAlloc == null) || (residx.AllocPtr + 1) >= Common.rsALLOCBUFSZ )
+			{
+			}
+			else
+			{
+				residx.AllocPtr++;
+			}
+
+			//residx.LastAlloc++;
+
+
+
+			return ri;
+		}
+
+
+		public static byte GetType(UInt16 value)
+		{
+			return (byte)((value >> 11) & 0x1F);
+		}
+		public static byte GetPackage(UInt32 value)
+		{
+			return (byte)((value >> 26) & 0x3F);
+		}
+		public static Int16 GetNumber(UInt16 value)
+		{
+			return (Int16)((value) & 0x7FFF);
+		}
+
+		public static Int32 GetMapFileEntries(System.IO.Stream stream, bool swap)
+		{
+			Int64 pos = stream.Position;
+			SCI.SciBinaryReader mapFileReader = new SciBinaryReader(stream);
+			/* ? muss noch geswappt werden ? */
+			mapFileReader.ReverseReading = swap;
+
+			Int64 currentEntry = stream.Length / 6;
+
+			UInt16 ident = 0;
+			UInt32 addr = 0;
+			Int32 total = 0;
+
+			do
+			{
+				ident = mapFileReader.ReadUInt16();
+				addr = mapFileReader.ReadUInt32();
+
+				if ( (ident == 0xFFFF) && (addr == 0xFFFFFFFF) )
+				{
+					break;
+				}
+
+			
+				total++;
+				currentEntry--;
+			} 
+			while ( currentEntry > 0 );
+			
+			stream.Position = pos;
+			return total;
+		}
+
+		public static bool Load(string mapfilepath)
 		{
 			bool bSCI32Map = false;
 			bool bSCIMap = false;
@@ -18,8 +226,7 @@ namespace SCI
 			{
 				throw new System.IO.FileNotFoundException();
 			}
-
-			
+			return true;
 		}
 
 
@@ -210,4 +417,6 @@ namespace SCI
 		};
 		#endregion
 	}
+
+	
 }
