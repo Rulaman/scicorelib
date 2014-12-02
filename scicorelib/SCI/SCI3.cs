@@ -25,6 +25,7 @@ namespace SCI
 		public CResource FindPaletteName(int resourceid)
 		{
 			CResource returnvalue = null;
+			int id = resourceid;
 
 			if ( PaletteResourceList == null )
 			{
@@ -42,7 +43,7 @@ namespace SCI
 				}
 			}
 
-			while ( (returnvalue == null) || (resourceid == 0) )
+			while ( (returnvalue == null) && (id >= 0) )
 			{
 				foreach ( CResource item in PaletteResourceList )
 				{
@@ -53,7 +54,19 @@ namespace SCI
 					}
 				}
 
-				resourceid--;
+				id--;
+			}
+
+			if ( returnvalue == null )
+			{
+				foreach ( CResource item in PaletteResourceList )
+				{
+					if ( item.Number == 999 )
+					{
+						returnvalue = item;
+						break;
+					}
+				}
 			}
 
 			return returnvalue;
@@ -148,7 +161,10 @@ namespace SCI
 						case EResourceType.Palette:
 						case EResourceType.Palette8x:
 							SCI.Drawing.SciPalette palette = new SciPalette();
-							palette.ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), false);
+							palette.CompressionType = ECompressionType.STACpack;
+							palette.CompressedSize = unplen;
+							palette.UncompressedSize = paklen;
+							palette.ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
 
 							item.ResourceData = palette;
 							break;
@@ -166,6 +182,9 @@ namespace SCI
 						case EResourceType.Picture:
 						case EResourceType.Picture8x:
 							SCI.Drawing.Picture pict = new SCI.Drawing.Picture();
+							pict.CompressionType = ECompressionType.STACpack;
+							pict.CompressedSize = unplen;
+							pict.UncompressedSize = paklen;
 							pict.ReadHeaderFromStream(stream);
 							item.ResourceData = pict;
 							break;
@@ -189,9 +208,10 @@ namespace SCI
 						break;
 					case EResourceType.Picture:
 					case EResourceType.Picture8x:
-						SCI.Drawing.Picture pict = new SCI.Drawing.Picture();
-						pict.ReadHeaderFromStream(stream);
-						item.ResourceData = pict;
+						Picture pict = (Picture)item.ResourceData;
+						CResource resource2 = FindPaletteName(item.Number);
+						SciPalette palette2 = (SciPalette)resource2.ResourceData;
+						//pict.DecodeImage(palette2.ColorInfo);
 						break;
 					default:
 						break;

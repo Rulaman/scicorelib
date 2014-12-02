@@ -47,6 +47,7 @@ namespace SCI.Drawing
 
 			fileStream.Close();
 
+			ColorField = new ColorFieldColorInfo[colorInfoArray.Length];
 			Array.Copy(colorInfoArray, ColorField, colorInfoArray.Length);
 
 			return colorInfoArray;
@@ -104,6 +105,7 @@ namespace SCI.Drawing
 				binaryReader.BaseStream.Position = positionInStream;
 			}
 
+			ColorField = new ColorFieldColorInfo[colorInfoArray.Length];
 			Array.Copy(colorInfoArray, ColorField, colorInfoArray.Length);
 
 			return colorInfoArray;

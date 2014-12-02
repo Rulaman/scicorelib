@@ -8,6 +8,11 @@ namespace SCI.Drawing
 
 	public sealed class Picture: ISciResource
 	{
+		private ECompressionType CompType;
+		private uint CompSize;
+		private uint UncompSize;
+
+
 		private Size			InternalSize			= new Size();
 		
 		private Point			ScreenPosition			= new Point();
@@ -95,39 +100,25 @@ namespace SCI.Drawing
 		}
 
 		#region ISciResource Member
-
 		public EResourceType Type
 		{
-			get
-			{
-				return EResourceType.Picture;
-			}
+			get { return EResourceType.Picture; }
 		}
-		
 		public ECompressionType CompressionType
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
+			get { return CompType; }
+			set { CompType = value; }
 		}
-
 		public uint CompressedSize
 		{
-			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+			get { return CompSize; }
+			set { CompSize = value; }
 		}
-
 		public uint UncompressedSize
 		{
-			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+			get { return UncompSize; }
+			set { UncompSize = value; }
 		}
-
 		#endregion
 	}
 }
