@@ -154,7 +154,7 @@ namespace SCI
 		
 		public byte ResourceType;
 		public byte FileNumber; /// in this resource file are the data (RESOURCE.<nr>)
-		public Int32 Offset; /// absolute offset withini the resource file
+		public UInt32 Offset; /// absolute offset withini the resource file
 		public ISciResource ResourceData;
 
 		#region ISciResource Member

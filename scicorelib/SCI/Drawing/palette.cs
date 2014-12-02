@@ -4,8 +4,19 @@ using System.Drawing;
 
 namespace SCI.Drawing
 {
-	public class DecodePalette
+	public class SciPalette: SCI.Interface.ISciResource
 	{
+		private ECompressionType CompType;
+		private uint CompSize;
+		private uint UncompSize;
+
+		private ColorFieldColorInfo[] ColorField = null;
+
+		public ColorFieldColorInfo[] ColorInfo
+		{
+			get { return ColorField; }
+		}
+
 		public ColorFieldColorInfo[] ReadFromSierraPalFile(string filename)
 		{
 			ColorFieldColorInfo[] colorInfoArray;
@@ -35,6 +46,8 @@ namespace SCI.Drawing
 			}
 
 			fileStream.Close();
+
+			Array.Copy(colorInfoArray, ColorField, colorInfoArray.Length);
 
 			return colorInfoArray;
 		}
@@ -91,7 +104,38 @@ namespace SCI.Drawing
 				binaryReader.BaseStream.Position = positionInStream;
 			}
 
+			Array.Copy(colorInfoArray, ColorField, colorInfoArray.Length);
+
 			return colorInfoArray;
 		}
+
+		public ColorFieldColorInfo[] ReadFromStream(System.IO.Stream stream, bool inversive)
+		{
+			System.IO.BinaryReader binaryReader  =new BinaryReader(stream);
+
+			return ReadFromStream(binaryReader, inversive);
+		}
+
+		#region ISciResource Member
+		public EResourceType Type
+		{
+			get { return EResourceType.Palette; }
+		}
+		public ECompressionType CompressionType
+		{
+			get { return CompType; }
+			set { CompType = value; }
+		}
+		public uint CompressedSize
+		{
+			get { return CompSize; }
+			set { CompSize = value; }
+		}
+		public uint UncompressedSize
+		{
+			get { return UncompSize; }
+			set { UncompSize = value; }
+		}
+		#endregion
 	}
 }

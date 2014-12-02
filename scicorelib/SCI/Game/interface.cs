@@ -14,8 +14,8 @@ namespace SCI.Interface
 		EResourceType Type { get; }
 //		UInt16 Number { get; set; }
 		ECompressionType CompressionType { get; set;  }
-		Int32 CompressedSize { get; }
-		Int32 UncompressedSize { get; }
+		UInt32 CompressedSize { get; set; }
+		UInt32 UncompressedSize { get; set; }
 	}
 
 	public interface ISciType

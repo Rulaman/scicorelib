@@ -29,6 +29,16 @@ namespace SCI
 					gamedata.GameData = game;
 				}
 			}
+			else if ( System.IO.File.Exists(System.IO.Path.Combine(path, "RESMAP.000")) )
+			{
+				SCI3 game = new SCI3();
+				if ( game.Load(path) )
+				{
+					gamedata.Type = EGameType.SCI3;
+					gamedata.ResourceList = game.ResourceList;
+					gamedata.GameData = game;
+				}
+			}
 
 			return gamedata;
 		}

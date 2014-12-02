@@ -68,6 +68,7 @@
     <Compile Include="SCI\Install\installer.cs" />
     <Compile Include="SCI\IO\Compression\dcl.cs" />
     <Compile Include="SCI\IO\Compression\lzs.cs" />
+    <Compile Include="SCI\SCI3.cs" />
     <Compile Include="SCI\SCI1.cs" />
   </ItemGroup>
   <ItemGroup />

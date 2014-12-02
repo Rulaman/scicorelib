@@ -7,6 +7,10 @@ namespace SCI.Drawing
 {
 	public class DecodeV56: Interface.ISciResource
 	{
+		private ECompressionType CompType;
+		private uint CompSize;
+		private uint UncompSize;
+
 		public struct Header56
 		{
 			public Int16 Len;
@@ -25,6 +29,7 @@ namespace SCI.Drawing
 
 			public ColorFieldColorInfo[] colorInfo;
 			public ColorPalette Palette;
+			public Bitmap Image;
 		}
 		public struct Loop56
 		{
@@ -85,7 +90,7 @@ namespace SCI.Drawing
 			else
 			{
 				br.BaseStream.Position = Header.PalOffset;
-				DecodePalette pal = new DecodePalette();
+				SciPalette pal = new SciPalette();
 				Header.colorInfo = pal.ReadFromStream(br, true);
 			}
 
@@ -358,8 +363,11 @@ namespace SCI.Drawing
 			else
 			{
 				br.BaseStream.Position = Header.PalOffset;
-				DecodePalette pal = new DecodePalette();
+				SciPalette pal = new SciPalette();
 				Header.colorInfo = pal.ReadFromStream(br, true);
+
+				Header.Image = new Bitmap(16, 16, PixelFormat.Format8bppIndexed);
+				Header.Palette = Header.Image.Palette;
 
 				for ( int pos = 0; pos < 256; pos++ )
 				{
@@ -523,7 +531,7 @@ namespace SCI.Drawing
 		public ColorFieldColorInfo[] DecodeColors(string filename)
 		{
 			Palname = filename;
-			DecodePalette palette = new DecodePalette();
+			SciPalette palette = new SciPalette();
 			return DecodeColors(palette.ReadFromSierraPalFile(filename));
 		}
 		public ColorFieldColorInfo[] DecodeColors()
@@ -539,7 +547,7 @@ namespace SCI.Drawing
 					Bitmap b = new Bitmap(Loop[entryloop].Cell[entrycell].Width, Loop[entryloop].Cell[entrycell].Height, PixelFormat.Format8bppIndexed);
 					ColorPalette palette = b.Palette;
 
-					for ( int i = 0; i < 256; i++ )
+					for ( int i = 0; i < Math.Min(256, colorinfo.Length); i++ )
 					{
 						palette.Entries[i] = colorinfo[i].Color;
 					}
@@ -585,34 +593,25 @@ namespace SCI.Drawing
 		}
 
 		#region ISciResource Member
-
 		public EResourceType Type
 		{
 			get { return EResourceType.View; }
 		}
-
 		public ECompressionType CompressionType
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
+			get { return CompType; }
+			set { CompType = value; }
 		}
-
-		public int CompressedSize
+		public uint CompressedSize
 		{
-			get { throw new NotImplementedException(); }
+			get { return CompSize; }
+			set { CompSize = value; }
 		}
-
-		public int UncompressedSize
+		public uint UncompressedSize
 		{
-			get { throw new NotImplementedException(); }
+			get { return UncompSize; }
+			set { UncompSize = value; }
 		}
-
 		#endregion
 	}
 }

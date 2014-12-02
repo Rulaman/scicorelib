@@ -7,14 +7,63 @@ using SCI.Drawing;
 
 namespace SCI
 {
-	public class SCI1: ISciType
+	public abstract class SciBase
 	{
-		private List<CResource> _ResourceList = new List<CResource>();
+		protected List<CResource> _ResourceList = new List<CResource>();
 
 		public List<CResource> ResourceList
 		{
 			get { return _ResourceList; }
 		}
+
+
+		private string globalpath = "";
+		private string selectedpalette	= "";
+
+		public List<CResource> PaletteResourceList;
+
+		public CResource FindPaletteName(int resourceid)
+		{
+			CResource returnvalue = null;
+
+			if ( PaletteResourceList == null )
+			{
+				PaletteResourceList = new List<CResource>();
+
+				foreach ( CResource item in _ResourceList )
+				{
+					switch ( item.Type )
+					{
+					case EResourceType.Palette:
+					case EResourceType.Palette8x:
+						PaletteResourceList.Add(item);
+						break;
+					};
+				}
+			}
+
+			while ( (returnvalue == null) || (resourceid == 0) )
+			{
+				foreach ( CResource item in PaletteResourceList )
+				{
+					if ( item.Number == resourceid )
+					{
+						returnvalue = item;
+						break;
+					}
+				}
+
+				resourceid--;
+			}
+
+			return returnvalue;
+		}
+	}
+
+
+	public class SCI3: SciBase, ISciType
+	{
+		
 
 		/// <summary>
 		/// load a compiled game and not the sources and the project file
@@ -22,13 +71,10 @@ namespace SCI
 		/// </summary>
 		public bool Load(string path)
 		{
-			string mapfilename = "RESOURCE.MAP";
-			string resourcefilename = "RESOURCE";
-
 			bool retval = true;
 			System.IO.FileStream stream;
 
-			string file =System.IO.Path.Combine(path, mapfilename);
+			string file =System.IO.Path.Combine(path, "RESMAP.000");
 			
 			if (  !System.IO.File.Exists(file) )
 			{
@@ -46,10 +92,11 @@ namespace SCI
 
 				_ResourceList = ReadMapFile(ms);
 
+				string resfilesave = "";
 
 				foreach ( CResource item in _ResourceList )
 				{
-					string resfile = System.IO.Path.Combine(path, resourcefilename + String.Format(".{0}", item.FileNumber.ToString("000")));
+					string resfile = System.IO.Path.Combine(path, String.Format("RESSCI.{0}", item.FileNumber.ToString("000")));
 					
 					if ( !System.IO.File.Exists(file) )
 					{
@@ -57,21 +104,27 @@ namespace SCI
 					}
 					else
 					{
-						stream = System.IO.File.Open(resfile, System.IO.FileMode.Open);
+						if ( resfilesave != resfile )
+						{
+							stream.Close();
+							stream = System.IO.File.Open(resfile, System.IO.FileMode.Open);
+
+							resfilesave = resfile;
+						}
+						
 						stream.Position = item.Offset;
 
 						/* Resource entpacken */
 						SciBinaryReader br = new SciBinaryReader(stream);
+						
 						byte typ = br.ReadByte();
 						UInt16 id = br.ReadUInt16();
-
-						int paklen = br.ReadUInt16();
-						int unplen = br.ReadUInt16();
-
+						UInt32 paklen = br.ReadUInt32();
+						UInt32 unplen = br.ReadUInt32();
 						int pakmeth = br.ReadUInt16();
 
 						byte[] UnpackedDataArray = new byte[unplen];
-						byte[] PackedDataArray = br.ReadBytes(paklen);
+						byte[] PackedDataArray = br.ReadBytes((int)paklen);
 
 						switch ( pakmeth )
 						{
@@ -92,16 +145,22 @@ namespace SCI
 
 						switch ( item.Type )
 						{
+						case EResourceType.Palette:
+						case EResourceType.Palette8x:
+							SCI.Drawing.SciPalette palette = new SciPalette();
+							palette.ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), false);
+
+							item.ResourceData = palette;
+							break;
 						case EResourceType.View:
 						case EResourceType.View8x:
-
 							/* Resource entpacken */
-
-
-
-
-							DecodeV56 view = new DecodeV56();
-							view.LoadViewSCI1(new System.IO.MemoryStream(UnpackedDataArray));
+							SCI.Drawing.DecodeV56 view = new SCI.Drawing.DecodeV56();
+							view.CompressionType = ECompressionType.STACpack;
+							view.CompressedSize = unplen;
+							view.UncompressedSize = paklen;
+							view.LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
+							//FindPaletteName(id);
 							item.ResourceData = view;
 							break;
 						case EResourceType.Picture:
@@ -114,6 +173,29 @@ namespace SCI
 							break;
 						};
 					}
+				}
+
+				foreach ( CResource item in _ResourceList )
+				{
+					switch ( item.Type )
+					{
+					case EResourceType.View:
+					case EResourceType.View8x:
+						/* Resource entpacken */
+						DecodeV56 view = (DecodeV56)item.ResourceData;
+						CResource resource = FindPaletteName(item.Number);
+						SciPalette palette = (SciPalette)resource.ResourceData;
+						view.DecodeColors(palette.ColorInfo);
+						break;
+					case EResourceType.Picture:
+					case EResourceType.Picture8x:
+						SCI.Drawing.Picture pict = new SCI.Drawing.Picture();
+						pict.ReadHeaderFromStream(stream);
+						item.ResourceData = pict;
+						break;
+					default:
+						break;
+					};
 				}
 			}
 
@@ -140,6 +222,8 @@ namespace SCI
 				offsetlist.Add(offset);
 			}
 
+
+
 			int i = 0;
 			foreach ( KeyValuePair<byte,int> item in resourcearray )
 			{
@@ -165,10 +249,7 @@ namespace SCI
 					resource.Type = (EResourceType)item.Key;
 
 					resource.Number = mapFileReader.ReadUInt16();
-					UInt32 temp = mapFileReader.ReadUInt32();
-
-					resource.FileNumber = (byte)(temp >> 28);
-					resource.Offset = (UInt32)(temp & 0xFFFFFFF);
+					resource.Offset = mapFileReader.ReadUInt32();
 
 					resourceindex.Add(resource);
 				}

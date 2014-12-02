@@ -6,68 +6,6 @@ namespace SCI.Drawing
 {
 	using SCI.Interface;
 
-	public sealed class SciPicture: ISciResource
-	{
-		private EResourceType ResourceType;
-
-		internal SciPicture(EResourceType resourcetype)
-		{
-			ResourceType = resourcetype;
-		}
-
-		#region ISciResource Member
-		public EResourceType Type
-		{
-			get
-			{
-				return ResourceType;
-			}
-			set
-			{
-				ResourceType = value;
-			}
-		}
-		public UInt16 Number
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
-		public ECompressionType CompressionType
-		{
-			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
-		}
-		public int CompressedSize
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
-		public int UncompressedSize
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
-		#endregion
-	}
-
 	public sealed class Picture: ISciResource
 	{
 		private Size			InternalSize			= new Size();
@@ -178,14 +116,16 @@ namespace SCI.Drawing
 			}
 		}
 
-		public int CompressedSize
+		public uint CompressedSize
 		{
 			get { throw new NotImplementedException(); }
+			set { throw new NotImplementedException(); }
 		}
 
-		public int UncompressedSize
+		public uint UncompressedSize
 		{
 			get { throw new NotImplementedException(); }
+			set { throw new NotImplementedException(); }
 		}
 
 		#endregion
