@@ -56,11 +56,11 @@
     <Compile Include="SCI\common.cs" />
     <Compile Include="SCI\Data\resources.cs" />
     <Compile Include="SCI\Data\Types.cs" />
-    <Compile Include="SCI\Drawing\colorinfo.cs" />
-    <Compile Include="SCI\Drawing\palette.cs" />
-    <Compile Include="SCI\Drawing\view.cs" />
-    <Compile Include="SCI\Drawing\Picture.cs" />
-    <Compile Include="SCI\Drawing\PictureRow.cs" />
+    <Compile Include="SCI\Resource\colorinfo.cs" />
+    <Compile Include="SCI\Resource\palette.cs" />
+    <Compile Include="SCI\Resource\view.cs" />
+    <Compile Include="SCI\Resource\Picture.cs" />
+    <Compile Include="SCI\Resource\PictureRow.cs" />
     <Compile Include="SCI\Game.cs" />
     <Compile Include="SCI\Game\gametypes.cs" />
     <Compile Include="SCI\Game\interface.cs" />

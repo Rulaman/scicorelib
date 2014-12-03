@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace SCI.Drawing
+namespace SCI.Resource
 {
 	using SCI.Interface;
 

@@ -3,9 +3,9 @@ using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace SCI.Drawing
+namespace SCI.Resource
 {
-	public class DecodeV56: Interface.ISciResource
+	public class View: Interface.ISciResource
 	{
 		private ECompressionType CompType;
 		private uint CompSize;
@@ -60,7 +60,7 @@ namespace SCI.Drawing
 		public string Filename;
 		public string Palname;
 
-		public DecodeV56 LoadView(string filename)
+		public View LoadView(string filename)
 		{
 			Filename = filename;
 			System.IO.FileStream fs = new System.IO.FileStream(filename, System.IO.FileMode.Open);
@@ -90,7 +90,7 @@ namespace SCI.Drawing
 			else
 			{
 				br.BaseStream.Position = Header.PalOffset;
-				SciPalette pal = new SciPalette();
+				Palette pal = new Palette();
 				Header.colorInfo = pal.ReadFromStream(br, true);
 			}
 
@@ -249,7 +249,7 @@ namespace SCI.Drawing
 
 			return this;
 		}
-		public DecodeV56 LoadViewSCI1(System.IO.Stream stream)
+		public View LoadViewSCI1(System.IO.Stream stream)
 		{
 			BinaryReader br = new BinaryReader(stream);
 			byte[] All = new byte[br.BaseStream.Length];
@@ -336,7 +336,7 @@ namespace SCI.Drawing
 
 			return this;
 		}
-		public DecodeV56 LoadViewSCI11(System.IO.Stream stream)
+		public View LoadViewSCI11(System.IO.Stream stream)
 		{
 			BinaryReader br = new BinaryReader(stream);
 			byte[] All = new byte[br.BaseStream.Length];
@@ -363,7 +363,7 @@ namespace SCI.Drawing
 			else
 			{
 				br.BaseStream.Position = Header.PalOffset;
-				SciPalette pal = new SciPalette();
+				Palette pal = new Palette();
 				Header.colorInfo = pal.ReadFromStream(br, true);
 
 				Header.Image = new Bitmap(16, 16, PixelFormat.Format8bppIndexed);
@@ -531,7 +531,7 @@ namespace SCI.Drawing
 		public ColorFieldColorInfo[] DecodeColors(string filename)
 		{
 			Palname = filename;
-			SciPalette palette = new SciPalette();
+			Palette palette = new Palette();
 			return DecodeColors(palette.ReadFromSierraPalFile(filename));
 		}
 		public ColorFieldColorInfo[] DecodeColors()

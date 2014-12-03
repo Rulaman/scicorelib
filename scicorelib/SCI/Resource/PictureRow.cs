@@ -4,10 +4,16 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
 
-namespace SCI.Drawing
+namespace SCI.Resource
 {
-	public class PictureRow
+	using SCI.Interface;
+
+	public class PictureRow: ISciResource
 	{
+		private ECompressionType CompType;
+		private uint CompSize;
+		private uint UncompSize;
+
 		private Size		InternalSize = new Size();
 		private object		Object;
 
@@ -148,5 +154,27 @@ namespace SCI.Drawing
 		{
 			get { return InternalSize; }
 		}
+
+		#region ISciResource Member
+		public EResourceType Type
+		{
+			get { return EResourceType.Picture; }
+		}
+		public ECompressionType CompressionType
+		{
+			get { return CompType; }
+			set { CompType = value; }
+		}
+		public uint CompressedSize
+		{
+			get { return CompSize; }
+			set { CompSize = value; }
+		}
+		public uint UncompressedSize
+		{
+			get { return UncompSize; }
+			set { UncompSize = value; }
+		}
+		#endregion
 	}
 }

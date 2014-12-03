@@ -1,4 +1,4 @@
-﻿namespace SCI.Drawing
+﻿namespace SCI.Resource
 {
 	public struct ColorFieldColorInfo
 	{

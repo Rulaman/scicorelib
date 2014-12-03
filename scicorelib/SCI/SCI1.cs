@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using SCI.Interface;
-using SCI.Drawing;
+using SCI.Resource;
 
 namespace SCI
 {
@@ -100,13 +100,13 @@ namespace SCI
 
 
 
-							DecodeV56 view = new DecodeV56();
+							View view = new View();
 							view.LoadViewSCI1(new System.IO.MemoryStream(UnpackedDataArray));
 							item.ResourceData = view;
 							break;
 						case EResourceType.Picture:
 						case EResourceType.Picture8x:
-							SCI.Drawing.Picture pict = new SCI.Drawing.Picture();
+							SCI.Resource.Picture pict = new SCI.Resource.Picture();
 							pict.ReadHeaderFromStream(stream);
 							item.ResourceData = pict;
 							break;

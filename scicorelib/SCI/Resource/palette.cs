@@ -2,9 +2,9 @@
 using System.IO;
 using System.Drawing;
 
-namespace SCI.Drawing
+namespace SCI.Resource
 {
-	public class SciPalette: SCI.Interface.ISciResource
+	public class Palette: SCI.Interface.ISciResource
 	{
 		private ECompressionType CompType;
 		private uint CompSize;

@@ -3,29 +3,23 @@ using System.Collections.Generic;
 using System.Text;
 
 using SCI.Interface;
-using SCI.Drawing;
+using SCI.Resource;
 
 namespace SCI
 {
 	public abstract class SciBase
 	{
 		protected List<CResource> _ResourceList = new List<CResource>();
-
+		private List<CResource> PaletteResourceList;
 		public List<CResource> ResourceList
 		{
 			get { return _ResourceList; }
 		}
 
-
-		private string globalpath = "";
-		private string selectedpalette	= "";
-
-		public List<CResource> PaletteResourceList;
-
-		public CResource FindPaletteName(int resourceid)
+		public CResource FindPaletteResource(int resourceid)
 		{
 			CResource returnvalue = null;
-			int id = resourceid;
+			string id = resourceid.ToString();
 
 			if ( PaletteResourceList == null )
 			{
@@ -43,18 +37,18 @@ namespace SCI
 				}
 			}
 
-			while ( (returnvalue == null) && (id >= 0) )
+			while ( (returnvalue == null) && (int.Parse(id) <= 99999) )
 			{
 				foreach ( CResource item in PaletteResourceList )
 				{
-					if ( item.Number == resourceid )
+					if ( item.Number == int.Parse(id) )
 					{
 						returnvalue = item;
 						break;
 					}
 				}
 
-				id--;
+				id += "0";
 			}
 
 			if ( returnvalue == null )
@@ -73,15 +67,14 @@ namespace SCI
 		}
 	}
 
-
 	public class SCI3: SciBase, ISciType
 	{
-		
-
 		/// <summary>
-		/// load a compiled game and not the sources and the project file
-		/// give only the path as the parameter
+		/// load a compiled game and not the sources and the project file give only the path as the parameter
 		/// </summary>
+		/// <param name="path">The path to the (compiled) game.</param>
+		/// <returns>True if the game could loaded, otherwise false.</returns>
+		
 		public bool Load(string path)
 		{
 			bool retval = true;
@@ -160,10 +153,10 @@ namespace SCI
 						{
 						case EResourceType.Palette:
 						case EResourceType.Palette8x:
-							SCI.Drawing.SciPalette palette = new SciPalette();
+							SCI.Resource.Palette palette = new Palette();
 							palette.CompressionType = ECompressionType.STACpack;
-							palette.CompressedSize = unplen;
-							palette.UncompressedSize = paklen;
+							palette.CompressedSize = paklen;
+							palette.UncompressedSize = unplen;
 							palette.ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
 
 							item.ResourceData = palette;
@@ -171,21 +164,21 @@ namespace SCI
 						case EResourceType.View:
 						case EResourceType.View8x:
 							/* Resource entpacken */
-							SCI.Drawing.DecodeV56 view = new SCI.Drawing.DecodeV56();
+							SCI.Resource.View view = new SCI.Resource.View();
 							view.CompressionType = ECompressionType.STACpack;
-							view.CompressedSize = unplen;
-							view.UncompressedSize = paklen;
+							view.CompressedSize = paklen;
+							view.UncompressedSize = unplen;
 							view.LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
 							//FindPaletteName(id);
 							item.ResourceData = view;
 							break;
 						case EResourceType.Picture:
 						case EResourceType.Picture8x:
-							SCI.Drawing.Picture pict = new SCI.Drawing.Picture();
+							SCI.Resource.PictureRow pict = new SCI.Resource.PictureRow();
 							pict.CompressionType = ECompressionType.STACpack;
-							pict.CompressedSize = unplen;
-							pict.UncompressedSize = paklen;
-							pict.ReadHeaderFromStream(stream);
+							pict.CompressedSize = paklen;
+							pict.UncompressedSize = unplen;
+							pict.FromStream(stream);
 							item.ResourceData = pict;
 							break;
 						default:
@@ -201,16 +194,16 @@ namespace SCI
 					case EResourceType.View:
 					case EResourceType.View8x:
 						/* Resource entpacken */
-						DecodeV56 view = (DecodeV56)item.ResourceData;
-						CResource resource = FindPaletteName(item.Number);
-						SciPalette palette = (SciPalette)resource.ResourceData;
+						View view = (View)item.ResourceData;
+						CResource resource = FindPaletteResource(item.Number);
+						Palette palette = (Palette)resource.ResourceData;
 						view.DecodeColors(palette.ColorInfo);
 						break;
 					case EResourceType.Picture:
 					case EResourceType.Picture8x:
 						Picture pict = (Picture)item.ResourceData;
-						CResource resource2 = FindPaletteName(item.Number);
-						SciPalette palette2 = (SciPalette)resource2.ResourceData;
+						CResource resource2 = FindPaletteResource(item.Number);
+						Palette palette2 = (Palette)resource2.ResourceData;
 						//pict.DecodeImage(palette2.ColorInfo);
 						break;
 					default:
