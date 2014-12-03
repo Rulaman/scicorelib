@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 
 namespace SCI.Resource
 {
-	public class View: Interface.ISciResource
+	public class SciView: Interface.ISciResource
 	{
 		private ECompressionType CompType;
 		private uint CompSize;
@@ -60,7 +60,7 @@ namespace SCI.Resource
 		public string Filename;
 		public string Palname;
 
-		public View LoadView(string filename)
+		public SciView LoadView(string filename)
 		{
 			Filename = filename;
 			System.IO.FileStream fs = new System.IO.FileStream(filename, System.IO.FileMode.Open);
@@ -90,7 +90,7 @@ namespace SCI.Resource
 			else
 			{
 				br.BaseStream.Position = Header.PalOffset;
-				Palette pal = new Palette();
+				SciPalette pal = new SciPalette();
 				Header.colorInfo = pal.ReadFromStream(br, true);
 			}
 
@@ -249,7 +249,7 @@ namespace SCI.Resource
 
 			return this;
 		}
-		public View LoadViewSCI1(System.IO.Stream stream)
+		public SciView LoadViewSCI1(System.IO.Stream stream)
 		{
 			BinaryReader br = new BinaryReader(stream);
 			byte[] All = new byte[br.BaseStream.Length];
@@ -336,7 +336,7 @@ namespace SCI.Resource
 
 			return this;
 		}
-		public View LoadViewSCI11(System.IO.Stream stream)
+		public SciView LoadViewSCI11(System.IO.Stream stream)
 		{
 			BinaryReader br = new BinaryReader(stream);
 			byte[] All = new byte[br.BaseStream.Length];
@@ -363,7 +363,7 @@ namespace SCI.Resource
 			else
 			{
 				br.BaseStream.Position = Header.PalOffset;
-				Palette pal = new Palette();
+				SciPalette pal = new SciPalette();
 				Header.colorInfo = pal.ReadFromStream(br, true);
 
 				Header.Image = new Bitmap(16, 16, PixelFormat.Format8bppIndexed);
@@ -531,7 +531,7 @@ namespace SCI.Resource
 		public ColorFieldColorInfo[] DecodeColors(string filename)
 		{
 			Palname = filename;
-			Palette palette = new Palette();
+			SciPalette palette = new SciPalette();
 			return DecodeColors(palette.ReadFromSierraPalFile(filename));
 		}
 		public ColorFieldColorInfo[] DecodeColors()
@@ -560,7 +560,7 @@ namespace SCI.Resource
 					for ( int height = 0; height < b.Height; height++ )
 					{
 						System.Runtime.InteropServices.Marshal.Copy(Loop[entryloop].Cell[entrycell].ColorData, startPos*height, ptr, bmpData.Width);
-						ptr = (IntPtr)((int)ptr + bmpData.Stride);
+						ptr = (IntPtr)((long)ptr + bmpData.Stride);
 					}
 										
 					b.UnlockBits(bmpData);

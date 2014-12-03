@@ -153,7 +153,7 @@ namespace SCI
 						{
 						case EResourceType.Palette:
 						case EResourceType.Palette8x:
-							SCI.Resource.Palette palette = new Palette();
+							SCI.Resource.SciPalette palette = new SciPalette();
 							palette.CompressionType = ECompressionType.STACpack;
 							palette.CompressedSize = paklen;
 							palette.UncompressedSize = unplen;
@@ -164,7 +164,7 @@ namespace SCI
 						case EResourceType.View:
 						case EResourceType.View8x:
 							/* Resource entpacken */
-							SCI.Resource.View view = new SCI.Resource.View();
+							SCI.Resource.SciView view = new SCI.Resource.SciView();
 							view.CompressionType = ECompressionType.STACpack;
 							view.CompressedSize = paklen;
 							view.UncompressedSize = unplen;
@@ -174,11 +174,11 @@ namespace SCI
 							break;
 						case EResourceType.Picture:
 						case EResourceType.Picture8x:
-							SCI.Resource.PictureRow pict = new SCI.Resource.PictureRow();
+							SCI.Resource.SciPictureRow pict = new SCI.Resource.SciPictureRow();
 							pict.CompressionType = ECompressionType.STACpack;
 							pict.CompressedSize = paklen;
 							pict.UncompressedSize = unplen;
-							pict.FromStream(stream);
+							pict.FromByteArray(UnpackedDataArray);
 							item.ResourceData = pict;
 							break;
 						default:
@@ -194,16 +194,16 @@ namespace SCI
 					case EResourceType.View:
 					case EResourceType.View8x:
 						/* Resource entpacken */
-						View view = (View)item.ResourceData;
+						SciView view = (SciView)item.ResourceData;
 						CResource resource = FindPaletteResource(item.Number);
-						Palette palette = (Palette)resource.ResourceData;
+						SciPalette palette = (SciPalette)resource.ResourceData;
 						view.DecodeColors(palette.ColorInfo);
 						break;
 					case EResourceType.Picture:
 					case EResourceType.Picture8x:
-						Picture pict = (Picture)item.ResourceData;
-						CResource resource2 = FindPaletteResource(item.Number);
-						Palette palette2 = (Palette)resource2.ResourceData;
+						//SciPictureRow pict = (SciPictureRow)item.ResourceData;
+						//CResource resource2 = FindPaletteResource(item.Number);
+						//SciPalette palette2 = (SciPalette)resource2.ResourceData;
 						//pict.DecodeImage(palette2.ColorInfo);
 						break;
 					default:

@@ -8,7 +8,7 @@ namespace SCI.Resource
 {
 	using SCI.Interface;
 
-	public class PictureRow: ISciResource
+	public class SciPictureRow: ISciResource
 	{
 		private ECompressionType CompType;
 		private uint CompSize;
@@ -24,15 +24,21 @@ namespace SCI.Resource
 		public Int32		PalOffset;
 		public Color[]		Entries;
 
-		public List<Picture> PictureList = new List<Picture>();
+		public List<SciPicture> PictureList = new List<SciPicture>();
 
 		public void FromFile(string filename)
 		{
 			FileStream fs = new FileStream(filename, System.IO.FileMode.Open);
-			FromStream(fs);
+			FromStream(fs, fs.Length);
 			fs.Close();
 		}
-		public void FromStream(System.IO.Stream stream)
+
+		public void FromByteArray(byte[] array)
+		{
+			FromStream(new MemoryStream(array), array.Length);
+		}
+
+		public void FromStream(System.IO.Stream stream, Int64 length)
 		{
 			System.IO.BinaryReader br = new BinaryReader(stream);
 
@@ -47,8 +53,8 @@ namespace SCI.Resource
 
 			for ( int entry = 0; entry < NumOfLoops; entry++ )
 			{
-				Picture pict = new Picture();
-				pict.ReadHeaderFromStream(stream);
+				SciPicture pict = new SciPicture();
+				pict.FromStream(stream);
 				PictureList.Add(pict);
 			}
 
@@ -63,7 +69,7 @@ namespace SCI.Resource
 				PictureList[entry].ReadColorDataFromStream(stream);
 			}
 
-			foreach(Picture item in PictureList)
+			foreach(SciPicture item in PictureList)
 			{
 				item.DecodeImage(Entries);
 			}

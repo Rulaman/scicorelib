@@ -6,7 +6,7 @@ namespace SCI.Resource
 {
 	using SCI.Interface;
 
-	public sealed class Picture: ISciResource
+	public sealed class SciPicture: ISciResource
 	{
 		private ECompressionType CompType;
 		private uint CompSize;
@@ -28,7 +28,7 @@ namespace SCI.Resource
 		{
 			return Image;
 		}
-		public void ReadHeaderFromStream(System.IO.Stream stream)
+		public void FromStream(System.IO.Stream stream)
 		{
 			System.IO.BinaryReader br = new System.IO.BinaryReader(stream);
 

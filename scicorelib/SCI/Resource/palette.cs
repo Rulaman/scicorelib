@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace SCI.Resource
 {
-	public class Palette: SCI.Interface.ISciResource
+	public class SciPalette: SCI.Interface.ISciResource
 	{
 		private ECompressionType CompType;
 		private uint CompSize;

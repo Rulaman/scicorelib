@@ -100,14 +100,14 @@ namespace SCI
 
 
 
-							View view = new View();
+							SciView view = new SciView();
 							view.LoadViewSCI1(new System.IO.MemoryStream(UnpackedDataArray));
 							item.ResourceData = view;
 							break;
 						case EResourceType.Picture:
 						case EResourceType.Picture8x:
-							SCI.Resource.Picture pict = new SCI.Resource.Picture();
-							pict.ReadHeaderFromStream(stream);
+							SCI.Resource.SciPicture pict = new SCI.Resource.SciPicture();
+							pict.FromStream(stream);
 							item.ResourceData = pict;
 							break;
 						default:
