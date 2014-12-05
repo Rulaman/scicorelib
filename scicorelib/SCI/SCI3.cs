@@ -74,7 +74,6 @@ namespace SCI
 		/// </summary>
 		/// <param name="path">The path to the (compiled) game.</param>
 		/// <returns>True if the game could loaded, otherwise false.</returns>
-		
 		public bool Load(string path)
 		{
 			bool retval = true;
@@ -97,6 +96,7 @@ namespace SCI
 				System.IO.MemoryStream ms = new System.IO.MemoryStream(filearray);
 
 				_ResourceList = ReadMapFile(ms);
+				filearray = null;
 
 				string resfilesave = "";
 
@@ -117,7 +117,7 @@ namespace SCI
 
 							resfilesave = resfile;
 						}
-						
+
 						stream.Position = item.Offset;
 
 						/* Resource entpacken */
@@ -158,18 +158,15 @@ namespace SCI
 							palette.CompressedSize = paklen;
 							palette.UncompressedSize = unplen;
 							palette.ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
-
 							item.ResourceData = palette;
 							break;
 						case EResourceType.View:
 						case EResourceType.View8x:
-							/* Resource entpacken */
 							SCI.Resource.SciView view = new SCI.Resource.SciView();
 							view.CompressionType = ECompressionType.STACpack;
 							view.CompressedSize = paklen;
 							view.UncompressedSize = unplen;
 							view.LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
-							//FindPaletteName(id);
 							item.ResourceData = view;
 							break;
 						case EResourceType.Picture:
@@ -201,10 +198,6 @@ namespace SCI
 						break;
 					case EResourceType.Picture:
 					case EResourceType.Picture8x:
-						//SciPictureRow pict = (SciPictureRow)item.ResourceData;
-						//CResource resource2 = FindPaletteResource(item.Number);
-						//SciPalette palette2 = (SciPalette)resource2.ResourceData;
-						//pict.DecodeImage(palette2.ColorInfo);
 						break;
 					default:
 						break;

@@ -27,7 +27,7 @@ namespace SCI.Resource
 			public Int16 Width;
 			public Int16 Height;
 
-			public ColorFieldColorInfo[] colorInfo;
+			public Color[] colorInfo;
 			public ColorPalette Palette;
 			public Bitmap Image;
 		}
@@ -91,7 +91,8 @@ namespace SCI.Resource
 			{
 				br.BaseStream.Position = Header.PalOffset;
 				SciPalette pal = new SciPalette();
-				Header.colorInfo = pal.ReadFromStream(br, true);
+				pal.ReadFromStream(br, true);
+				Header.colorInfo = pal.ColorInfo;
 			}
 
 			br.BaseStream.Position = PalSave;
@@ -364,14 +365,15 @@ namespace SCI.Resource
 			{
 				br.BaseStream.Position = Header.PalOffset;
 				SciPalette pal = new SciPalette();
-				Header.colorInfo = pal.ReadFromStream(br, true);
+				pal.ReadFromStream(br, true);
+				Header.colorInfo = pal.ColorInfo;
 
 				Header.Image = new Bitmap(16, 16, PixelFormat.Format8bppIndexed);
 				Header.Palette = Header.Image.Palette;
 
 				for ( int pos = 0; pos < 256; pos++ )
 				{
-					Header.Palette.Entries[pos] = Header.colorInfo[pos].Color;
+					Header.Palette.Entries[pos] = Header.colorInfo[pos];
 				}
 			}
 
@@ -528,17 +530,17 @@ namespace SCI.Resource
 
 			return this;
 		}
-		public ColorFieldColorInfo[] DecodeColors(string filename)
+		public Color[] DecodeColors(string filename)
 		{
 			Palname = filename;
 			SciPalette palette = new SciPalette();
 			return DecodeColors(palette.ReadFromSierraPalFile(filename));
 		}
-		public ColorFieldColorInfo[] DecodeColors()
+		public Color[] DecodeColors()
 		{
 			return DecodeColors(this.Header.colorInfo);
 		}
-		public ColorFieldColorInfo[] DecodeColors(ColorFieldColorInfo[] colorinfo)
+		public Color[] DecodeColors(Color[] colorinfo)
 		{
 			for ( int entryloop = 0; entryloop < Loop.Length; entryloop++ )
 			{
@@ -549,7 +551,7 @@ namespace SCI.Resource
 
 					for ( int i = 0; i < Math.Min(256, colorinfo.Length); i++ )
 					{
-						palette.Entries[i] = colorinfo[i].Color;
+						palette.Entries[i] = colorinfo[i];
 					}
 
 					b.Palette = palette;
@@ -565,27 +567,6 @@ namespace SCI.Resource
 										
 					b.UnlockBits(bmpData);
 					Loop[entryloop].Cell[entrycell].Image = b;
-
-					//int k = 0;
-					//int j = 0;
-					// Loop[entryloop].Cell[entrycell].Image = new Bitmap(Loop[entryloop].Cell[entrycell].Width, Loop[entryloop].Cell[entrycell].Height);
-
-					//for ( k = 0; k < Loop[entryloop].Cell[entrycell].Height; k++ )
-					//{
-					//    for ( j = 0; j < Loop[entryloop].Cell[entrycell].Width; j++ )
-					//    {
-					//        int pos = Loop[entryloop].Cell[entrycell].ColorData[k * Loop[entryloop].Cell[entrycell].Width + j];
-
-					//        if ( pos >= colorinfo.Length )
-					//        {
-					//            Loop[entryloop].Cell[entrycell].Image.SetPixel(j, k, Color.Magenta);
-					//        }
-					//        else
-					//        {
-					//            Loop[entryloop].Cell[entrycell].Image.SetPixel(j, k, colorinfo[pos].Color);
-					//        }
-					//    }
-					//}
 				}
 			}
 

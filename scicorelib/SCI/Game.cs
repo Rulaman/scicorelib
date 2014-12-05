@@ -71,6 +71,7 @@ namespace SCI
 	}
 	public enum ECompressionType
 	{
+		Invalid,
 		None,
 		Lzw,
 		Huffman,

@@ -30,6 +30,7 @@
     <OutDir>C:\Work\output\VisualStudio\$(MSBuildProjectName)\bin\$(Configuration)</OutDir>
     <OutputPath>bin\Debug\</OutputPath>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,6 +57,8 @@
     <Compile Include="SCI\common.cs" />
     <Compile Include="SCI\Data\resources.cs" />
     <Compile Include="SCI\Data\Types.cs" />
+    <Compile Include="SCI\IO\Compression\base.cs" />
+    <None Include="SCI\IO\Compression\huffman.cs" />
     <Compile Include="SCI\Resource\colorinfo.cs" />
     <Compile Include="SCI\Resource\palette.cs" />
     <Compile Include="SCI\Resource\view.cs" />
@@ -68,6 +71,7 @@
     <Compile Include="SCI\Install\installer.cs" />
     <Compile Include="SCI\IO\Compression\dcl.cs" />
     <Compile Include="SCI\IO\Compression\lzs.cs" />
+    <Compile Include="SCI\sci0.cs" />
     <Compile Include="SCI\SCI3.cs" />
     <Compile Include="SCI\SCI1.cs" />
   </ItemGroup>

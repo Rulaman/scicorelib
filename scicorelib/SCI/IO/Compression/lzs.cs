@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SCI.IO.Compression
 {
-	public class LZS
+	public class LZS: SciCompressionBase, ISciCompression
 	{
 		private Int32 GetReverseBits(Int32 numbits, ref byte[] value, ref UInt64 srcpos)
 		{
@@ -55,7 +55,11 @@ namespace SCI.IO.Compression
 
 			return length;
 		}
-		public void Unpack(byte[] inbuf, ref byte[] outbuf)
+		public override void Init()
+		{
+			
+		}
+		public override bool Unpack(byte[] inbuf, ref byte[] outbuf)
 		{
 			UInt64 sourceBufferPosition = 0;
 			Int32 outBufferPosition = 0;
@@ -98,6 +102,15 @@ namespace SCI.IO.Compression
 					};
 				}
 			} while ( true );
+
+			return true;
 		}
+
+		#region ISciCompression Member
+		public ECompressionType Type
+		{
+			get { return ECompressionType.STACpack; }
+		}
+		#endregion
 	}
 }
