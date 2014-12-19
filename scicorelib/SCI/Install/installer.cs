@@ -16,13 +16,13 @@ namespace SCI.Install
 
 		public void InstallFont()
 		{
-			// Try install the font.
-			int result = AddFontResource(@"C:\MY_FONT_LOCATION\MY_NEW_FONT.TTF");
-			int error = Marshal.GetLastWin32Error();
-			if ( error != 0 )
-			{
-				//Console.WriteLine(new Win32Exception(error).Message);
-			}
+//			// Try install the font.
+//			int result = AddFontResource(@"C:\MY_FONT_LOCATION\MY_NEW_FONT.TTF");
+//			int error = Marshal.GetLastWin32Error();
+//			if ( error != 0 )
+//			{
+//				//Console.WriteLine(new Win32Exception(error).Message);
+//			}
 		}
 	}
 }

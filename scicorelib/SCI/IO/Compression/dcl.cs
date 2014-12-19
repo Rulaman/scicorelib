@@ -119,7 +119,7 @@ namespace SCI.IO.Compression
 		}
 
 		public override void Init() { }
-		public override bool Unpack(byte[] inbuf, ref byte[] outbuf)
+		public override ECompressionValue Unpack(ref byte[] inbuf, ref byte[] outbuf)
 		{
 			Int32 inBufPosition = 0;
 			Int32 outBufPosition = 0;
@@ -200,7 +200,7 @@ namespace SCI.IO.Compression
 				}
 			} while ( true );
 
-			return true; //outBufPosition;
+			return ECompressionValue.Ok; //outBufPosition;
 		}
 
 		#region ISciCompression Member

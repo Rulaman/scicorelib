@@ -5,8 +5,14 @@ using System.Drawing.Imaging;
 
 namespace SCI.Resource
 {
-	public class SciView: Interface.ISciResource
+	public class SciView: ISciResource
 	{
+		private EGameType GameType;
+		public SciView(EGameType gametype)
+		{
+			GameType = gametype;
+		}
+
 		private ECompressionType CompType;
 		private uint CompSize;
 		private uint UncompSize;
@@ -90,7 +96,7 @@ namespace SCI.Resource
 			else
 			{
 				br.BaseStream.Position = Header.PalOffset;
-				SciPalette pal = new SciPalette();
+				SciPalette pal = new SciPalette(GameType);
 				pal.ReadFromStream(br, true);
 				Header.colorInfo = pal.ColorInfo;
 			}
@@ -253,11 +259,11 @@ namespace SCI.Resource
 		public SciView LoadViewSCI1(System.IO.Stream stream)
 		{
 			BinaryReader br = new BinaryReader(stream);
-			byte[] All = new byte[br.BaseStream.Length];
+			//byte[] All = new byte[br.BaseStream.Length];
 
-			Int64 position = br.BaseStream.Position;
-			All = br.ReadBytes((Int32)br.BaseStream.Length);
-			br.BaseStream.Position = position;
+			//Int64 position = br.BaseStream.Position;
+			//All = br.ReadBytes((Int32)br.BaseStream.Length);
+			//br.BaseStream.Position = position;
 
 			Header.Len = br.ReadInt16();
 			br.ReadInt16();
@@ -364,7 +370,7 @@ namespace SCI.Resource
 			else
 			{
 				br.BaseStream.Position = Header.PalOffset;
-				SciPalette pal = new SciPalette();
+				SciPalette pal = new SciPalette(GameType);
 				pal.ReadFromStream(br, true);
 				Header.colorInfo = pal.ColorInfo;
 
@@ -533,7 +539,7 @@ namespace SCI.Resource
 		public Color[] DecodeColors(string filename)
 		{
 			Palname = filename;
-			SciPalette palette = new SciPalette();
+			SciPalette palette = new SciPalette(GameType);
 			return DecodeColors(palette.ReadFromSierraPalFile(filename));
 		}
 		public Color[] DecodeColors()
@@ -574,9 +580,24 @@ namespace SCI.Resource
 		}
 
 		#region ISciResource Member
-		public EResourceType Type
+		public EResourceType ResourceType
 		{
 			get { return EResourceType.View; }
+		}
+		public UInt16 ResourceNumber
+		{
+			get;
+			set;
+		}
+		public byte FileNumber
+		{
+			get;
+			set;
+		}
+		public UInt32 FileOffset
+		{
+			get;
+			set;
 		}
 		public ECompressionType CompressionType
 		{

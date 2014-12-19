@@ -4,11 +4,13 @@ using System.Drawing;
 
 namespace SCI.Resource
 {
-	public class SciPalette: SCI.Interface.ISciResource
+	public class SciPalette: ISciResource
 	{
-		private ECompressionType CompType;
-		private uint CompSize;
-		private uint UncompSize;
+		private EGameType GameType;
+		public SciPalette(EGameType gametype)
+		{
+			GameType = gametype;
+		}
 
 		private Color[] ColorField;
 
@@ -107,24 +109,39 @@ namespace SCI.Resource
 		}
 
 		#region ISciResource Member
-		public EResourceType Type
+		public EResourceType ResourceType
 		{
 			get { return EResourceType.Palette; }
 		}
+		public UInt16 ResourceNumber
+		{
+			get;
+			set;
+		}
+		public byte FileNumber
+		{
+			get;
+			set;
+		}
+		public UInt32 FileOffset
+		{
+			get;
+			set;
+		}
 		public ECompressionType CompressionType
 		{
-			get { return CompType; }
-			set { CompType = value; }
+			get;
+			set;
 		}
 		public uint CompressedSize
 		{
-			get { return CompSize; }
-			set { CompSize = value; }
+			get;
+			set;
 		}
 		public uint UncompressedSize
 		{
-			get { return UncompSize; }
-			set { UncompSize = value; }
+			get;
+			set;
 		}
 		#endregion
 	}

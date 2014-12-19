@@ -2,25 +2,24 @@
 using System.Collections.Generic;
 using System.Text;
 
-using SCI.Interface;
 using SCI.Resource;
 
 namespace SCI
 {
-	public class SCI1: ISciType
+	public class SCI1: SciBase
 	{
-		private List<CResource> _ResourceList = new List<CResource>();
+		//private List<CResource> _ResourceList = new List<CResource>();
 
-		public List<CResource> ResourceList
-		{
-			get { return _ResourceList; }
-		}
+//		public List<CResource> ResourceList
+//		{
+//			get { return _ResourceList; }
+//		}
 
 		/// <summary>
 		/// load a compiled game and not the sources and the project file
 		/// give only the path as the parameter
 		/// </summary>
-		public bool Load(string path)
+		public override bool Load(string path)
 		{
 			string mapfilename = "RESOURCE.MAP";
 			string resourcefilename = "RESOURCE";
@@ -46,6 +45,7 @@ namespace SCI
 
 				_ResourceList = ReadMapFile(ms);
 
+				string resfilesave = "";
 
 				foreach ( CResource item in _ResourceList )
 				{
@@ -57,21 +57,48 @@ namespace SCI
 					}
 					else
 					{
-						stream = System.IO.File.Open(resfile, System.IO.FileMode.Open);
+						if ( resfilesave != resfile )
+						{
+							stream.Close();
+							stream = System.IO.File.Open(resfile, System.IO.FileMode.Open);
+
+							resfilesave = resfile;
+						}
+						
 						stream.Position = item.Offset;
 
 						/* Resource entpacken */
 						SciBinaryReader br = new SciBinaryReader(stream);
-						byte typ = br.ReadByte();
-						UInt16 id = br.ReadUInt16();
+						/* byte typ = */ br.ReadByte();
+						/* UInt16 id = */ br.ReadUInt16();
 
-						int paklen = br.ReadUInt16();
-						int unplen = br.ReadUInt16();
+						uint paklen = br.ReadUInt16();
+						uint unplen = br.ReadUInt16();
 
 						int pakmeth = br.ReadUInt16();
 
-						byte[] UnpackedDataArray = new byte[unplen];
-						byte[] PackedDataArray = br.ReadBytes(paklen);
+						byte[] UnpackedDataArray;
+						byte[] PackedDataArray;
+
+
+						switch ( pakmeth )
+						{
+						case 0: //uncompressed
+							if ( unplen == paklen )
+							{
+								UnpackedDataArray = br.ReadBytes((int)unplen);
+							}
+							else
+							{
+#warning //TODO: Bei nicht komprimierten Resourcen und ungleichen Werten wird eine Exception ausgelöst. Wie swoll hier vorgegangen werden? Versuchen weiterzulesen? Wieviel Bytes überspringen?
+								throw new ArgumentException("SCI1 Decompression (uncompressed)! Packed and unpacked length are not the same.");
+							}
+							break;
+						default:
+							UnpackedDataArray = new byte[unplen];
+							PackedDataArray = br.ReadBytes((int)paklen);
+							break;
+						};
 
 						switch ( pakmeth )
 						{
@@ -87,8 +114,8 @@ namespace SCI
 							break;
 						};
 
-						SCI.IO.Compression.LZS lzs = new IO.Compression.LZS();
-						lzs.Unpack(PackedDataArray, ref UnpackedDataArray);
+						//SCI.IO.Compression.LZS lzs = new IO.Compression.LZS();
+						//lzs.Unpack(PackedDataArray, ref UnpackedDataArray);
 
 						switch ( item.Type )
 						{
@@ -96,17 +123,16 @@ namespace SCI
 						case EResourceType.View8x:
 
 							/* Resource entpacken */
-
-
-
-
-							SciView view = new SciView();
+							SciView view = new SciView(EGameType.SCI1);
+							view.CompressionType = ECompressionType.STACpack;
+							view.CompressedSize = paklen;
+							view.UncompressedSize = unplen;
 							view.LoadViewSCI1(new System.IO.MemoryStream(UnpackedDataArray));
 							item.ResourceData = view;
 							break;
 						case EResourceType.Picture:
 						case EResourceType.Picture8x:
-							SCI.Resource.SciPicture pict = new SCI.Resource.SciPicture();
+							SciPicture pict = new SciPicture(EGameType.SCI1);
 							pict.FromStream(stream);
 							item.ResourceData = pict;
 							break;

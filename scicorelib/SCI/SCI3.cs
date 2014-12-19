@@ -2,79 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 
-using SCI.Interface;
 using SCI.Resource;
 
 namespace SCI
 {
-	public abstract class SciBase
-	{
-		protected List<CResource> _ResourceList = new List<CResource>();
-		private List<CResource> PaletteResourceList;
-		public List<CResource> ResourceList
-		{
-			get { return _ResourceList; }
-		}
-
-		public CResource FindPaletteResource(int resourceid)
-		{
-			CResource returnvalue = null;
-			string id = resourceid.ToString();
-
-			if ( PaletteResourceList == null )
-			{
-				PaletteResourceList = new List<CResource>();
-
-				foreach ( CResource item in _ResourceList )
-				{
-					switch ( item.Type )
-					{
-					case EResourceType.Palette:
-					case EResourceType.Palette8x:
-						PaletteResourceList.Add(item);
-						break;
-					};
-				}
-			}
-
-			while ( (returnvalue == null) && (int.Parse(id) <= 99999) )
-			{
-				foreach ( CResource item in PaletteResourceList )
-				{
-					if ( item.Number == int.Parse(id) )
-					{
-						returnvalue = item;
-						break;
-					}
-				}
-
-				id += "0";
-			}
-
-			if ( returnvalue == null )
-			{
-				foreach ( CResource item in PaletteResourceList )
-				{
-					if ( item.Number == 999 )
-					{
-						returnvalue = item;
-						break;
-					}
-				}
-			}
-
-			return returnvalue;
-		}
-	}
-
-	public class SCI3: SciBase, ISciType
+	public class SCI3: SciBase
 	{
 		/// <summary>
 		/// load a compiled game and not the sources and the project file give only the path as the parameter
 		/// </summary>
 		/// <param name="path">The path to the (compiled) game.</param>
 		/// <returns>True if the game could loaded, otherwise false.</returns>
-		public bool Load(string path)
+		public override bool Load(string path)
 		{
 			bool retval = true;
 			System.IO.FileStream stream;
@@ -100,7 +39,7 @@ namespace SCI
 
 				string resfilesave = "";
 
-				foreach ( CResource item in _ResourceList )
+				foreach ( CResource item in ResourceList )
 				{
 					string resfile = System.IO.Path.Combine(path, String.Format("RESSCI.{0}", item.FileNumber.ToString("000")));
 					
@@ -123,8 +62,8 @@ namespace SCI
 						/* Resource entpacken */
 						SciBinaryReader br = new SciBinaryReader(stream);
 						
-						byte typ = br.ReadByte();
-						UInt16 id = br.ReadUInt16();
+						/* byte typ = */ br.ReadByte();
+						/* UInt16 id = */ br.ReadUInt16();
 						UInt32 paklen = br.ReadUInt32();
 						UInt32 unplen = br.ReadUInt32();
 						int pakmeth = br.ReadUInt16();
@@ -147,13 +86,13 @@ namespace SCI
 						};
 
 						SCI.IO.Compression.LZS lzs = new IO.Compression.LZS();
-						lzs.Unpack(PackedDataArray, ref UnpackedDataArray);
+						lzs.Unpack(ref PackedDataArray, ref UnpackedDataArray);
 
 						switch ( item.Type )
 						{
 						case EResourceType.Palette:
 						case EResourceType.Palette8x:
-							SCI.Resource.SciPalette palette = new SciPalette();
+							SCI.Resource.SciPalette palette = new SciPalette(EGameType.SCI3);
 							palette.CompressionType = ECompressionType.STACpack;
 							palette.CompressedSize = paklen;
 							palette.UncompressedSize = unplen;
@@ -162,7 +101,7 @@ namespace SCI
 							break;
 						case EResourceType.View:
 						case EResourceType.View8x:
-							SCI.Resource.SciView view = new SCI.Resource.SciView();
+							SCI.Resource.SciView view = new SCI.Resource.SciView(EGameType.SCI3);
 							view.CompressionType = ECompressionType.STACpack;
 							view.CompressedSize = paklen;
 							view.UncompressedSize = unplen;
@@ -171,7 +110,7 @@ namespace SCI
 							break;
 						case EResourceType.Picture:
 						case EResourceType.Picture8x:
-							SCI.Resource.SciPictureRow pict = new SCI.Resource.SciPictureRow();
+							SCI.Resource.SciPictureRow pict = new SCI.Resource.SciPictureRow(EGameType.SCI3);
 							pict.CompressionType = ECompressionType.STACpack;
 							pict.CompressedSize = paklen;
 							pict.UncompressedSize = unplen;
@@ -184,7 +123,7 @@ namespace SCI
 					}
 				}
 
-				foreach ( CResource item in _ResourceList )
+				foreach ( CResource item in ResourceList )
 				{
 					switch ( item.Type )
 					{

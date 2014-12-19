@@ -2,19 +2,18 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace SCI.Resource
+namespace SCI
 {
-	using SCI.Interface;
 
 	public sealed class SciPicture: ISciResource
 	{
-		private ECompressionType CompType;
-		private uint CompSize;
-		private uint UncompSize;
-
+		private EGameType GameType;
+		public SciPicture(EGameType gametype)
+		{
+			GameType = gametype;
+		}
 
 		private Size			InternalSize			= new Size();
-		
 		private Point			ScreenPosition			= new Point();
 		private byte			TransparentKey;
 		private byte			Compression;
@@ -100,9 +99,28 @@ namespace SCI.Resource
 		}
 
 		#region ISciResource Member
-		public EResourceType Type
+		private ECompressionType CompType;
+		private uint CompSize;
+		private uint UncompSize;
+
+		public EResourceType ResourceType
 		{
 			get { return EResourceType.Picture; }
+		}
+		public UInt16 ResourceNumber
+		{
+			get;
+			set;
+		}
+		public byte FileNumber
+		{
+			get;
+			set;
+		}
+		public UInt32 FileOffset
+		{
+			get;
+			set;
 		}
 		public ECompressionType CompressionType
 		{

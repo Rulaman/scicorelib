@@ -59,7 +59,7 @@ namespace SCI.IO.Compression
 		{
 			
 		}
-		public override bool Unpack(byte[] inbuf, ref byte[] outbuf)
+		public override ECompressionValue Unpack(ref byte[] inbuf, ref byte[] outbuf)
 		{
 			UInt64 sourceBufferPosition = 0;
 			Int32 outBufferPosition = 0;
@@ -103,7 +103,7 @@ namespace SCI.IO.Compression
 				}
 			} while ( true );
 
-			return true;
+			return ECompressionValue.Ok;
 		}
 
 		#region ISciCompression Member

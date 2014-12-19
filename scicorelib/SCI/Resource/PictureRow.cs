@@ -6,16 +6,16 @@ using System.Collections.Generic;
 
 namespace SCI.Resource
 {
-	using SCI.Interface;
-
 	public class SciPictureRow: ISciResource
 	{
-		private ECompressionType CompType;
-		private uint CompSize;
-		private uint UncompSize;
+		private EGameType GameType;
+		public SciPictureRow(EGameType gametype)
+		{
+			GameType = gametype;
+		}
 
 		private Size		InternalSize = new Size();
-		private object		Object;
+		private object		Tag;
 
 		public Int16		Len;
 		public byte			NumOfLoops;
@@ -53,7 +53,7 @@ namespace SCI.Resource
 
 			for ( int entry = 0; entry < NumOfLoops; entry++ )
 			{
-				SciPicture pict = new SciPicture();
+				SciPicture pict = new SciPicture(GameType);
 				pict.FromStream(stream);
 				PictureList.Add(pict);
 			}
@@ -151,20 +151,35 @@ namespace SCI.Resource
 		{
 			get { return InternalSize.Width; }
 		}
-		public object Tag
-		{
-			get { return Object; }
-			set { Object = value; }
-		}
+
 		public Size Size
 		{
 			get { return InternalSize; }
 		}
 
 		#region ISciResource Member
-		public EResourceType Type
+		private ECompressionType CompType;
+		private uint CompSize;
+		private uint UncompSize;
+
+		public EResourceType ResourceType
 		{
 			get { return EResourceType.Picture; }
+		}
+		public UInt16 ResourceNumber
+		{
+			get;
+			set;
+		}
+		public byte FileNumber
+		{
+			get;
+			set;
+		}
+		public UInt32 FileOffset
+		{
+			get;
+			set;
 		}
 		public ECompressionType CompressionType
 		{

@@ -2,20 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SCI.Interface
+namespace SCI
 {
-	public interface IGameType
-	{
-		EGameType Type { get; }
-	}
-
 	public interface ISciResource
 	{
-		EResourceType Type { get; }
-//		UInt16 Number { get; set; }
-		ECompressionType CompressionType { get; set;  }
-		UInt32 CompressedSize { get; set; }
-		UInt32 UncompressedSize { get; set; }
+		EResourceType 		ResourceType { get; }
+		UInt16 				ResourceNumber { get; set; }
+		byte 				FileNumber { get; }
+		UInt32 				FileOffset { get; }
+		ECompressionType 	CompressionType { get; }
+		UInt32 				CompressedSize { get; }
+		UInt32 				UncompressedSize { get; }
 	}
 
 	public interface ISciType

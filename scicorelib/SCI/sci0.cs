@@ -2,30 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using SCI.Interface;
 using SCI.Resource;
 
 namespace SCI
 {
-	public class SCI0: SciBase, ISciType
+	public class SCI0: SciBase
 	{
-		private class ResourceInfo
-		{
-			public byte 	Type;
-			public UInt16 	Number;
-			public byte 	FileNumber;
-			public UInt32 	FileOffset;
-		}
 
-		private Dictionary<byte,ResourceInfo> 	ResourceArray 	= new Dictionary<byte, ResourceInfo>();
-		private List<UInt32> 					OffsetList 		= new List<UInt32>();
+
+		private readonly List<ResourceInfo> 	ResourceArray 	= new List<ResourceInfo>();
+		private readonly List<UInt32> 					OffsetList 		= new List<UInt32>();
 		
 		/// <summary>
 		/// load a compiled game and not the sources and the project file give only the path as the parameter
 		/// </summary>
 		/// <param name="path">The path to the (compiled) game.</param>
 		/// <returns>True if the game could loaded, otherwise false.</returns>
-		public bool Load(string path)
+		public override bool Load(string path)
 		{
 			bool retval = false;
 			string file = System.IO.Path.Combine(path, "RESOURCE.MAP");
@@ -39,14 +32,14 @@ namespace SCI
 				System.IO.FileStream stream = System.IO.File.Open(file, System.IO.FileMode.Open);
 				ReadMapFile(stream);
 				stream.Close();
-#warning // TODO: Hier die Resourcen laden
 				/* try to load game now */
 				string resfilesave = "";
-				
-				foreach ( ResourceInfo item in ResourceArray.Values )
+				SciBinaryReader br = null;
+
+				foreach ( ResourceInfo item in ResourceArray )
 				{
-					string resfile = System.IO.Path.Combine(path, String.Format("RESOURCE.{0}", item.FileNumber));
-					SciBinaryReader br = null;
+					string resfile = System.IO.Path.Combine(path, String.Format("RESOURCE.{0}", item.FileNumber.ToString("000")));
+					
 					if ( !System.IO.File.Exists(file) )
 					{
 						continue;
@@ -74,6 +67,7 @@ namespace SCI
 						UInt16 comptype = br.ReadUInt16();
 						
 						byte[] UnpackedDataArray = new byte[unplen];
+						//br.ReadUInt16();
 						byte[] PackedDataArray = br.ReadBytes(paklen);
 
 						switch ( comptype )
@@ -83,6 +77,8 @@ namespace SCI
 							break;
 						case 1:
 							resource.CompressionType = ECompressionType.Lzw;
+							SCI.IO.Compression.LZW lzw = new IO.Compression.LZW(IO.Compression.LZW.ELZWOption.Lzw);
+							lzw.Unpack(ref PackedDataArray, ref UnpackedDataArray);
 							break;
 						case 2:
 							resource.CompressionType = ECompressionType.Comp3;
@@ -94,6 +90,8 @@ namespace SCI
 							resource.CompressionType = ECompressionType.Invalid;
 							break;
 						};
+
+
 						
 						switch ( resource.Type )
 						{
@@ -128,7 +126,7 @@ namespace SCI
 							break;
 						};
 						
-						_ResourceList.Add(resource);
+						ResourceList.Add(resource);
 					}
 				}
 				
@@ -147,21 +145,21 @@ namespace SCI
 			SCI.SciBinaryReader mapFileReader = new SciBinaryReader(stream);
 			/* ? muss noch geswappt werden ? */
 			//mapFileReader.ReverseReading = false;
-			UInt16 resourceinfo = 0;
-			
-			while ( 0xFFFF != resourceinfo )
+			UInt16 restypenum = 0;
+
+			while ( 0xFFFF != restypenum )
 			{
 				ResourceInfo resinfo = new ResourceInfo();
 				
-				UInt16 restypenum = mapFileReader.ReadUInt16();
+				restypenum = mapFileReader.ReadUInt16();
 				UInt32 resfileoff = mapFileReader.ReadUInt32();
 				
-				resinfo.Type 	= (byte)(restypenum >> 11);			// XXXX X... .... ....
-				resinfo.Number 	= (UInt16)(restypenum & 0x7FF);			// .... .XXX XXXX XXXX
-				resinfo.FileNumber = (byte)(resfileoff >> 26);		// XXXX XX.. .... .... .... .... .... ....
-				resinfo.FileOffset = (resfileoff & 0x3FFFFFF);	// .... ..XX XXXX XXXX XXXX XXXX XXXX XXXX
+				resinfo.Type 		= (byte)(restypenum >> 11);		// XXXX X... .... ....
+				resinfo.Number 		= (UInt16)(restypenum & 0x7FF);	// .... .XXX XXXX XXXX
+				resinfo.FileNumber	= (byte)(resfileoff >> 26);		// XXXX XX.. .... .... .... .... .... ....
+				resinfo.FileOffset	= (resfileoff & 0x3FFFFFF);		// .... ..XX XXXX XXXX XXXX XXXX XXXX XXXX
 
-				ResourceArray.Add(resinfo.Type, resinfo);
+				ResourceArray.Add(resinfo);
 				OffsetList.Add(resinfo.FileOffset);
 			}
 		}

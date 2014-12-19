@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B4E42D38-B34A-4B5D-83E1-EE20BC5DA65D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -24,10 +22,6 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <BaseIntermediateOutputPath>C:\Work\output\VisualStudio\$(MSBuildProjectName)\obj\$(Configuration)</BaseIntermediateOutputPath>
-    <IntermediateOutputPath Condition=" '$(PlatformName)' == 'AnyCPU' ">$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
-    <IntermediateOutputPath Condition=" '$(PlatformName)' != 'AnyCPU' ">$(BaseIntermediateOutputPath)$(PlatformName)\$(Configuration)\</IntermediateOutputPath>
-    <OutDir>C:\Work\output\VisualStudio\$(MSBuildProjectName)\bin\$(Configuration)</OutDir>
     <OutputPath>bin\Debug\</OutputPath>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -57,8 +51,10 @@
     <Compile Include="SCI\common.cs" />
     <Compile Include="SCI\Data\resources.cs" />
     <Compile Include="SCI\Data\Types.cs" />
-    <Compile Include="SCI\IO\Compression\base.cs" />
+    <Compile Include="SCI\IO\Compression\CompressionBase.cs" />
+    <Compile Include="SCI\SciBase.cs" />
     <None Include="SCI\IO\Compression\huffman.cs" />
+    <Compile Include="SCI\IO\Compression\lzw.cs" />
     <Compile Include="SCI\Resource\colorinfo.cs" />
     <Compile Include="SCI\Resource\palette.cs" />
     <Compile Include="SCI\Resource\view.cs" />

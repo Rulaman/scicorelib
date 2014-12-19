@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using SCI.Interface;
-
 namespace SCI
 {
 	public enum EGameType
@@ -157,7 +155,7 @@ namespace SCI
 		public byte FileNumber; /// in this resource file are the data (RESOURCE.<nr>)
 		public UInt32 Offset; /// absolute offset withini the resource file
 		public ISciResource ResourceData;
-
+		private ECompressionType _CompressionType;
 		#region ISciResource Member
 
 		public EResourceType Type
@@ -182,11 +180,11 @@ namespace SCI
 		{
 			get
 			{
-				throw new NotImplementedException();
+				return _CompressionType;
 			}
 			set
 			{
-				throw new NotImplementedException();
+				_CompressionType = value;
 			}
 		}
 

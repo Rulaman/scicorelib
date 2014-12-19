@@ -4,7 +4,6 @@ using System.Text;
 
 using SCI.Data;
 using SCI.GameVersion;
-using SCI.Interface;
 
 namespace SCI
 {
@@ -21,13 +20,40 @@ namespace SCI
 
 			if ( System.IO.File.Exists(System.IO.Path.Combine(path, "RESOURCE.MAP")) )
 			{
-				SCI1 game = new SCI1();
-				if ( game.Load(path) )
+				System.IO.FileStream stream = System.IO.File.Open(System.IO.Path.Combine(path, "RESOURCE.MAP"), System.IO.FileMode.Open);
+				Int32 value = stream.ReadByte();
+
+
+				stream.Position = stream.Length - 6;
+
+				byte[] ba = new byte[6];
+				stream.Read(ba, 0, 6);
+				stream.Close();
+
+				if ( (byte)value == 0x80 )
 				{
-					gamedata.Type = EGameType.SCI1;
-					gamedata.ResourceList = game.ResourceList;
-					gamedata.GameData = game;
+					/* SCI1 */
+					SCI1 game = new SCI1();
+					if ( game.Load(path) )
+					{
+						gamedata.Type = EGameType.SCI1;
+						gamedata.ResourceList = game.ResourceList;
+						gamedata.GameData = (ISciType)game;
+					}
 				}
+				else if ( (ba[0] == 0xFF) && (ba[1] == 0xFF ) && (ba[2] == 0xFF) && (ba[3] == 0xFF) && (ba[4] == 0xFF) && (ba[5] == 0xFF) )
+				{
+					/* SCI0 */
+					SCI0 game = new SCI0();
+					if ( game.Load(path) )
+					{
+						gamedata.Type = EGameType.SCI0;
+						gamedata.ResourceList = game.ResourceList;
+						gamedata.GameData = (ISciType)game;
+					}
+				}
+
+				
 			}
 			else if ( System.IO.File.Exists(System.IO.Path.Combine(path, "RESMAP.000")) )
 			{
@@ -36,7 +62,7 @@ namespace SCI
 				{
 					gamedata.Type = EGameType.SCI3;
 					gamedata.ResourceList = game.ResourceList;
-					gamedata.GameData = game;
+					gamedata.GameData = (ISciType)game;
 				}
 			}
 
@@ -92,18 +118,15 @@ namespace SCI
 			return total;
 		}
 
-		public static bool Load(string mapfilepath)
-		{
-			bool bSCI32Map = false;
-			bool bSCIMap = false;
-
-			if ( !(bSCIMap = System.IO.File.Exists(System.IO.Path.Combine(mapfilepath, "RESOURCE.MAP")))
-				&& !(bSCI32Map = System.IO.File.Exists(System.IO.Path.Combine(mapfilepath, "RESMAP.000"))) )
-			{
-				throw new System.IO.FileNotFoundException();
-			}
-			return true;
-		}
+//		public static bool Load(string mapfilepath)
+//		{
+//			if ( !(System.IO.File.Exists(System.IO.Path.Combine(mapfilepath, "RESOURCE.MAP")))
+//				&& !(System.IO.File.Exists(System.IO.Path.Combine(mapfilepath, "RESMAP.000"))) )
+//			{
+//				throw new System.IO.FileNotFoundException();
+//			}
+//			return true;
+//		}
 
 
 
