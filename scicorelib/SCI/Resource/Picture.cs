@@ -1,10 +1,10 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Diagnostics;
 
 namespace SCI
 {
-
 	public sealed class SciPicture: CResource
     {
 		private EGameType GameType;
@@ -13,6 +13,7 @@ namespace SCI
 			GameType = gametype;
 		}
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private Size			InternalSize			= new Size();
 		private Point			ScreenPosition			= new Point();
 		private byte			TransparentKey;

@@ -3,6 +3,7 @@ using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SCI.Resource
 {
@@ -14,6 +15,7 @@ namespace SCI.Resource
 			GameType = gametype;
 		}
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private Size InternalSize = new Size();
 		public object Tag;
 

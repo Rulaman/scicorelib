@@ -16,8 +16,7 @@ namespace SCI.Resource
 		{
 			GameType = gametype;
 		}
-
-       
+		       
 		public struct Header56
 		{
 			public Int16 Len;
@@ -579,10 +578,5 @@ namespace SCI.Resource
 
 			return colorinfo;
 		}
-
-        public bool Load(string path)
-        {
-            throw new NotImplementedException();
-        }
 	}
 }

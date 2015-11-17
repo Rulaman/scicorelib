@@ -6,8 +6,8 @@ using SCI.Resource;
 
 namespace SCI
 {
-	public class SCI0: CSciBase
-    {
+	public class SCI0 : CSciBase
+	{
 		/// <summary>
 		/// load a compiled game and not the sources and the project file give only the path as the parameter
 		/// </summary>
@@ -17,86 +17,39 @@ namespace SCI
 		{
 			bool retval = false;
 			string file = System.IO.Path.Combine(path, "RESOURCE.MAP");
-			
-			if (  !System.IO.File.Exists(file) )
+
+			if (!System.IO.File.Exists(file))
 			{
 			}
 			else
 			{
 				/* Parse the map file */
 				System.IO.FileStream stream = System.IO.File.Open(file, System.IO.FileMode.Open);
-
-				// RESOURCE.MAP
-				SCI.SciBinaryReader mapFileReader = new SciBinaryReader(stream);
-				/* ? muss noch geswappt werden ? */
-				//mapFileReader.ReverseReading = false;
-				UInt16 restypenum = 0;
-				CResource resource = null;
-
-				while (0xFFFF != restypenum)
-				{
-					
-
-					restypenum = mapFileReader.ReadUInt16();
-					UInt32 resfileoff = mapFileReader.ReadUInt32();
-
-					switch ((EResourceType)(restypenum >> 11))
-					{
-						case EResourceType.Palette:
-						case EResourceType.Palette8x:
-							resource = new SciPalette(EGameType.SCI0);
-							// palette.ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
-							// item.ResourceData = palette;
-							break;
-						case EResourceType.View:
-						case EResourceType.View8x:
-							resource = new SciView(EGameType.SCI0);
-							// view.LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
-							// item.ResourceData = view;
-							break;
-						case EResourceType.Picture:
-						case EResourceType.Picture8x:
-							resource = new SciPictureRow(EGameType.SCI0);
-							// pict.FromByteArray(UnpackedDataArray);
-							// item.ResourceData = pict;
-							break;
-						default:
-							resource = new Dummy();
-							break;
-					};
-
-					resource.ResourceType = (EResourceType)(restypenum >> 11);        // XXXX X... .... ....
-					resource.ResourceNumber = (UInt16)(restypenum & 0x7FF);  // .... .XXX XXXX XXXX
-					resource.FileNumber = (byte)(resfileoff >> 26);      // XXXX XX.. .... .... .... .... .... ....
-					resource.FileOffset = (int)(resfileoff & 0x3FFFFFF);      // .... ..XX XXXX XXXX XXXX XXXX XXXX XXXX
-
-					ResourceList.Add(resource);
-				}
-
+				ReadMapFile(stream);
 				stream.Close();
-				
+
 				/* try to load game now */
 				string resfilesave = "";
 				SciBinaryReader br = null;
 
-				foreach ( CResource item in ResourceList )
+				foreach (CResource item in ResourceList)
 				{
 					string resfile = System.IO.Path.Combine(path, String.Format("RESOURCE.{0}", item.FileNumber.ToString("000")));
-					
-					if ( !System.IO.File.Exists(file) )
+
+					if (!System.IO.File.Exists(file))
 					{
 						continue;
 					}
 					else
 					{
-						if ( resfilesave != resfile )
+						if (resfilesave != resfile)
 						{
 							stream.Close();
 							stream = System.IO.File.Open(resfile, System.IO.FileMode.Open);
 							resfilesave = resfile;
 							br = new SciBinaryReader(stream);
 						}
-						
+
 						stream.Position = item.FileOffset;
 
 						UInt16 resourceInfo = br.ReadUInt16();
@@ -107,71 +60,117 @@ namespace SCI
 						UInt16 compressionType = br.ReadUInt16();
 
 						byte[] PackedDataArray = br.ReadBytes(packedLength);
-						
-        //                CResource resource = null;
 
-        //                switch ((EResourceType)resourceType)
-        //                {
-        //                    case EResourceType.Palette:
-        //                    case EResourceType.Palette8x:
-        //                        resource = new SciPalette(EGameType.SCI0);
-        //                        // palette.ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
-        //                        // item.ResourceData = palette;
-        //                        break;
-        //                    case EResourceType.View:
-        //                    case EResourceType.View8x:
-								//resource = new SciView(EGameType.SCI0);
-        //                        // view.LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
-        //                        // item.ResourceData = view;
-        //                        break;
-        //                    case EResourceType.Picture:
-        //                    case EResourceType.Picture8x:
-								//resource = new SciPictureRow(EGameType.SCI0);
-        //                        // pict.FromByteArray(UnpackedDataArray);
-        //                        // item.ResourceData = pict;
-        //                        break;
-        //                    default:
-        //                        resource = new Dummy();
-        //                        break;
-        //                };
+						//                CResource resource = null;
 
-						resource.ResourceType = (EResourceType)resourceType;
-						resource.ResourceNumber = resourceNumber;
-						resource.CompressedSize = unpackedLength;
-						resource.UncompressedSize = packedLength;
+						//                switch ((EResourceType)resourceType)
+						//                {
+						//                    case EResourceType.Palette:
+						//                    case EResourceType.Palette8x:
+						//                        resource = new SciPalette(EGameType.SCI0);
+						//                        // palette.ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
+						//                        // item.ResourceData = palette;
+						//                        break;
+						//                    case EResourceType.View:
+						//                    case EResourceType.View8x:
+						//resource = new SciView(EGameType.SCI0);
+						//                        // view.LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
+						//                        // item.ResourceData = view;
+						//                        break;
+						//                    case EResourceType.Picture:
+						//                    case EResourceType.Picture8x:
+						//resource = new SciPictureRow(EGameType.SCI0);
+						//                        // pict.FromByteArray(UnpackedDataArray);
+						//                        // item.ResourceData = pict;
+						//                        break;
+						//                    default:
+						//                        resource = new Dummy();
+						//                        break;
+						//                };
+
+						item.ResourceType = (EResourceType)resourceType;
+						item.ResourceNumber = resourceNumber;
+						item.CompressedSize = unpackedLength;
+						item.UncompressedSize = packedLength;
 
 						switch (compressionType)
 						{
 							case 0:
-								resource.CompressionType = ECompressionType.None;
+								item.CompressionType = ECompressionType.None;
 								break;
 							case 1:
-								resource.CompressionType = ECompressionType.Lzw;
+								item.CompressionType = ECompressionType.Lzw;
 								SCI.IO.Compression.LZW lzw = new IO.Compression.LZW(IO.Compression.LZW.EOption.Lzw);
 								byte[] UnpackedDataArray = new byte[unpackedLength];
 								lzw.Unpack(ref PackedDataArray, ref UnpackedDataArray);
 								break;
 							case 2:
-								resource.CompressionType = ECompressionType.Comp3;
+								item.CompressionType = ECompressionType.Comp3;
 								break;
 							case 3:
-								resource.CompressionType = ECompressionType.Huffman;
+								item.CompressionType = ECompressionType.Huffman;
 								break;
 							default:
-								resource.CompressionType = ECompressionType.Invalid;
+								item.CompressionType = ECompressionType.Invalid;
 								break;
 						};
-
-						//ResourceList.Add(resource);
 					}
 				}
-				
+
 				stream.Close();
-				
+
 				retval = true;
 			}
-			
+
 			return retval;
+		}
+
+		private void ReadMapFile(System.IO.Stream stream)
+		{
+			// RESOURCE.MAP
+			SCI.SciBinaryReader mapFileReader = new SciBinaryReader(stream);
+			/* ? muss noch geswappt werden ? */
+			//mapFileReader.ReverseReading = false;
+			UInt16 restypenum = 0;
+			CResource resource = null;
+
+			while (0xFFFF != restypenum)
+			{
+				restypenum = mapFileReader.ReadUInt16();
+				UInt32 resfileoff = mapFileReader.ReadUInt32();
+
+				switch ((EResourceType)(restypenum >> 11))
+				{
+					case EResourceType.Palette:
+					case EResourceType.Palette8x:
+						resource = new SciPalette(EGameType.SCI0);
+						// palette.ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
+						// item.ResourceData = palette;
+						break;
+					case EResourceType.View:
+					case EResourceType.View8x:
+						resource = new SciView(EGameType.SCI0);
+						// view.LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
+						// item.ResourceData = view;
+						break;
+					case EResourceType.Picture:
+					case EResourceType.Picture8x:
+						resource = new SciPictureRow(EGameType.SCI0);
+						// pict.FromByteArray(UnpackedDataArray);
+						// item.ResourceData = pict;
+						break;
+					default:
+						resource = new Dummy();
+						break;
+				};
+
+				resource.ResourceType = (EResourceType)(restypenum >> 11);        // XXXX X... .... ....
+				resource.ResourceNumber = (UInt16)(restypenum & 0x7FF);  // .... .XXX XXXX XXXX
+				resource.FileNumber = (byte)(resfileoff >> 26);      // XXXX XX.. .... .... .... .... .... ....
+				resource.FileOffset = (int)(resfileoff & 0x3FFFFFF);      // .... ..XX XXXX XXXX XXXX XXXX XXXX XXXX
+
+				ResourceList.Add(resource);
+			}
 		}
 	}
 }

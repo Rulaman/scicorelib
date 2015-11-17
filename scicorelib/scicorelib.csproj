@@ -52,15 +52,15 @@
     <Compile Include="SCI\Data\resources.cs" />
     <Compile Include="SCI\Data\Types.cs" />
     <Compile Include="SCI\IO\Compression\CompressionBase.cs" />
-    <Compile Include="SCI\SciBase.cs" />
+    <Compile Include="SCI\resource.cs" />
+    <Compile Include="SCI\scibase.cs" />
     <None Include="SCI\IO\Compression\huffman.cs" />
     <Compile Include="SCI\IO\Compression\lzw.cs" />
-    <Compile Include="SCI\Resource\colorinfo.cs" />
     <Compile Include="SCI\Resource\palette.cs" />
     <Compile Include="SCI\Resource\view.cs" />
     <Compile Include="SCI\Resource\Picture.cs" />
     <Compile Include="SCI\Resource\PictureRow.cs" />
-    <Compile Include="SCI\Game.cs" />
+    <Compile Include="SCI\game.cs" />
     <Compile Include="SCI\Game\gametypes.cs" />
     <Compile Include="SCI\Game\interface.cs" />
     <Compile Include="SCI\Game\Load.cs" />
@@ -68,8 +68,8 @@
     <Compile Include="SCI\IO\Compression\dcl.cs" />
     <Compile Include="SCI\IO\Compression\lzs.cs" />
     <Compile Include="SCI\sci0.cs" />
-    <Compile Include="SCI\SCI3.cs" />
-    <Compile Include="SCI\SCI1.cs" />
+    <Compile Include="SCI\sci3.cs" />
+    <Compile Include="SCI\sci1.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

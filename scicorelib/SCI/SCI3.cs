@@ -6,8 +6,8 @@ using SCI.Resource;
 
 namespace SCI
 {
-	public class SCI3: CSciBase
-    {
+	public class SCI3 : CSciBase
+	{
 		/// <summary>
 		/// load a compiled game and not the sources and the project file give only the path as the parameter
 		/// </summary>
@@ -18,9 +18,9 @@ namespace SCI
 			bool retval = true;
 			System.IO.FileStream stream;
 
-			string file =System.IO.Path.Combine(path, "RESMAP.000");
-			
-			if (  !System.IO.File.Exists(file) )
+			string file = System.IO.Path.Combine(path, "RESMAP.000");
+
+			if (!System.IO.File.Exists(file))
 			{
 				return false;
 			}
@@ -34,22 +34,22 @@ namespace SCI
 
 				System.IO.MemoryStream ms = new System.IO.MemoryStream(filearray);
 
-				_ResourceList = ReadMapFile(ms);
+				ReadMapFile(ms);
 				filearray = null;
 
 				string resfilesave = "";
 
-				foreach ( CResource item in ResourceList )
+				foreach (CResource item in ResourceList)
 				{
 					string resfile = System.IO.Path.Combine(path, String.Format("RESSCI.{0}", item.FileNumber.ToString("000")));
-					
-					if ( !System.IO.File.Exists(file) )
+
+					if (!System.IO.File.Exists(file))
 					{
 						continue;
 					}
 					else
 					{
-						if ( resfilesave != resfile )
+						if (resfilesave != resfile)
 						{
 							stream.Close();
 							stream = System.IO.File.Open(resfile, System.IO.FileMode.Open);
@@ -61,85 +61,63 @@ namespace SCI
 
 						/* Resource entpacken */
 						SciBinaryReader br = new SciBinaryReader(stream);
-						
-						/* byte typ = */ br.ReadByte();
-						/* UInt16 id = */ br.ReadUInt16();
-						UInt32 paklen = br.ReadUInt32();
-						UInt32 unplen = br.ReadUInt32();
-						int pakmeth = br.ReadUInt16();
 
-						byte[] UnpackedDataArray = new byte[unplen];
-						byte[] PackedDataArray = br.ReadBytes((int)paklen);
+						/* byte typ = */
+						br.ReadByte();
+						/* UInt16 id = */
+						br.ReadUInt16();
+						item.CompressedSize = br.ReadUInt32();
+						item.UncompressedSize = br.ReadUInt32();
+						int pakmeth = br.ReadUInt16(); // immer STACpack bei SCI3
 
-						switch ( pakmeth )
-						{
-						case 0: //uncompressed
-							break;
-						case 1: //Lzw
-							break;
-						case 2: //Comp3
-							break;
-						case 3: //Unknown0
-							break;
-						case 4: //Unknown1
-							break;
-						};
+						byte[] UnpackedDataArray = new byte[item.UncompressedSize];
+						byte[] PackedDataArray = br.ReadBytes((int)item.CompressedSize);
 
 						SCI.IO.Compression.LZS lzs = new IO.Compression.LZS();
 						lzs.Unpack(ref PackedDataArray, ref UnpackedDataArray);
 
-						switch ( item.ResourceType )
+						item.CompressionType = ECompressionType.STACpack;
+
+						switch (item.ResourceType)
 						{
-						case EResourceType.Palette:
-						case EResourceType.Palette8x:
-							SCI.Resource.SciPalette palette = new SciPalette(EGameType.SCI3);
-							palette.CompressionType = ECompressionType.STACpack;
-							palette.CompressedSize = paklen;
-							palette.UncompressedSize = unplen;
-							palette.ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
-							//item.ResourceData = palette;
-							break;
-						case EResourceType.View:
-						case EResourceType.View8x:
-							SCI.Resource.SciView view = new SCI.Resource.SciView(EGameType.SCI3);
-							view.CompressionType = ECompressionType.STACpack;
-							view.CompressedSize = paklen;
-							view.UncompressedSize = unplen;
-							view.LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
-							//item.ResourceData = view;
-							break;
-						case EResourceType.Picture:
-						case EResourceType.Picture8x:
-							SCI.Resource.SciPictureRow pict = new SCI.Resource.SciPictureRow(EGameType.SCI3);
-							pict.CompressionType = ECompressionType.STACpack;
-							pict.CompressedSize = paklen;
-							pict.UncompressedSize = unplen;
-							pict.FromByteArray(UnpackedDataArray);
-							//item.ResourceData = pict;
-							break;
-						default:
-							break;
+							case EResourceType.Palette:
+							case EResourceType.Palette8x:
+								((SciPalette)item).ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
+								//item.ResourceData = palette;
+								break;
+							case EResourceType.View:
+							case EResourceType.View8x:
+								((SciView)item).LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
+								//item.ResourceData = view;
+								break;
+							case EResourceType.Picture:
+							case EResourceType.Picture8x:
+								((SciPictureRow)item).FromByteArray(UnpackedDataArray);
+								//item.ResourceData = pict;
+								break;
+							default:
+								break;
 						};
 					}
 				}
 
-				foreach ( CResource item in ResourceList )
+				foreach (CResource item in ResourceList)
 				{
-					switch ( item.ResourceType )
+					switch (item.ResourceType)
 					{
-					case EResourceType.View:
-					case EResourceType.View8x:
-						/* Resource entpacken */
-//						SciView view = (SciView)item.ResourceData;
-						CResource resource = FindPaletteResource(item.ResourceNumber);
-						//SciPalette palette = (SciPalette)resource.ResourceData;
-						//view.DecodeColors(palette.ColorInfo);
-						break;
-					case EResourceType.Picture:
-					case EResourceType.Picture8x:
-						break;
-					default:
-						break;
+						case EResourceType.View:
+						case EResourceType.View8x:
+							/* Resource entpacken */
+							//						SciView view = (SciView)item.ResourceData;
+							CResource resource = FindPaletteResource(item.ResourceNumber);
+							//SciPalette palette = (SciPalette)resource.ResourceData;
+							//view.DecodeColors(palette.ColorInfo);
+							break;
+						case EResourceType.Picture:
+						case EResourceType.Picture8x:
+							break;
+						default:
+							break;
 					};
 				}
 			}
@@ -147,19 +125,18 @@ namespace SCI
 			return retval;
 		}
 
-
-		private List<CResource> ReadMapFile(System.IO.Stream stream)
+		private void ReadMapFile(System.IO.Stream stream)
 		{
 			byte restype = 0;
-			List<CResource> resourceindex = new List<CResource>();
 			SCI.SciBinaryReader mapFileReader = new SciBinaryReader(stream);
 			/* ? muss noch geswappt werden ? */
 			mapFileReader.ReverseReading = false;
 
-			/*SCI 1*/
-			Dictionary<byte,int> resourcearray = new Dictionary<byte, int>();
+			/*SCI 3*/
+			Dictionary<byte, int> resourcearray = new Dictionary<byte, int>();
 			List<int> offsetlist = new List<int>();
-			while ( 0xFF != (restype = mapFileReader.ReadByte()) )
+
+			while (0xFF != (restype = mapFileReader.ReadByte()))
 			{
 				UInt16 offset = mapFileReader.ReadUInt16();
 
@@ -167,16 +144,14 @@ namespace SCI
 				offsetlist.Add(offset);
 			}
 
-
-
 			int i = 0;
-			foreach ( KeyValuePair<byte,int> item in resourcearray )
+			foreach (KeyValuePair<byte, int> item in resourcearray)
 			{
 				mapFileReader.BaseStream.Position = item.Value;
 
 				long off2;
 
-				if ( i < offsetlist.Count - 1 )
+				if (i < offsetlist.Count - 1)
 				{
 					off2 = offsetlist[(byte)(i + 1)];
 				}
@@ -186,20 +161,37 @@ namespace SCI
 				}
 
 
-				while ( mapFileReader.BaseStream.Position < off2 )
+				while (mapFileReader.BaseStream.Position < off2)
 				{
-					CResource resource = new Dummy();
+					CResource resource = null;
+
+					switch ((EResourceType)item.Key)
+					{
+						case EResourceType.Palette:
+						case EResourceType.Palette8x:
+							resource = new SciPalette(EGameType.SCI3);
+							break;
+						case EResourceType.View:
+						case EResourceType.View8x:
+							resource = new SCI.Resource.SciView(EGameType.SCI3);
+							break;
+						case EResourceType.Picture:
+						case EResourceType.Picture8x:
+							resource = new SCI.Resource.SciPictureRow(EGameType.SCI3);
+							break;
+						default:
+							resource = new Dummy();
+							break;
+					};
 
 					resource.ResourceType = (EResourceType)item.Key;
-    				resource.ResourceNumber = mapFileReader.ReadUInt16();
+					resource.ResourceNumber = mapFileReader.ReadUInt16();
 					resource.FileOffset = (Int32)mapFileReader.ReadUInt32();
 
-					resourceindex.Add(resource);
+					ResourceList.Add(resource);
 				}
 				i++;
 			}
-
-			return resourceindex;
 		}
 	}
 }

@@ -36,11 +36,11 @@ namespace SCI
 
 				System.IO.MemoryStream ms = new System.IO.MemoryStream(filearray);
 
-				_ResourceList = ReadMapFile(ms);
+				ReadMapFile(ms);
 
 				string resfilesave = "";
 
-				foreach ( CResource item in _ResourceList )
+				foreach ( CResource item in ResourceList )
 				{
 					string resfile = System.IO.Path.Combine(path, resourcefilename + String.Format(".{0}", item.FileNumber.ToString("000")));
 					
@@ -65,11 +65,11 @@ namespace SCI
 						/* byte typ = */ br.ReadByte();
 						/* UInt16 id = */ br.ReadUInt16();
 
-						uint paklen = br.ReadUInt16();
-						uint unplen = br.ReadUInt16();
+						item.CompressedSize = br.ReadUInt16();
+						item.UncompressedSize = br.ReadUInt16();
 						int pakmeth = br.ReadUInt16();
 
-                        byte[] UnpackedDataArray = null;
+						byte[] UnpackedDataArray = null;
 						byte[] PackedDataArray = null;
 
                         switch ( pakmeth )
@@ -77,9 +77,9 @@ namespace SCI
                             case 0: //uncompressed
                                 item.CompressionType = ECompressionType.None;
 
-                                if (unplen == paklen - 4)
+                                if (item.UncompressedSize == (item.CompressedSize - 4))
                                 {
-                                    UnpackedDataArray = br.ReadBytes((int)unplen);
+                                    UnpackedDataArray = br.ReadBytes((int)item.UncompressedSize);
                                 }
                                 else
                                 {
@@ -100,8 +100,8 @@ namespace SCI
                                 item.CompressionType = ECompressionType.Unknown1;
                                 break;
                             default:
-                                UnpackedDataArray = new byte[unplen];
-                                PackedDataArray = br.ReadBytes((int)paklen);
+                                UnpackedDataArray = new byte[item.UncompressedSize];
+                                PackedDataArray = br.ReadBytes((int)item.CompressedSize);
                                 break;
                         };
 
@@ -112,8 +112,6 @@ namespace SCI
                         {
                             case EResourceType.View:
                             case EResourceType.View8x:
-                                item.CompressedSize = paklen;
-                                item.UncompressedSize = unplen;
                                 ((SciView)item).LoadViewSCI1(new System.IO.MemoryStream(UnpackedDataArray));
                                 //item.ResourceData = view;
                                 break;
@@ -133,10 +131,9 @@ namespace SCI
 		}
 
 
-		private List<CResource> ReadMapFile(System.IO.Stream stream)
+		private void ReadMapFile(System.IO.Stream stream)
 		{
 			byte restype = 0;
-			List<CResource> resourceindex = new List<CResource>();
 			SCI.SciBinaryReader mapFileReader = new SciBinaryReader(stream);
 			/* ? muss noch geswappt werden ? */
 			mapFileReader.ReverseReading = false;
@@ -198,12 +195,10 @@ namespace SCI
 					resource.FileNumber = (byte)(temp >> 28);
 					resource.FileOffset = (Int32)(temp & 0xFFFFFFF);
 
-					resourceindex.Add(resource);
+					ResourceList.Add(resource);
 				}
 				i++;
 			}
-
-			return resourceindex;
 		}
 	}
 }
