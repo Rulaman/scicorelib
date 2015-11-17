@@ -7,17 +7,17 @@ namespace SCI
 	public interface ISciResource
 	{
 		EResourceType 		ResourceType { get; }
-		UInt16 				ResourceNumber { get; set; }
+		Int32 				ResourceNumber { get; }
 		byte 				FileNumber { get; }
-		UInt32 				FileOffset { get; }
+		Int32 				FileOffset { get; }
 		ECompressionType 	CompressionType { get; }
 		UInt32 				CompressedSize { get; }
 		UInt32 				UncompressedSize { get; }
 	}
 
-	public interface ISciType
-	{
+	public interface ISciLoad
+    {
 		bool Load(string path);
-		List<CResource> ResourceList { get; }
+		//List<CResource> ResourceList { get; }
 	}
 }

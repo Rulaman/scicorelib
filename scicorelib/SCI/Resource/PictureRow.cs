@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace SCI.Resource
 {
-	public class SciPictureRow: ISciResource
+	public class SciPictureRow : CResource
 	{
 		private EGameType GameType;
 		public SciPictureRow(EGameType gametype)
@@ -14,15 +14,15 @@ namespace SCI.Resource
 			GameType = gametype;
 		}
 
-		private Size		InternalSize = new Size();
-		private object		Tag;
+		private Size InternalSize = new Size();
+		public object Tag;
 
-		public Int16		Len;
-		public byte			NumOfLoops;
-		public byte			IsScalable;
-		public byte			ScaleRes;
-		public Int32		PalOffset;
-		public Color[]		Entries;
+		public Int16 Len;
+		public byte NumOfLoops;
+		public byte IsScalable;
+		public byte ScaleRes;
+		public Int32 PalOffset;
+		public Color[] Entries;
 
 		public List<SciPicture> PictureList = new List<SciPicture>();
 
@@ -51,7 +51,7 @@ namespace SCI.Resource
 			InternalSize.Width = br.ReadInt16();
 			InternalSize.Height = br.ReadInt16();
 
-			for ( int entry = 0; entry < NumOfLoops; entry++ )
+			for (int entry = 0; entry < NumOfLoops; entry++)
 			{
 				SciPicture pict = new SciPicture(GameType);
 				pict.FromStream(stream);
@@ -64,12 +64,12 @@ namespace SCI.Resource
 
 			br.BaseStream.Position += 6; // Offset für Bildbeginn
 
-			for ( int entry = 0; entry < NumOfLoops; entry++ )
+			for (int entry = 0; entry < NumOfLoops; entry++)
 			{
 				PictureList[entry].ReadColorDataFromStream(stream);
 			}
 
-			foreach(SciPicture item in PictureList)
+			foreach (SciPicture item in PictureList)
 			{
 				item.DecodeImage(Entries);
 			}
@@ -115,32 +115,37 @@ namespace SCI.Resource
 			binaryReader.BaseStream.Position += 4;
 
 			colorArray = new Color[256];
-			
-			for ( int counter = 0; counter < 256; counter++ )
+
+			for (int counter = 0; counter < 256; counter++)
 			{
 				colorArray[counter] = Color.Black;
 			}
 
-			for ( int counter = ColorOffset; counter < NumberOfColors + ColorOffset; counter++ )
+			for (int counter = ColorOffset; counter < NumberOfColors + ColorOffset; counter++)
 			{
-				if ( binaryReader.BaseStream.Position + 4 <= binaryReader.BaseStream.Length )
+				if (binaryReader.BaseStream.Position + 4 <= binaryReader.BaseStream.Length)
 				{
-					if ( UsedUsed > 0 )
+					if (UsedUsed > 0)
 					{
 					}
 					else
 					{
 						//colorInfoArray[counter].Used = (binaryReader.ReadByte() > 0) ? true : false;
 						binaryReader.ReadByte();
-					} 
+					}
 					Int16 red = binaryReader.ReadByte();
 					Int16 green = binaryReader.ReadByte();
 					Int16 blue = binaryReader.ReadByte();
 					colorArray[counter] = Color.FromArgb(255, red, green, blue);
 				}
 			}
-			
+
 			return colorArray;
+		}
+
+		public bool Load(string path)
+		{
+			throw new NotImplementedException();
 		}
 
 		public Int32 Height
@@ -156,46 +161,5 @@ namespace SCI.Resource
 		{
 			get { return InternalSize; }
 		}
-
-		#region ISciResource Member
-		private ECompressionType CompType;
-		private uint CompSize;
-		private uint UncompSize;
-
-		public EResourceType ResourceType
-		{
-			get { return EResourceType.Picture; }
-		}
-		public UInt16 ResourceNumber
-		{
-			get;
-			set;
-		}
-		public byte FileNumber
-		{
-			get;
-			set;
-		}
-		public UInt32 FileOffset
-		{
-			get;
-			set;
-		}
-		public ECompressionType CompressionType
-		{
-			get { return CompType; }
-			set { CompType = value; }
-		}
-		public uint CompressedSize
-		{
-			get { return CompSize; }
-			set { CompSize = value; }
-		}
-		public uint UncompressedSize
-		{
-			get { return UncompSize; }
-			set { UncompSize = value; }
-		}
-		#endregion
 	}
 }

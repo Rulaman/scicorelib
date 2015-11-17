@@ -5,8 +5,8 @@ using System.Drawing.Imaging;
 namespace SCI
 {
 
-	public sealed class SciPicture: ISciResource
-	{
+	public sealed class SciPicture: CResource
+    {
 		private EGameType GameType;
 		public SciPicture(EGameType gametype)
 		{
@@ -85,7 +85,12 @@ namespace SCI
 			throw new NotImplementedException();
 		}
 
-		public Int32 Height
+        public bool Load(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Int32 Height
 		{
 			get { return InternalSize.Height; }
 		}
@@ -97,46 +102,5 @@ namespace SCI
 		{
 			get { return InternalSize; }
 		}
-
-		#region ISciResource Member
-		private ECompressionType CompType;
-		private uint CompSize;
-		private uint UncompSize;
-
-		public EResourceType ResourceType
-		{
-			get { return EResourceType.Picture; }
-		}
-		public UInt16 ResourceNumber
-		{
-			get;
-			set;
-		}
-		public byte FileNumber
-		{
-			get;
-			set;
-		}
-		public UInt32 FileOffset
-		{
-			get;
-			set;
-		}
-		public ECompressionType CompressionType
-		{
-			get { return CompType; }
-			set { CompType = value; }
-		}
-		public uint CompressedSize
-		{
-			get { return CompSize; }
-			set { CompSize = value; }
-		}
-		public uint UncompressedSize
-		{
-			get { return UncompSize; }
-			set { UncompSize = value; }
-		}
-		#endregion
 	}
 }

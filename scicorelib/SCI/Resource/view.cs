@@ -2,21 +2,22 @@ using System;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.ComponentModel;
+using System.Diagnostics;
 
 namespace SCI.Resource
 {
-	public class SciView: ISciResource
-	{
-		private EGameType GameType;
-		public SciView(EGameType gametype)
+	public class SciView: CResource
+    {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private EGameType GameType;
+
+        public SciView(EGameType gametype)
 		{
 			GameType = gametype;
 		}
 
-		private ECompressionType CompType;
-		private uint CompSize;
-		private uint UncompSize;
-
+       
 		public struct Header56
 		{
 			public Int16 Len;
@@ -579,41 +580,9 @@ namespace SCI.Resource
 			return colorinfo;
 		}
 
-		#region ISciResource Member
-		public EResourceType ResourceType
-		{
-			get { return EResourceType.View; }
-		}
-		public UInt16 ResourceNumber
-		{
-			get;
-			set;
-		}
-		public byte FileNumber
-		{
-			get;
-			set;
-		}
-		public UInt32 FileOffset
-		{
-			get;
-			set;
-		}
-		public ECompressionType CompressionType
-		{
-			get { return CompType; }
-			set { CompType = value; }
-		}
-		public uint CompressedSize
-		{
-			get { return CompSize; }
-			set { CompSize = value; }
-		}
-		public uint UncompressedSize
-		{
-			get { return UncompSize; }
-			set { UncompSize = value; }
-		}
-		#endregion
+        public bool Load(string path)
+        {
+            throw new NotImplementedException();
+        }
 	}
 }

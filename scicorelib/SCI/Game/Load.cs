@@ -38,7 +38,7 @@ namespace SCI
 					{
 						gamedata.Type = EGameType.SCI1;
 						gamedata.ResourceList = game.ResourceList;
-						gamedata.GameData = (ISciType)game;
+						gamedata.GameData = (CSciBase)game;
 					}
 				}
 				else if ( (ba[0] == 0xFF) && (ba[1] == 0xFF ) && (ba[2] == 0xFF) && (ba[3] == 0xFF) && (ba[4] == 0xFF) && (ba[5] == 0xFF) )
@@ -49,7 +49,7 @@ namespace SCI
 					{
 						gamedata.Type = EGameType.SCI0;
 						gamedata.ResourceList = game.ResourceList;
-						gamedata.GameData = (ISciType)game;
+						gamedata.GameData = (CSciBase)game;
 					}
 				}
 
@@ -62,7 +62,7 @@ namespace SCI
 				{
 					gamedata.Type = EGameType.SCI3;
 					gamedata.ResourceList = game.ResourceList;
-					gamedata.GameData = (ISciType)game;
+					gamedata.GameData = (CSciBase)game;
 				}
 			}
 

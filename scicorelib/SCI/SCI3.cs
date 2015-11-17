@@ -6,8 +6,8 @@ using SCI.Resource;
 
 namespace SCI
 {
-	public class SCI3: SciBase
-	{
+	public class SCI3: CSciBase
+    {
 		/// <summary>
 		/// load a compiled game and not the sources and the project file give only the path as the parameter
 		/// </summary>
@@ -57,7 +57,7 @@ namespace SCI
 							resfilesave = resfile;
 						}
 
-						stream.Position = item.Offset;
+						stream.Position = item.FileOffset;
 
 						/* Resource entpacken */
 						SciBinaryReader br = new SciBinaryReader(stream);
@@ -88,7 +88,7 @@ namespace SCI
 						SCI.IO.Compression.LZS lzs = new IO.Compression.LZS();
 						lzs.Unpack(ref PackedDataArray, ref UnpackedDataArray);
 
-						switch ( item.Type )
+						switch ( item.ResourceType )
 						{
 						case EResourceType.Palette:
 						case EResourceType.Palette8x:
@@ -97,7 +97,7 @@ namespace SCI
 							palette.CompressedSize = paklen;
 							palette.UncompressedSize = unplen;
 							palette.ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
-							item.ResourceData = palette;
+							//item.ResourceData = palette;
 							break;
 						case EResourceType.View:
 						case EResourceType.View8x:
@@ -106,7 +106,7 @@ namespace SCI
 							view.CompressedSize = paklen;
 							view.UncompressedSize = unplen;
 							view.LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
-							item.ResourceData = view;
+							//item.ResourceData = view;
 							break;
 						case EResourceType.Picture:
 						case EResourceType.Picture8x:
@@ -115,7 +115,7 @@ namespace SCI
 							pict.CompressedSize = paklen;
 							pict.UncompressedSize = unplen;
 							pict.FromByteArray(UnpackedDataArray);
-							item.ResourceData = pict;
+							//item.ResourceData = pict;
 							break;
 						default:
 							break;
@@ -125,15 +125,15 @@ namespace SCI
 
 				foreach ( CResource item in ResourceList )
 				{
-					switch ( item.Type )
+					switch ( item.ResourceType )
 					{
 					case EResourceType.View:
 					case EResourceType.View8x:
 						/* Resource entpacken */
-						SciView view = (SciView)item.ResourceData;
-						CResource resource = FindPaletteResource(item.Number);
-						SciPalette palette = (SciPalette)resource.ResourceData;
-						view.DecodeColors(palette.ColorInfo);
+//						SciView view = (SciView)item.ResourceData;
+						CResource resource = FindPaletteResource(item.ResourceNumber);
+						//SciPalette palette = (SciPalette)resource.ResourceData;
+						//view.DecodeColors(palette.ColorInfo);
 						break;
 					case EResourceType.Picture:
 					case EResourceType.Picture8x:
@@ -188,13 +188,11 @@ namespace SCI
 
 				while ( mapFileReader.BaseStream.Position < off2 )
 				{
-					CResource resource = new CResource();
+					CResource resource = new Dummy();
 
-					resource.ResourceType = item.Key;
-					resource.Type = (EResourceType)item.Key;
-
-					resource.Number = mapFileReader.ReadUInt16();
-					resource.Offset = mapFileReader.ReadUInt32();
+					resource.ResourceType = (EResourceType)item.Key;
+    				resource.ResourceNumber = mapFileReader.ReadUInt16();
+					resource.FileOffset = (Int32)mapFileReader.ReadUInt32();
 
 					resourceindex.Add(resource);
 				}

@@ -4,7 +4,7 @@
 
 	public class LZW: SciCompressionBase, ISciCompression
 	{
-		public enum ELZWOption
+		public enum EOption
 		{
 			Lzw,
 			Lzw1,
@@ -26,9 +26,9 @@
 		private Int32 _dwBits;		///< bits buffer
 		private Int32 _nBits;		///< number of unread bits in _dwBits
 
-		private ELZWOption Option;
+		private EOption Option;
 
-		public LZW(ELZWOption option)
+		public LZW(EOption option)
 		{
 			Option = option;
 		}
@@ -44,14 +44,14 @@
 
 			switch ( Option )
 			{
-			case ELZWOption.Lzw:
+			case EOption.Lzw:
 				retval = UnpackLZW(ref inbuf, ref outbuf);
 				break;
-			case ELZWOption.Lzw1:
+			case EOption.Lzw1:
 				break;
-			case ELZWOption.Lzw1Pic:
+			case EOption.Lzw1Pic:
 				break;
-			case ELZWOption.Lzw1View:
+			case EOption.Lzw1View:
 				break;
 			};
 

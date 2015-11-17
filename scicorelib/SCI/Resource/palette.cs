@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace SCI.Resource
 {
-	public class SciPalette: ISciResource
-	{
+	public class SciPalette: CResource, ISciLoad
+    {
 		private EGameType GameType;
 		public SciPalette(EGameType gametype)
 		{
@@ -19,7 +20,15 @@ namespace SCI.Resource
 			get { return ColorField; }
 		}
 
-		public Color[] ReadFromSierraPalFile(string filename)
+        public List<CResource> ResourceList
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public Color[] ReadFromSierraPalFile(string filename)
 		{
 			Color[] colorInfoArray;
 			Int16 NumberOfColors;
@@ -108,41 +117,9 @@ namespace SCI.Resource
 			ReadFromStream(new BinaryReader(stream), inversive);
 		}
 
-		#region ISciResource Member
-		public EResourceType ResourceType
-		{
-			get { return EResourceType.Palette; }
-		}
-		public UInt16 ResourceNumber
-		{
-			get;
-			set;
-		}
-		public byte FileNumber
-		{
-			get;
-			set;
-		}
-		public UInt32 FileOffset
-		{
-			get;
-			set;
-		}
-		public ECompressionType CompressionType
-		{
-			get;
-			set;
-		}
-		public uint CompressedSize
-		{
-			get;
-			set;
-		}
-		public uint UncompressedSize
-		{
-			get;
-			set;
-		}
-		#endregion
+        public bool Load(string path)
+        {
+            throw new NotImplementedException();
+        }
 	}
 }

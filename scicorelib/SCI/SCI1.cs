@@ -6,15 +6,8 @@ using SCI.Resource;
 
 namespace SCI
 {
-	public class SCI1: SciBase
-	{
-		//private List<CResource> _ResourceList = new List<CResource>();
-
-//		public List<CResource> ResourceList
-//		{
-//			get { return _ResourceList; }
-//		}
-
+	public class SCI1: CSciBase
+    {
 		/// <summary>
 		/// load a compiled game and not the sources and the project file
 		/// give only the path as the parameter
@@ -65,7 +58,7 @@ namespace SCI
 							resfilesave = resfile;
 						}
 						
-						stream.Position = item.Offset;
+						stream.Position = item.FileOffset;
 
 						/* Resource entpacken */
 						SciBinaryReader br = new SciBinaryReader(stream);
@@ -74,73 +67,66 @@ namespace SCI
 
 						uint paklen = br.ReadUInt16();
 						uint unplen = br.ReadUInt16();
-
 						int pakmeth = br.ReadUInt16();
 
-						byte[] UnpackedDataArray;
-						byte[] PackedDataArray;
+                        byte[] UnpackedDataArray = null;
+						byte[] PackedDataArray = null;
 
+                        switch ( pakmeth )
+                        {
+                            case 0: //uncompressed
+                                item.CompressionType = ECompressionType.None;
 
-						switch ( pakmeth )
-						{
-						case 0: //uncompressed
-							if ( unplen == paklen )
-							{
-								UnpackedDataArray = br.ReadBytes((int)unplen);
-							}
-							else
-							{
-#warning //TODO: Bei nicht komprimierten Resourcen und ungleichen Werten wird eine Exception ausgelöst. Wie swoll hier vorgegangen werden? Versuchen weiterzulesen? Wieviel Bytes überspringen?
-								throw new ArgumentException("SCI1 Decompression (uncompressed)! Packed and unpacked length are not the same.");
-							}
-							break;
-						default:
-							UnpackedDataArray = new byte[unplen];
-							PackedDataArray = br.ReadBytes((int)paklen);
-							break;
-						};
+                                if (unplen == paklen - 4)
+                                {
+                                    UnpackedDataArray = br.ReadBytes((int)unplen);
+                                }
+                                else
+                                {
+#warning //TODO: Bei nicht komprimierten Resourcen und ungleichen Werten wird eine Exception ausgelöst. Wie soll hier vorgegangen werden? Versuchen weiterzulesen? Wieviel Bytes überspringen?
+                                    throw new ArgumentException("SCI1 Decompression (uncompressed)! Packed and unpacked length are not the same.");
+                                }
+                                break;
+                            case 1: //Lzw
+                                item.CompressionType = ECompressionType.Lzw;
+                                break;
+                            case 2: //Comp3
+                                item.CompressionType = ECompressionType.Comp3;
+                                break;
+                            case 3: //Unknown0
+                                item.CompressionType = ECompressionType.Unknown0;
+                                break;
+                            case 4: //Unknown1
+                                item.CompressionType = ECompressionType.Unknown1;
+                                break;
+                            default:
+                                UnpackedDataArray = new byte[unplen];
+                                PackedDataArray = br.ReadBytes((int)paklen);
+                                break;
+                        };
 
-						switch ( pakmeth )
-						{
-						case 0: //uncompressed
-							break;
-						case 1: //Lzw
-							break;
-						case 2: //Comp3
-							break;
-						case 3: //Unknown0
-							break;
-						case 4: //Unknown1
-							break;
-						};
+                        //SCI.IO.Compression.LZS lzs = new IO.Compression.LZS();
+                        //lzs.Unpack(PackedDataArray, ref UnpackedDataArray);
 
-						//SCI.IO.Compression.LZS lzs = new IO.Compression.LZS();
-						//lzs.Unpack(PackedDataArray, ref UnpackedDataArray);
-
-						switch ( item.Type )
-						{
-						case EResourceType.View:
-						case EResourceType.View8x:
-
-							/* Resource entpacken */
-							SciView view = new SciView(EGameType.SCI1);
-							view.CompressionType = ECompressionType.STACpack;
-							view.CompressedSize = paklen;
-							view.UncompressedSize = unplen;
-							view.LoadViewSCI1(new System.IO.MemoryStream(UnpackedDataArray));
-							item.ResourceData = view;
-							break;
-						case EResourceType.Picture:
-						case EResourceType.Picture8x:
-							SciPicture pict = new SciPicture(EGameType.SCI1);
-							pict.FromStream(stream);
-							item.ResourceData = pict;
-							break;
-						default:
-							break;
-						};
-					}
-				}
+                        switch (item.ResourceType)
+                        {
+                            case EResourceType.View:
+                            case EResourceType.View8x:
+                                item.CompressedSize = paklen;
+                                item.UncompressedSize = unplen;
+                                ((SciView)item).LoadViewSCI1(new System.IO.MemoryStream(UnpackedDataArray));
+                                //item.ResourceData = view;
+                                break;
+                            case EResourceType.Picture:
+                            case EResourceType.Picture8x:
+                                ((SciPicture)item).FromStream(stream);
+                                //item.ResourceData = pict;
+                                break;
+                            default:
+                                break;
+                        };
+                    }
+                }
 			}
 
 			return retval;
@@ -185,16 +171,32 @@ namespace SCI
 
 				while ( mapFileReader.BaseStream.Position < off2 )
 				{
-					CResource resource = new CResource();
+					CResource resource = null;
 
-					resource.ResourceType = item.Key;
-					resource.Type = (EResourceType)item.Key;
+                    switch((EResourceType)item.Key)
+                    {
+                        case EResourceType.View8x:
+                            resource = new SciView(EGameType.SCI1);
+                            break;
+                        case EResourceType.Palette8x:
+                            resource = new SciPalette(EGameType.SCI1);
+                            break;
+                        case EResourceType.Picture8x:
+                            resource = new SciPicture(EGameType.SCI1);
+                            break;
+                        default:
+                            resource = new Dummy();
+                            break;
+                    }
 
-					resource.Number = mapFileReader.ReadUInt16();
+
+					resource.ResourceType = (EResourceType)item.Key;
+
+					resource.ResourceNumber = mapFileReader.ReadUInt16();
 					UInt32 temp = mapFileReader.ReadUInt32();
 
 					resource.FileNumber = (byte)(temp >> 28);
-					resource.Offset = (UInt32)(temp & 0xFFFFFFF);
+					resource.FileOffset = (Int32)(temp & 0xFFFFFFF);
 
 					resourceindex.Add(resource);
 				}
