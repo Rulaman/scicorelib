@@ -1,114 +1,115 @@
 ﻿using System;
-using System.IO;
-using System.Drawing;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 
 namespace SCI.Resource
 {
-	public class SciPalette: CResource
+    public class SciPalette : CResource
     {
-		private EGameType GameType;
-		public SciPalette(EGameType gametype)
-		{
-			GameType = gametype;
-		}
+        private EGameType GameType;
+        public SciPalette(EGameType gametype)
+        {
+            GameType = gametype;
+        }
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private Color[] ColorField;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private Color[] ColorField;
 
-		public Color[] ColorInfo
-		{
-			get { return ColorField; }
-		}
+        public Color[] ColorInfo
+        {
+            get { return ColorField; }
+        }
 
         public Color[] ReadFromSierraPalFile(string filename)
-		{
-			Color[] colorInfoArray;
-			Int16 NumberOfColors;
+        {
+            Color[] colorInfoArray;
+            Int16 NumberOfColors;
 
-			FileStream fileStream = new FileStream(filename, FileMode.Open);
-			BinaryReader binaryReader = new BinaryReader(fileStream);
+            FileStream fileStream = new FileStream(filename, FileMode.Open);
+            BinaryReader binaryReader = new BinaryReader(fileStream);
 
-			binaryReader.BaseStream.Position = 29;
+            binaryReader.BaseStream.Position = 29;
 
-			NumberOfColors = binaryReader.ReadByte();
+            NumberOfColors = binaryReader.ReadByte();
 
-			binaryReader.BaseStream.Position = 37;
+            binaryReader.BaseStream.Position = 37;
 
-			colorInfoArray = new Color[NumberOfColors];
+            colorInfoArray = new Color[NumberOfColors];
 
-			for ( int counter = 0; counter < NumberOfColors; counter++ )
-			{
-				if ( binaryReader.BaseStream.Position + 4 <= binaryReader.BaseStream.Length )
-				{
-					//colorInfoArray[counter].Used = (binaryReader.ReadByte() > 0) ? true : false;
-					binaryReader.ReadByte(); // Color used
+            for (int counter = 0; counter < NumberOfColors; counter++)
+            {
+                if (binaryReader.BaseStream.Position + 4 <= binaryReader.BaseStream.Length)
+                {
+                    //colorInfoArray[counter].Used = (binaryReader.ReadByte() > 0) ? true : false;
+                    binaryReader.ReadByte(); // Color used
 
-					Int16 red = binaryReader.ReadByte();
-					Int16 green = binaryReader.ReadByte();
-					Int16 blue = binaryReader.ReadByte();
-					colorInfoArray[counter] = Color.FromArgb(255, red, green, blue);
-				}
-			}
+                    Int16 red = binaryReader.ReadByte();
+                    Int16 green = binaryReader.ReadByte();
+                    Int16 blue = binaryReader.ReadByte();
+                    colorInfoArray[counter] = Color.FromArgb(255, red, green, blue);
+                }
+            }
 
-			fileStream.Close();
+            fileStream.Close();
 
-			ColorField = new Color[colorInfoArray.Length];
-			Array.Copy(colorInfoArray, ColorField, colorInfoArray.Length);
+            ColorField = new Color[colorInfoArray.Length];
+            Array.Copy(colorInfoArray, ColorField, colorInfoArray.Length);
 
-			return colorInfoArray;
-		}
-		public void ReadFromStream(BinaryReader binaryReader, bool inversive)
-		{
-			Int64 positionInStream = 0;
-			Int16 NumberOfColors;
-			Int16 ColorOffset;
-			Int16 UsedUsed; // Is Color Used flag
+            return colorInfoArray;
+        }
 
-			if ( !inversive )
-			{
-				positionInStream = binaryReader.BaseStream.Position;
-			}
+        public void ReadFromStream(BinaryReader binaryReader, bool inversive)
+        {
+            Int64 positionInStream = 0;
+            Int16 NumberOfColors;
+            Int16 ColorOffset;
+            Int16 UsedUsed; // Is Color Used flag
 
-			binaryReader.BaseStream.Position += 25;
+            if (!inversive)
+            {
+                positionInStream = binaryReader.BaseStream.Position;
+            }
 
-			ColorOffset = binaryReader.ReadByte();
-			binaryReader.BaseStream.Position += 3;
+            binaryReader.BaseStream.Position += 25;
 
-			NumberOfColors = binaryReader.ReadByte();
-			binaryReader.BaseStream.Position += 2;
-			UsedUsed = binaryReader.ReadByte();
-			binaryReader.BaseStream.Position += 4;
+            ColorOffset = binaryReader.ReadByte();
+            binaryReader.BaseStream.Position += 3;
 
-			ColorField = new Color[NumberOfColors];
+            NumberOfColors = binaryReader.ReadByte();
+            binaryReader.BaseStream.Position += 2;
+            UsedUsed = binaryReader.ReadByte();
+            binaryReader.BaseStream.Position += 4;
 
-			for ( int counter = ColorOffset; counter < NumberOfColors + ColorOffset; counter++ )
-			{
-				if ( binaryReader.BaseStream.Position + 4 <= binaryReader.BaseStream.Length )
-				{
-					if ( UsedUsed > 0 )
-					{
-					}
-					else
-					{
-						binaryReader.ReadByte(); // color used
-					}
-					Int16 red = binaryReader.ReadByte();
-					Int16 green = binaryReader.ReadByte();
-					Int16 blue = binaryReader.ReadByte();
-					ColorField[counter] = Color.FromArgb(255, red, green, blue);
-				}
-			}
+            ColorField = new Color[NumberOfColors];
 
-			if ( !inversive )
-			{
-				binaryReader.BaseStream.Position = positionInStream;
-			}
-		}
-		public void ReadFromStream(System.IO.Stream stream, bool inversive)
-		{
-			ReadFromStream(new BinaryReader(stream), inversive);
-		}
-	}
+            for (int counter = ColorOffset; counter < NumberOfColors + ColorOffset; counter++)
+            {
+                if (binaryReader.BaseStream.Position + 4 <= binaryReader.BaseStream.Length)
+                {
+                    if (UsedUsed > 0)
+                    {
+                    }
+                    else
+                    {
+                        binaryReader.ReadByte(); // color used
+                    }
+                    Int16 red = binaryReader.ReadByte();
+                    Int16 green = binaryReader.ReadByte();
+                    Int16 blue = binaryReader.ReadByte();
+                    ColorField[counter] = Color.FromArgb(255, red, green, blue);
+                }
+            }
+
+            if (!inversive)
+            {
+                binaryReader.BaseStream.Position = positionInStream;
+            }
+        }
+
+        public void ReadFromStream(System.IO.Stream stream, bool inversive)
+        {
+            ReadFromStream(new BinaryReader(stream), inversive);
+        }
+    }
 }

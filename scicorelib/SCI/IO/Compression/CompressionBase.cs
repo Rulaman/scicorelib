@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SCI.IO.Compression
+﻿namespace SCI.IO.Compression
 {
-	public enum ECompressionValue
-	{
-		Ok,
-		DecompressionError
-	}
+    public enum ECompressionValue
+    {
+        Ok,
+        DecompressionError
+    }
 
-	public abstract class SciCompressionBase
-	{
-		public abstract void Init();
-		public abstract ECompressionValue Unpack(ref byte[] inbuf, ref byte[] outbuf);
-	}
+    public abstract class SciCompressionBase
+    {
+        public abstract void Init();
 
-	public interface ISciCompression
-	{
-		ECompressionType Type { get; }
-	}
+        public abstract ECompressionValue Unpack(ref byte[] inbuf, ref byte[] outbuf);
+    }
+
+    public interface ISciCompression
+    {
+        ECompressionType Type { get; }
+    }
 }

@@ -57,7 +57,7 @@ namespace SCI.IO.Compression
 
 		public bool Decode(byte[] packed, ref byte[] unpacked)
 		{
-			
+            throw new Exception();
 		}
 		
 		private Int16 getc2()

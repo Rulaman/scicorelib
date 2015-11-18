@@ -1,167 +1,169 @@
 using System;
-using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 
 namespace SCI.Resource
 {
-	public class SciPictureRow : CResource
-	{
-		private EGameType GameType;
-		public SciPictureRow(EGameType gametype)
-		{
-			GameType = gametype;
-		}
+    public class SciPictureRow : CResource
+    {
+        private EGameType GameType;
+        public SciPictureRow(EGameType gametype)
+        {
+            GameType = gametype;
+        }
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private Size InternalSize = new Size();
-		public object Tag;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private Size InternalSize = new Size();
 
-		public Int16 Len;
-		public byte NumOfLoops;
-		public byte IsScalable;
-		public byte ScaleRes;
-		public Int32 PalOffset;
-		public Color[] Entries;
+        public object Tag;
 
-		public List<SciPicture> PictureList = new List<SciPicture>();
+        public Int16 Len;
+        public byte NumOfLoops;
+        public byte IsScalable;
+        public byte ScaleRes;
+        public Int32 PalOffset;
+        public Color[] Entries;
 
-		public void FromFile(string filename)
-		{
-			FileStream fs = new FileStream(filename, System.IO.FileMode.Open);
-			FromStream(fs, fs.Length);
-			fs.Close();
-		}
+        public List<SciPicture> PictureList = new List<SciPicture>();
 
-		public void FromByteArray(byte[] array)
-		{
-			FromStream(new MemoryStream(array), array.Length);
-		}
+        public void FromFile(string filename)
+        {
+            FileStream fs = new FileStream(filename, System.IO.FileMode.Open);
+            FromStream(fs, fs.Length);
+            fs.Close();
+        }
 
-		public void FromStream(System.IO.Stream stream, Int64 length)
-		{
-			System.IO.BinaryReader br = new BinaryReader(stream);
+        public void FromByteArray(byte[] array)
+        {
+            FromStream(new MemoryStream(array), array.Length);
+        }
 
-			Len = br.ReadInt16();
-			NumOfLoops = br.ReadByte();
-			IsScalable = br.ReadByte();
-			br.ReadByte();
-			ScaleRes = br.ReadByte();
-			PalOffset = br.ReadInt32();
-			InternalSize.Width = br.ReadInt16();
-			InternalSize.Height = br.ReadInt16();
+        public void FromStream(System.IO.Stream stream, Int64 length)
+        {
+            System.IO.BinaryReader br = new BinaryReader(stream);
 
-			for (int entry = 0; entry < NumOfLoops; entry++)
-			{
-				SciPicture pict = new SciPicture(GameType);
-				pict.FromStream(stream);
-				PictureList.Add(pict);
-			}
+            Len = br.ReadInt16();
+            NumOfLoops = br.ReadByte();
+            IsScalable = br.ReadByte();
+            br.ReadByte();
+            ScaleRes = br.ReadByte();
+            PalOffset = br.ReadInt32();
+            InternalSize.Width = br.ReadInt16();
+            InternalSize.Height = br.ReadInt16();
 
-			br.BaseStream.Position = PalOffset;
+            for (int entry = 0; entry < NumOfLoops; entry++)
+            {
+                SciPicture pict = new SciPicture(GameType);
+                pict.FromStream(stream);
+                PictureList.Add(pict);
+            }
 
-			Entries = DecodeColorInformation(br);
+            br.BaseStream.Position = PalOffset;
 
-			br.BaseStream.Position += 6; // Offset für Bildbeginn
+            Entries = DecodeColorInformation(br);
 
-			for (int entry = 0; entry < NumOfLoops; entry++)
-			{
-				PictureList[entry].ReadColorDataFromStream(stream);
-			}
+            br.BaseStream.Position += 6; // Offset für Bildbeginn
 
-			foreach (SciPicture item in PictureList)
-			{
-				item.DecodeImage(Entries);
-			}
+            for (int entry = 0; entry < NumOfLoops; entry++)
+            {
+                PictureList[entry].ReadColorDataFromStream(stream);
+            }
 
-		}
+            foreach (SciPicture item in PictureList)
+            {
+                item.DecodeImage(Entries);
+            }
+        }
 
-		public void Save(string filename)
-		{
-			throw new NotImplementedException();
-		}
-		public void Save(System.IO.Stream stream)
-		{
-			throw new NotImplementedException();
-		}
+        public void Save(string filename)
+        {
+            throw new NotImplementedException();
+        }
 
-		public Color[] DecodeColorInformation(string filename)
-		{
-			FileStream fileStream = new FileStream(filename, FileMode.Open);
-			BinaryReader binaryReader = new BinaryReader(fileStream);
+        public void Save(System.IO.Stream stream)
+        {
+            throw new NotImplementedException();
+        }
 
-			Color[] colors = DecodeColorInformation(binaryReader);
+        public Color[] DecodeColorInformation(string filename)
+        {
+            FileStream fileStream = new FileStream(filename, FileMode.Open);
+            BinaryReader binaryReader = new BinaryReader(fileStream);
 
-			binaryReader.Close();
-			fileStream.Close();
+            Color[] colors = DecodeColorInformation(binaryReader);
 
-			return colors;
-		}
-		public Color[] DecodeColorInformation(BinaryReader binaryReader)
-		{
-			Color[] colorArray;
-			Int16 NumberOfColors = 256; // mal fest angenommen
-			Int16 ColorOffset = 0;
-			Int16 UsedUsed; // Is Color Used flag
+            binaryReader.Close();
+            fileStream.Close();
 
-			binaryReader.BaseStream.Position += 25;
+            return colors;
+        }
 
-			ColorOffset = binaryReader.ReadByte();
-			binaryReader.BaseStream.Position += 3;
+        public Color[] DecodeColorInformation(BinaryReader binaryReader)
+        {
+            Color[] colorArray;
+            Int16 NumberOfColors = 256; // mal fest angenommen
+            Int16 ColorOffset = 0;
+            Int16 UsedUsed; // Is Color Used flag
 
-			NumberOfColors = binaryReader.ReadByte();
-			binaryReader.BaseStream.Position += 2;
-			UsedUsed = binaryReader.ReadByte();
-			binaryReader.BaseStream.Position += 4;
+            binaryReader.BaseStream.Position += 25;
 
-			colorArray = new Color[256];
+            ColorOffset = binaryReader.ReadByte();
+            binaryReader.BaseStream.Position += 3;
 
-			for (int counter = 0; counter < 256; counter++)
-			{
-				colorArray[counter] = Color.Black;
-			}
+            NumberOfColors = binaryReader.ReadByte();
+            binaryReader.BaseStream.Position += 2;
+            UsedUsed = binaryReader.ReadByte();
+            binaryReader.BaseStream.Position += 4;
 
-			for (int counter = ColorOffset; counter < NumberOfColors + ColorOffset; counter++)
-			{
-				if (binaryReader.BaseStream.Position + 4 <= binaryReader.BaseStream.Length)
-				{
-					if (UsedUsed > 0)
-					{
-					}
-					else
-					{
-						//colorInfoArray[counter].Used = (binaryReader.ReadByte() > 0) ? true : false;
-						binaryReader.ReadByte();
-					}
-					Int16 red = binaryReader.ReadByte();
-					Int16 green = binaryReader.ReadByte();
-					Int16 blue = binaryReader.ReadByte();
-					colorArray[counter] = Color.FromArgb(255, red, green, blue);
-				}
-			}
+            colorArray = new Color[256];
 
-			return colorArray;
-		}
+            for (int counter = 0; counter < 256; counter++)
+            {
+                colorArray[counter] = Color.Black;
+            }
 
-		public bool Load(string path)
-		{
-			throw new NotImplementedException();
-		}
+            for (int counter = ColorOffset; counter < NumberOfColors + ColorOffset; counter++)
+            {
+                if (binaryReader.BaseStream.Position + 4 <= binaryReader.BaseStream.Length)
+                {
+                    if (UsedUsed > 0)
+                    {
+                    }
+                    else
+                    {
+                        //colorInfoArray[counter].Used = (binaryReader.ReadByte() > 0) ? true : false;
+                        binaryReader.ReadByte();
+                    }
+                    Int16 red = binaryReader.ReadByte();
+                    Int16 green = binaryReader.ReadByte();
+                    Int16 blue = binaryReader.ReadByte();
+                    colorArray[counter] = Color.FromArgb(255, red, green, blue);
+                }
+            }
 
-		public Int32 Height
-		{
-			get { return InternalSize.Height; }
-		}
-		public Int32 Width
-		{
-			get { return InternalSize.Width; }
-		}
+            return colorArray;
+        }
 
-		public Size Size
-		{
-			get { return InternalSize; }
-		}
-	}
+        public bool Load(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Int32 Height
+        {
+            get { return InternalSize.Height; }
+        }
+
+        public Int32 Width
+        {
+            get { return InternalSize.Width; }
+        }
+
+        public Size Size
+        {
+            get { return InternalSize; }
+        }
+    }
 }

@@ -1,197 +1,194 @@
-﻿using System;
+﻿using SCI.Resource;
+using System;
 using System.Collections.Generic;
-using System.Text;
-
-using SCI.Resource;
 
 namespace SCI
 {
-	public class SCI3 : CSciBase
-	{
-		/// <summary>
-		/// load a compiled game and not the sources and the project file give only the path as the parameter
-		/// </summary>
-		/// <param name="path">The path to the (compiled) game.</param>
-		/// <returns>True if the game could loaded, otherwise false.</returns>
-		public override bool Load(string path)
-		{
-			bool retval = true;
-			System.IO.FileStream stream;
+    public class SCI3 : CSciBase
+    {
+        /// <summary>
+        /// load a compiled game and not the sources and the project file give only the path as the parameter
+        /// </summary>
+        /// <param name="path">The path to the (compiled) game.</param>
+        /// <returns>True if the game could loaded, otherwise false.</returns>
+        public override bool Load(string path)
+        {
+            bool retval = true;
+            System.IO.FileStream stream;
 
-			string file = System.IO.Path.Combine(path, "RESMAP.000");
+            string file = System.IO.Path.Combine(path, "RESMAP.000");
 
-			if (!System.IO.File.Exists(file))
-			{
-				return false;
-			}
-			else
-			{
-				/* try to load game now */
-				stream = System.IO.File.Open(file, System.IO.FileMode.Open);
-				byte[] filearray = new byte[stream.Length];
-				stream.Read(filearray, 0, filearray.Length);
-				stream.Close();
+            if (!System.IO.File.Exists(file))
+            {
+                return false;
+            }
+            else
+            {
+                /* try to load game now */
+                stream = System.IO.File.Open(file, System.IO.FileMode.Open);
+                byte[] filearray = new byte[stream.Length];
+                stream.Read(filearray, 0, filearray.Length);
+                stream.Close();
 
-				System.IO.MemoryStream ms = new System.IO.MemoryStream(filearray);
+                System.IO.MemoryStream ms = new System.IO.MemoryStream(filearray);
 
-				ReadMapFile(ms);
-				filearray = null;
+                ReadMapFile(ms);
+                filearray = null;
 
-				string resfilesave = "";
+                string resfilesave = "";
 
-				foreach (CResource item in ResourceList)
-				{
-					string resfile = System.IO.Path.Combine(path, String.Format("RESSCI.{0}", item.FileNumber.ToString("000")));
+                foreach (CResource item in ResourceList)
+                {
+                    string resfile = System.IO.Path.Combine(path, String.Format("RESSCI.{0}", item.FileNumber.ToString("000")));
 
-					if (!System.IO.File.Exists(file))
-					{
-						continue;
-					}
-					else
-					{
-						if (resfilesave != resfile)
-						{
-							stream.Close();
-							stream = System.IO.File.Open(resfile, System.IO.FileMode.Open);
+                    if (!System.IO.File.Exists(file))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        if (resfilesave != resfile)
+                        {
+                            stream.Close();
+                            stream = System.IO.File.Open(resfile, System.IO.FileMode.Open);
 
-							resfilesave = resfile;
-						}
+                            resfilesave = resfile;
+                        }
 
-						stream.Position = item.FileOffset;
+                        stream.Position = item.FileOffset;
 
-						/* Resource entpacken */
-						SciBinaryReader br = new SciBinaryReader(stream);
+                        /* Resource entpacken */
+                        SciBinaryReader br = new SciBinaryReader(stream);
 
-						/* byte typ = */
-						br.ReadByte();
-						/* UInt16 id = */
-						br.ReadUInt16();
-						item.CompressedSize = br.ReadUInt32();
-						item.UncompressedSize = br.ReadUInt32();
-						int pakmeth = br.ReadUInt16(); // immer STACpack bei SCI3
+                        /* byte typ = */
+                        br.ReadByte();
+                        /* UInt16 id = */
+                        br.ReadUInt16();
+                        item.CompressedSize = br.ReadUInt32();
+                        item.UncompressedSize = br.ReadUInt32();
+                        int pakmeth = br.ReadUInt16(); // immer STACpack bei SCI3
 
-						byte[] UnpackedDataArray = new byte[item.UncompressedSize];
-						byte[] PackedDataArray = br.ReadBytes((int)item.CompressedSize);
+                        byte[] UnpackedDataArray = new byte[item.UncompressedSize];
+                        byte[] PackedDataArray = br.ReadBytes((int)item.CompressedSize);
 
-						SCI.IO.Compression.LZS lzs = new IO.Compression.LZS();
-						lzs.Unpack(ref PackedDataArray, ref UnpackedDataArray);
+                        SCI.IO.Compression.LZS lzs = new IO.Compression.LZS();
+                        lzs.Unpack(ref PackedDataArray, ref UnpackedDataArray);
 
-						item.CompressionType = ECompressionType.STACpack;
+                        item.CompressionType = ECompressionType.STACpack;
 
-						switch (item.ResourceType)
-						{
-							case EResourceType.Palette:
-							case EResourceType.Palette8x:
-								((SciPalette)item).ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
-								//item.ResourceData = palette;
-								break;
-							case EResourceType.View:
-							case EResourceType.View8x:
-								((SciView)item).LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
-								//item.ResourceData = view;
-								break;
-							case EResourceType.Picture:
-							case EResourceType.Picture8x:
-								((SciPictureRow)item).FromByteArray(UnpackedDataArray);
-								//item.ResourceData = pict;
-								break;
-							default:
-								break;
-						};
-					}
-				}
+                        switch (item.ResourceType)
+                        {
+                            case EResourceType.Palette:
+                            case EResourceType.Palette8x:
+                                ((SciPalette)item).ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
+                                //item.ResourceData = palette;
+                                break;
+                            case EResourceType.View:
+                            case EResourceType.View8x:
+                                ((SciView)item).LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
+                                //item.ResourceData = view;
+                                break;
+                            case EResourceType.Picture:
+                            case EResourceType.Picture8x:
+                                ((SciPictureRow)item).FromByteArray(UnpackedDataArray);
+                                //item.ResourceData = pict;
+                                break;
+                            default:
+                                break;
+                        };
+                    }
+                }
 
-				foreach (CResource item in ResourceList)
-				{
-					switch (item.ResourceType)
-					{
-						case EResourceType.View:
-						case EResourceType.View8x:
-							/* Resource entpacken */
-							//						SciView view = (SciView)item.ResourceData;
-							CResource resource = FindPaletteResource(item.ResourceNumber);
-							//SciPalette palette = (SciPalette)resource.ResourceData;
-							//view.DecodeColors(palette.ColorInfo);
-							break;
-						case EResourceType.Picture:
-						case EResourceType.Picture8x:
-							break;
-						default:
-							break;
-					};
-				}
-			}
+                foreach (CResource item in ResourceList)
+                {
+                    switch (item.ResourceType)
+                    {
+                        case EResourceType.View:
+                        case EResourceType.View8x:
+                            /* Resource entpacken */
+                            //						SciView view = (SciView)item.ResourceData;
+                            CResource resource = FindPaletteResource(item.ResourceNumber);
+                            //SciPalette palette = (SciPalette)resource.ResourceData;
+                            //view.DecodeColors(palette.ColorInfo);
+                            break;
+                        case EResourceType.Picture:
+                        case EResourceType.Picture8x:
+                            break;
+                        default:
+                            break;
+                    };
+                }
+            }
 
-			return retval;
-		}
+            return retval;
+        }
 
-		private void ReadMapFile(System.IO.Stream stream)
-		{
-			byte restype = 0;
-			SCI.SciBinaryReader mapFileReader = new SciBinaryReader(stream);
-			/* ? muss noch geswappt werden ? */
-			mapFileReader.ReverseReading = false;
+        private void ReadMapFile(System.IO.Stream stream)
+        {
+            byte restype = 0;
+            SCI.SciBinaryReader mapFileReader = new SciBinaryReader(stream);
+            /* ? muss noch geswappt werden ? */
+            mapFileReader.ReverseReading = false;
 
-			/*SCI 3*/
-			Dictionary<byte, int> resourcearray = new Dictionary<byte, int>();
-			List<int> offsetlist = new List<int>();
+            /*SCI 3*/
+            Dictionary<byte, int> resourcearray = new Dictionary<byte, int>();
+            List<int> offsetlist = new List<int>();
 
-			while (0xFF != (restype = mapFileReader.ReadByte()))
-			{
-				UInt16 offset = mapFileReader.ReadUInt16();
+            while (0xFF != (restype = mapFileReader.ReadByte()))
+            {
+                UInt16 offset = mapFileReader.ReadUInt16();
 
-				resourcearray.Add(restype, offset);
-				offsetlist.Add(offset);
-			}
+                resourcearray.Add(restype, offset);
+                offsetlist.Add(offset);
+            }
 
-			int i = 0;
-			foreach (KeyValuePair<byte, int> item in resourcearray)
-			{
-				mapFileReader.BaseStream.Position = item.Value;
+            int i = 0;
+            foreach (KeyValuePair<byte, int> item in resourcearray)
+            {
+                mapFileReader.BaseStream.Position = item.Value;
 
-				long off2;
+                long off2;
 
-				if (i < offsetlist.Count - 1)
-				{
-					off2 = offsetlist[(byte)(i + 1)];
-				}
-				else
-				{
-					off2 = mapFileReader.BaseStream.Length;
-				}
+                if (i < offsetlist.Count - 1)
+                {
+                    off2 = offsetlist[(byte)(i + 1)];
+                }
+                else
+                {
+                    off2 = mapFileReader.BaseStream.Length;
+                }
 
+                while (mapFileReader.BaseStream.Position < off2)
+                {
+                    CResource resource = null;
 
-				while (mapFileReader.BaseStream.Position < off2)
-				{
-					CResource resource = null;
+                    switch ((EResourceType)item.Key)
+                    {
+                        case EResourceType.Palette:
+                        case EResourceType.Palette8x:
+                            resource = new SciPalette(EGameType.SCI3);
+                            break;
+                        case EResourceType.View:
+                        case EResourceType.View8x:
+                            resource = new SCI.Resource.SciView(EGameType.SCI3);
+                            break;
+                        case EResourceType.Picture:
+                        case EResourceType.Picture8x:
+                            resource = new SCI.Resource.SciPictureRow(EGameType.SCI3);
+                            break;
+                        default:
+                            resource = new Dummy();
+                            break;
+                    };
 
-					switch ((EResourceType)item.Key)
-					{
-						case EResourceType.Palette:
-						case EResourceType.Palette8x:
-							resource = new SciPalette(EGameType.SCI3);
-							break;
-						case EResourceType.View:
-						case EResourceType.View8x:
-							resource = new SCI.Resource.SciView(EGameType.SCI3);
-							break;
-						case EResourceType.Picture:
-						case EResourceType.Picture8x:
-							resource = new SCI.Resource.SciPictureRow(EGameType.SCI3);
-							break;
-						default:
-							resource = new Dummy();
-							break;
-					};
+                    resource.ResourceType = (EResourceType)item.Key;
+                    resource.ResourceNumber = mapFileReader.ReadUInt16();
+                    resource.FileOffset = (Int32)mapFileReader.ReadUInt32();
 
-					resource.ResourceType = (EResourceType)item.Key;
-					resource.ResourceNumber = mapFileReader.ReadUInt16();
-					resource.FileOffset = (Int32)mapFileReader.ReadUInt32();
-
-					ResourceList.Add(resource);
-				}
-				i++;
-			}
-		}
-	}
+                    ResourceList.Add(resource);
+                }
+                i++;
+            }
+        }
+    }
 }
