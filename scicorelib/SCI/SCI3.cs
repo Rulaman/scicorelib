@@ -93,6 +93,10 @@ namespace SCI
                                 ((SciPictureRow)item).FromByteArray(UnpackedDataArray);
                                 //item.ResourceData = pict;
                                 break;
+                            case EResourceType.Message:
+                            case EResourceType.Message8x:
+                                ((SciMessage)item).DecodeMessage(new SciBinaryReader(new System.IO.MemoryStream(UnpackedDataArray)));
+                                    break;
                             default:
                                 break;
                         };
@@ -170,11 +174,15 @@ namespace SCI
                             break;
                         case EResourceType.View:
                         case EResourceType.View8x:
-                            resource = new SCI.Resource.SciView(EGameType.SCI3);
+                            resource = new SciView(EGameType.SCI3);
                             break;
                         case EResourceType.Picture:
                         case EResourceType.Picture8x:
-                            resource = new SCI.Resource.SciPictureRow(EGameType.SCI3);
+                            resource = new SciPictureRow(EGameType.SCI3);
+                            break;
+                        case EResourceType.Message:
+                        case EResourceType.Message8x:
+                            resource = new SciMessage(EGameType.SCI3);
                             break;
                         default:
                             resource = new Dummy();

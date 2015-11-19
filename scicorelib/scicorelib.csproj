@@ -53,6 +53,7 @@
     <Compile Include="SCI\Data\Types.cs" />
     <Compile Include="SCI\IO\Compression\CompressionBase.cs" />
     <Compile Include="SCI\resource.cs" />
+    <Compile Include="SCI\Resource\message.cs" />
     <Compile Include="SCI\scibase.cs" />
     <None Include="SCI\IO\Compression\huffman.cs" />
     <Compile Include="SCI\IO\Compression\lzw.cs" />
