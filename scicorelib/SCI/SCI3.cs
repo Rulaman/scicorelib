@@ -110,10 +110,12 @@ namespace SCI
                         case EResourceType.View:
                         case EResourceType.View8x:
                             /* Resource entpacken */
-                            //						SciView view = (SciView)item.ResourceData;
                             CResource resource = FindPaletteResource(item.ResourceNumber);
-                            //SciPalette palette = (SciPalette)resource.ResourceData;
-                            //view.DecodeColors(palette.ColorInfo);
+
+                            if (resource != null)
+                            { 
+                                ((SciView)item).DecodeColors(((SciPalette)resource).ColorInfo);
+                            }
                             break;
                         case EResourceType.Picture:
                         case EResourceType.Picture8x:

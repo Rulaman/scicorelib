@@ -81,7 +81,7 @@ namespace SCI.Resource
             UsedUsed = binaryReader.ReadByte();
             binaryReader.BaseStream.Position += 4;
 
-            ColorField = new Color[NumberOfColors];
+            ColorField = new Color[256];
 
             for (int counter = ColorOffset; counter < NumberOfColors + ColorOffset; counter++)
             {
