@@ -7,7 +7,12 @@ namespace SCI.Resource
 {
     public class SciPalette : CResource
     {
-        private EGameType GameType;
+		public override EResourceType ResourceType
+		{
+			get { return EResourceType.Palette; }
+		}
+
+		private EGameType GameType;
         public SciPalette(EGameType gametype)
         {
             GameType = gametype;

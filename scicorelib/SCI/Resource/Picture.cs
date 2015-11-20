@@ -7,7 +7,12 @@ namespace SCI
 {
     public sealed class SciPicture : CResource
     {
-        private EGameType GameType;
+		public override EResourceType ResourceType
+		{
+			get { return EResourceType.Picture; }
+		}
+
+		private EGameType GameType;
         public SciPicture(EGameType gametype)
         {
             GameType = gametype;

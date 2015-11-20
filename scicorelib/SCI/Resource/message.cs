@@ -9,7 +9,12 @@ namespace SCI.Resource
 {
     public class SciMessage: CResource
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public override EResourceType ResourceType
+		{
+			get { return EResourceType.Message; }
+		}
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private EGameType GameType;
 
         public SciMessage(EGameType gametype)
@@ -27,15 +32,21 @@ namespace SCI.Resource
 
         public MessageInfo[] Message;
 
-        public void DecodeMessage(string filename)
+        public void Decode(string filename)
         {
             System.IO.FileStream filestream = new System.IO.FileStream(filename, System.IO.FileMode.Open);
             System.IO.BinaryReader binaryReader = new BinaryReader(filestream);
 
-            DecodeMessage(binaryReader);
+            Decode(binaryReader);
         }
 
-        public void DecodeMessage(BinaryReader binaryReader)
+		public void Decode(Stream stream)
+		{
+			System.IO.BinaryReader binaryReader = new BinaryReader(stream);
+			Decode(binaryReader);
+		}
+
+        public void Decode(BinaryReader binaryReader)
         {
             binaryReader.ReadBytes(8);
 

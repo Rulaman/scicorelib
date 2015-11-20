@@ -184,7 +184,7 @@ namespace SCI
                             break;
                     }
 
-                    resource.ResourceType = (EResourceType)item.Key;
+                    //resource.ResourceType = (EResourceType)item.Key;
 
                     resource.ResourceNumber = mapFileReader.ReadUInt16();
                     UInt32 temp = mapFileReader.ReadUInt32();

@@ -85,7 +85,7 @@ namespace SCI
                         //                        break;
                         //                };
 
-                        item.ResourceType = (EResourceType)resourceType;
+                        //item.ResourceType = (EResourceType)resourceType;
                         item.ResourceNumber = resourceNumber;
                         item.CompressedSize = unpackedLength;
                         item.UncompressedSize = packedLength;
@@ -161,7 +161,7 @@ namespace SCI
                         break;
                 };
 
-                resource.ResourceType = (EResourceType)(restypenum >> 11);        // XXXX X... .... ....
+                //resource.ResourceType = (EResourceType)(restypenum >> 11);        // XXXX X... .... ....
                 resource.ResourceNumber = (UInt16)(restypenum & 0x7FF);  // .... .XXX XXXX XXXX
                 resource.FileNumber = (byte)(resfileoff >> 26);      // XXXX XX.. .... .... .... .... .... ....
                 resource.FileOffset = (int)(resfileoff & 0x3FFFFFF);      // .... ..XX XXXX XXXX XXXX XXXX XXXX XXXX

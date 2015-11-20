@@ -6,15 +6,8 @@ namespace SCI
 {
     public abstract class CResource : ISciResource
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private EResourceType _ResourceType;
-
         [Browsable(true), Description("The type of the resource. Picture, View, Script, …")]
-        public EResourceType ResourceType
-        {
-            get { return _ResourceType; }
-            internal set { _ResourceType = value; }
-        }
+		public abstract EResourceType ResourceType { get; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         protected ECompressionType _CompressionType;
@@ -79,5 +72,9 @@ namespace SCI
 
     public class Dummy : CResource
     {
-    }
+		public override EResourceType ResourceType
+		{
+			get { return EResourceType.None; }
+		}
+	}
 }

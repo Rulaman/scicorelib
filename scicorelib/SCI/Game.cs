@@ -64,6 +64,7 @@ namespace SCI
         Sync368x = 0x93,
         XLate8x = 0x94,
 
+		None = 0xFE, // damit man weiß, dass diese Resource ungültig ist
         EndOfIndex = 0xFF
     }
 
@@ -85,9 +86,5 @@ namespace SCI
         public EGameType Type;
         public List<CResource> ResourceList = new List<CResource>();
         public CSciBase GameData;
-    }
-
-    public class CHelperResource : CResource
-    {
     }
 }

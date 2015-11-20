@@ -8,7 +8,12 @@ namespace SCI.Resource
 {
     public class SciPictureRow : CResource
     {
-        private EGameType GameType;
+		public override EResourceType ResourceType
+		{
+			get { return EResourceType.Picture; }
+		}
+
+		private EGameType GameType;
         public SciPictureRow(EGameType gametype)
         {
             GameType = gametype;

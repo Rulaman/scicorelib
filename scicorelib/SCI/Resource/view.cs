@@ -8,7 +8,12 @@ namespace SCI.Resource
 {
     public class SciView : CResource
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public override EResourceType ResourceType
+		{
+			get { return EResourceType.View; }
+		}
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private EGameType GameType;
 
         public SciView(EGameType gametype)

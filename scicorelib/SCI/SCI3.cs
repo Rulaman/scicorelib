@@ -95,7 +95,7 @@ namespace SCI
                                 break;
                             case EResourceType.Message:
                             case EResourceType.Message8x:
-                                ((SciMessage)item).DecodeMessage(new SciBinaryReader(new System.IO.MemoryStream(UnpackedDataArray)));
+                                ((SciMessage)item).Decode(new SciBinaryReader(new System.IO.MemoryStream(UnpackedDataArray)));
                                     break;
                             default:
                                 break;
@@ -191,7 +191,7 @@ namespace SCI
                             break;
                     };
 
-                    resource.ResourceType = (EResourceType)item.Key;
+                    //resource.ResourceType = (EResourceType)item.Key;
                     resource.ResourceNumber = mapFileReader.ReadUInt16();
                     resource.FileOffset = (Int32)mapFileReader.ReadUInt32();
 
