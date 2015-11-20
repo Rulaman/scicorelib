@@ -1,66 +1,54 @@
-using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-
 namespace SCI.Resource
 {
-    public class SciView : CResource
+    public class View : CResource
     {
 		public override EResourceType ResourceType
 		{
 			get { return EResourceType.View; }
 		}
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private EGameType GameType;
-
-        public SciView(EGameType gametype)
-        {
-            GameType = gametype;
-        }
+        public View(EGameType gametype) : base(gametype) { }
 
         public struct Header56
         {
-            public Int16 Len;
+            public short Len;
             public byte NumOfLoops;
             public byte IsScalable;
             public byte unknown;
             public byte ScaleRes;
-            public Int32 PalOffset;
+            public int PalOffset;
             public byte LoopSize;
             public byte CellSize;
             public byte ViewType;
             public byte SystemType;
 
-            public Int16 Width;
-            public Int16 Height;
+            public short Width;
+            public short Height;
 
-            public Color[] colorInfo;
-            public ColorPalette Palette;
-            public Bitmap Image;
+            public System.Drawing.Color[] colorInfo;
+            public System.Drawing.Imaging.ColorPalette Palette;
+            public System.Drawing.Bitmap Image;
         }
 
         public struct Loop56
         {
             public byte NumOfCells;
-            public Int16 CellLoopStart;
+            public short CellLoopStart;
 
             public struct Cell56
             {
-                public Int16 Width;
-                public Int16 Height;
-                public Int16 XPos;
-                public Int16 YPos;
+                public short Width;
+                public short Height;
+                public short XPos;
+                public short YPos;
                 public byte TransparentKey;
                 public byte Compression;
-                public UInt16 Flags;
-                public Int32 OffsetRLE;
-                public Int32 OffsetLiteral;
+                public ushort Flags;
+                public int OffsetRLE;
+                public int OffsetLiteral;
                 public byte[] CellData;
                 public byte[] ColorData;
-                public Bitmap Image;
+                public System.Drawing.Bitmap Image;
             }
 
             public Cell56[] Cell;
@@ -71,16 +59,16 @@ namespace SCI.Resource
         public string Filename;
         public string Palname;
 
-        public SciView LoadView(string filename)
+        public View LoadView(string filename)
         {
             Filename = filename;
             System.IO.FileStream fs = new System.IO.FileStream(filename, System.IO.FileMode.Open);
-            System.IO.BinaryReader br = new BinaryReader(fs);
+            System.IO.BinaryReader br = new System.IO.BinaryReader(fs);
 
             byte[] All = new byte[br.BaseStream.Length];
 
-            Int64 position = br.BaseStream.Position;
-            All = br.ReadBytes((Int32)br.BaseStream.Length);
+            long position = br.BaseStream.Position;
+            All = br.ReadBytes((int)br.BaseStream.Length);
             br.BaseStream.Position = position;
 
             Header.Len = br.ReadInt16();
@@ -93,7 +81,7 @@ namespace SCI.Resource
             Header.PalOffset = br.ReadInt32();
             Header.LoopSize = br.ReadByte();
 
-            Int64 PalSave = br.BaseStream.Position;
+            long PalSave = br.BaseStream.Position;
 
             if (Header.PalOffset == 0) // Palette über externe Datei laden
             {
@@ -101,7 +89,7 @@ namespace SCI.Resource
             else
             {
                 br.BaseStream.Position = Header.PalOffset;
-                SciPalette pal = new SciPalette(GameType);
+                Palette pal = new Palette(GameType);
                 pal.ReadFromStream(br, true);
                 Header.colorInfo = pal.ColorInfo;
             }
@@ -134,8 +122,8 @@ namespace SCI.Resource
                 Loop[entry].Cell = new Loop56.Cell56[Loop[entry].NumOfCells];
             }
 
-            Int64 Start = 0;
-            Int64 Stop = 0;
+            long Start = 0;
+            long Stop = 0;
 
             for (int entryinner = 0; entryinner < Loop.Length; entryinner++)
             {
@@ -163,7 +151,7 @@ namespace SCI.Resource
 
                     Stop = br.BaseStream.Position;
 
-                    br.ReadBytes((Int32)(Header.CellSize - (Stop - Start)));
+                    br.ReadBytes((int)(Header.CellSize - (Stop - Start)));
 
                     NumOfCellsCounter++;
                 }
@@ -201,12 +189,12 @@ namespace SCI.Resource
                                     /* do here the same as in 0x00 */
                                     if (ltrpos == 0)
                                     {
-                                        Array.Copy(All, rlepos, Loop[entryloop].Cell[entrycell].ColorData, counter, Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
+										System.Array.Copy(All, rlepos, Loop[entryloop].Cell[entrycell].ColorData, counter, System.Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
                                         rlepos += runlen;
                                     }
                                     else
                                     {
-                                        Array.Copy(All, ltrpos, Loop[entryloop].Cell[entrycell].ColorData, counter, Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
+										System.Array.Copy(All, ltrpos, Loop[entryloop].Cell[entrycell].ColorData, counter, System.Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
                                         ltrpos += runlen;
                                     }
                                 }
@@ -215,12 +203,12 @@ namespace SCI.Resource
                                 {
                                     if (ltrpos == 0)
                                     {
-                                        Array.Copy(All, rlepos, Loop[entryloop].Cell[entrycell].ColorData, counter, Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
+										System.Array.Copy(All, rlepos, Loop[entryloop].Cell[entrycell].ColorData, counter, System.Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
                                         rlepos += runlen;
                                     }
                                     else
                                     {
-                                        Array.Copy(All, ltrpos, Loop[entryloop].Cell[entrycell].ColorData, counter, Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
+										System.Array.Copy(All, ltrpos, Loop[entryloop].Cell[entrycell].ColorData, counter, System.Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
                                         ltrpos += runlen;
                                     }
                                 }
@@ -229,7 +217,7 @@ namespace SCI.Resource
                                 {
                                     if (ltrpos == 0)
                                     {
-                                        for (int i = 0; i < Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter); i++)
+                                        for (int i = 0; i < System.Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter); i++)
                                         {
                                             Loop[entryloop].Cell[entrycell].ColorData[counter + i] = All[rlepos];
                                         }
@@ -237,7 +225,7 @@ namespace SCI.Resource
                                     }
                                     else
                                     {
-                                        for (int i = 0; i < Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter); i++)
+                                        for (int i = 0; i < System.Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter); i++)
                                         {
                                             Loop[entryloop].Cell[entrycell].ColorData[counter + i] = All[ltrpos];
                                         }
@@ -263,9 +251,9 @@ namespace SCI.Resource
             return this;
         }
 
-        public SciView LoadViewSCI1(System.IO.Stream stream)
+        public View LoadViewSCI1(System.IO.Stream stream)
         {
-            BinaryReader br = new BinaryReader(stream);
+			System.IO.BinaryReader br = new System.IO.BinaryReader(stream);
             //byte[] All = new byte[br.BaseStream.Length];
 
             //Int64 position = br.BaseStream.Position;
@@ -311,8 +299,8 @@ namespace SCI.Resource
                 Loop[entry].Cell = new Loop56.Cell56[Loop[entry].NumOfCells];
             }
 
-            Int64 Start = 0;
-            Int64 Stop = 0;
+            long Start = 0;
+            long Stop = 0;
 
             for (int entryinner = 0; entryinner < Loop.Length; entryinner++)
             {
@@ -337,7 +325,7 @@ namespace SCI.Resource
 
                     Stop = br.BaseStream.Position;
                     //br.ReadBytes(20);
-                    br.ReadBytes((Int32)(Header.CellSize - (Stop - Start)));
+                    br.ReadBytes((int)(Header.CellSize - (Stop - Start)));
 
                     NumOfCellsCounter++;
                 }
@@ -349,13 +337,13 @@ namespace SCI.Resource
             return this;
         }
 
-        public SciView LoadViewSCI11(System.IO.Stream stream)
+        public View LoadViewSCI11(System.IO.Stream stream)
         {
-            BinaryReader br = new BinaryReader(stream);
+			System.IO.BinaryReader br = new System.IO.BinaryReader(stream);
             byte[] All = new byte[br.BaseStream.Length];
 
-            Int64 position = br.BaseStream.Position;
-            All = br.ReadBytes((Int32)br.BaseStream.Length);
+            long position = br.BaseStream.Position;
+            All = br.ReadBytes((int)br.BaseStream.Length);
             br.BaseStream.Position = position;
 
             Header.Len = br.ReadInt16();
@@ -368,7 +356,7 @@ namespace SCI.Resource
             Header.PalOffset = br.ReadInt32();
             Header.LoopSize = br.ReadByte();
 
-            Int64 PalSave = br.BaseStream.Position;
+            long PalSave = br.BaseStream.Position;
 
             if (Header.PalOffset == 0) // Palette über externe Datei laden
             {
@@ -376,11 +364,11 @@ namespace SCI.Resource
             else
             {
                 br.BaseStream.Position = Header.PalOffset;
-                SciPalette pal = new SciPalette(GameType);
+                Palette pal = new Palette(GameType);
                 pal.ReadFromStream(br, true);
                 Header.colorInfo = pal.ColorInfo;
 
-                Header.Image = new Bitmap(16, 16, PixelFormat.Format8bppIndexed);
+                Header.Image = new System.Drawing.Bitmap(16, 16, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
                 Header.Palette = Header.Image.Palette;
 
                 for (int pos = 0; pos < 256; pos++)
@@ -417,10 +405,10 @@ namespace SCI.Resource
                 Loop[entry].Cell = new Loop56.Cell56[Loop[entry].NumOfCells];
             }
 
-            Int64 Start = 0;
-            Int64 Stop = 0;
+			long Start = 0;
+			long Stop = 0;
 
-            for (int entryinner = 0; entryinner < Loop.Length; entryinner++)
+			for (int entryinner = 0; entryinner < Loop.Length; entryinner++)
             {
                 br.BaseStream.Position = Loop[entryinner].CellLoopStart;
 
@@ -446,7 +434,7 @@ namespace SCI.Resource
 
                     Stop = br.BaseStream.Position;
                     //br.ReadBytes(20);
-                    br.ReadBytes((Int32)(Header.CellSize - (Stop - Start)));
+                    br.ReadBytes((int)(Header.CellSize - (Stop - Start)));
 
                     NumOfCellsCounter++;
                 }
@@ -484,12 +472,12 @@ namespace SCI.Resource
                                     /* do here the same as in 0x00 */
                                     if (ltrpos == 0)
                                     {
-                                        Array.Copy(All, rlepos, Loop[entryloop].Cell[entrycell].ColorData, counter, Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
+										System.Array.Copy(All, rlepos, Loop[entryloop].Cell[entrycell].ColorData, counter, System.Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
                                         rlepos += runlen;
                                     }
                                     else
                                     {
-                                        Array.Copy(All, ltrpos, Loop[entryloop].Cell[entrycell].ColorData, counter, Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
+										System.Array.Copy(All, ltrpos, Loop[entryloop].Cell[entrycell].ColorData, counter, System.Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
                                         ltrpos += runlen;
                                     }
                                 }
@@ -498,12 +486,12 @@ namespace SCI.Resource
                                 {
                                     if (ltrpos == 0)
                                     {
-                                        Array.Copy(All, rlepos, Loop[entryloop].Cell[entrycell].ColorData, counter, Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
+										System.Array.Copy(All, rlepos, Loop[entryloop].Cell[entrycell].ColorData, counter, System.Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
                                         rlepos += runlen;
                                     }
                                     else
                                     {
-                                        Array.Copy(All, ltrpos, Loop[entryloop].Cell[entrycell].ColorData, counter, Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
+										System.Array.Copy(All, ltrpos, Loop[entryloop].Cell[entrycell].ColorData, counter, System.Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter));
                                         ltrpos += runlen;
                                     }
                                 }
@@ -512,7 +500,7 @@ namespace SCI.Resource
                                 {
                                     if (ltrpos == 0)
                                     {
-                                        for (int i = 0; i < Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter); i++)
+                                        for (int i = 0; i < System.Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter); i++)
                                         {
                                             Loop[entryloop].Cell[entrycell].ColorData[counter + i] = All[rlepos];
                                         }
@@ -520,7 +508,7 @@ namespace SCI.Resource
                                     }
                                     else
                                     {
-                                        for (int i = 0; i < Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter); i++)
+                                        for (int i = 0; i < System.Math.Min(runlen, Loop[entryloop].Cell[entrycell].ColorData.Length - counter); i++)
                                         {
                                             Loop[entryloop].Cell[entrycell].ColorData[counter + i] = All[ltrpos];
                                         }
@@ -544,41 +532,41 @@ namespace SCI.Resource
             return this;
         }
 
-        public Color[] DecodeColors(string filename)
+        public System.Drawing.Color[] DecodeColors(string filename)
         {
             Palname = filename;
-            SciPalette palette = new SciPalette(GameType);
+            Palette palette = new Palette(GameType);
             return DecodeColors(palette.ReadFromSierraPalFile(filename));
         }
 
-        public Color[] DecodeColors()
+        public System.Drawing.Color[] DecodeColors()
         {
             return DecodeColors(this.Header.colorInfo);
         }
 
-        public Color[] DecodeColors(Color[] colorinfo)
+        public System.Drawing.Color[] DecodeColors(System.Drawing.Color[] colorinfo)
         {
             for (int entryloop = 0; entryloop < Loop.Length; entryloop++)
             {
                 for (int entrycell = 0; entrycell < Loop[entryloop].NumOfCells; entrycell++)
                 {
-                    Bitmap b = new Bitmap(Loop[entryloop].Cell[entrycell].Width, Loop[entryloop].Cell[entrycell].Height, PixelFormat.Format8bppIndexed);
-                    ColorPalette palette = b.Palette;
+					System.Drawing.Bitmap b = new System.Drawing.Bitmap(Loop[entryloop].Cell[entrycell].Width, Loop[entryloop].Cell[entrycell].Height, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+					System.Drawing.Imaging.ColorPalette palette = b.Palette;
 
-                    for (int i = 0; i < Math.Min(256, colorinfo.Length); i++)
+                    for (int i = 0; i < System.Math.Min(256, colorinfo.Length); i++)
                     {
                         palette.Entries[i] = colorinfo[i];
                     }
 
                     b.Palette = palette;
-                    BitmapData bmpData = b.LockBits(new Rectangle(0, 0, b.Width, b.Height), ImageLockMode.ReadWrite, b.PixelFormat);
-                    IntPtr ptr = bmpData.Scan0;
-                    Int32 startPos = Loop[entryloop].Cell[entrycell].ColorData.Length / bmpData.Height;
+					System.Drawing.Imaging.BitmapData bmpData = b.LockBits(new System.Drawing.Rectangle(0, 0, b.Width, b.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, b.PixelFormat);
+					System.IntPtr ptr = bmpData.Scan0;
+                    int startPos = Loop[entryloop].Cell[entrycell].ColorData.Length / bmpData.Height;
 
                     for (int height = 0; height < b.Height; height++)
                     {
                         System.Runtime.InteropServices.Marshal.Copy(Loop[entryloop].Cell[entrycell].ColorData, startPos * height, ptr, bmpData.Width);
-                        ptr = (IntPtr)((long)ptr + bmpData.Stride);
+                        ptr = (System.IntPtr)((long)ptr + bmpData.Stride);
                     }
 
                     b.UnlockBits(bmpData);

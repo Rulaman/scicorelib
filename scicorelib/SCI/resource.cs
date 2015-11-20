@@ -6,8 +6,18 @@ namespace SCI
 {
     public abstract class CResource : ISciResource
     {
-        [Browsable(true), Description("The type of the resource. Picture, View, Script, …")]
+		[Browsable(true), Description("The type of the resource. Picture, View, Script, …")]
 		public abstract EResourceType ResourceType { get; }
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		private EGameType _GameType;
+
+		[Browsable(true), Description("The type of the game for the reource. SCI0, SCI01, SCI1, SCI2, SCI3 …")]
+		public EGameType GameType
+		{
+			get { return _GameType; }
+			internal set { _GameType = value; }
+		}
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         protected ECompressionType _CompressionType;
@@ -68,10 +78,17 @@ namespace SCI
             get { return _FileOffset; }
             internal set { _FileOffset = value; }
         }
+
+		public CResource(EGameType gametype)
+		{
+			GameType = gametype;
+		}
     }
 
     public class Dummy : CResource
     {
+		public Dummy(EGameType gametype) : base(gametype) { }
+
 		public override EResourceType ResourceType
 		{
 			get { return EResourceType.None; }

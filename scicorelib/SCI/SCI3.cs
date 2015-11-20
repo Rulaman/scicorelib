@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SCI
 {
-    public class SCI3 : CSciBase
+    public class SCI3 : SciBase
     {
         /// <summary>
         /// load a compiled game and not the sources and the project file give only the path as the parameter
@@ -80,22 +80,22 @@ namespace SCI
                         {
                             case EResourceType.Palette:
                             case EResourceType.Palette8x:
-                                ((SciPalette)item).ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
+                                ((Palette)item).ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
                                 //item.ResourceData = palette;
                                 break;
                             case EResourceType.View:
                             case EResourceType.View8x:
-                                ((SciView)item).LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
+                                ((View)item).LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
                                 //item.ResourceData = view;
                                 break;
                             case EResourceType.Picture:
                             case EResourceType.Picture8x:
-                                ((SciPictureRow)item).FromByteArray(UnpackedDataArray);
+                                ((PictureRow)item).FromByteArray(UnpackedDataArray);
                                 //item.ResourceData = pict;
                                 break;
                             case EResourceType.Message:
                             case EResourceType.Message8x:
-                                ((SciMessage)item).Decode(new SciBinaryReader(new System.IO.MemoryStream(UnpackedDataArray)));
+                                ((Message)item).Decode(new SciBinaryReader(new System.IO.MemoryStream(UnpackedDataArray)));
                                     break;
                             default:
                                 break;
@@ -114,7 +114,7 @@ namespace SCI
 
                             if (resource != null)
                             { 
-                                ((SciView)item).DecodeColors(((SciPalette)resource).ColorInfo);
+                                ((View)item).DecodeColors(((Palette)resource).ColorInfo);
                             }
                             break;
                         case EResourceType.Picture:
@@ -172,22 +172,22 @@ namespace SCI
                     {
                         case EResourceType.Palette:
                         case EResourceType.Palette8x:
-                            resource = new SciPalette(EGameType.SCI3);
+                            resource = new Palette(EGameType.SCI3);
                             break;
                         case EResourceType.View:
                         case EResourceType.View8x:
-                            resource = new SciView(EGameType.SCI3);
+                            resource = new View(EGameType.SCI3);
                             break;
                         case EResourceType.Picture:
                         case EResourceType.Picture8x:
-                            resource = new SciPictureRow(EGameType.SCI3);
+                            resource = new PictureRow(EGameType.SCI3);
                             break;
                         case EResourceType.Message:
                         case EResourceType.Message8x:
-                            resource = new SciMessage(EGameType.SCI3);
+                            resource = new Message(EGameType.SCI3);
                             break;
                         default:
-                            resource = new Dummy();
+                            resource = new Dummy(EGameType.SCI3);
                             break;
                     };
 

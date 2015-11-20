@@ -3,7 +3,7 @@ using System;
 
 namespace SCI
 {
-    public class SCI0 : CSciBase
+    public class SCI0 : SciBase
     {
         /// <summary>
         /// load a compiled game and not the sources and the project file give only the path as the parameter
@@ -140,24 +140,24 @@ namespace SCI
                 {
                     case EResourceType.Palette:
                     case EResourceType.Palette8x:
-                        resource = new SciPalette(EGameType.SCI0);
+                        resource = new Palette(EGameType.SCI0);
                         // palette.ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
                         // item.ResourceData = palette;
                         break;
                     case EResourceType.View:
                     case EResourceType.View8x:
-                        resource = new SciView(EGameType.SCI0);
+                        resource = new View(EGameType.SCI0);
                         // view.LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
                         // item.ResourceData = view;
                         break;
                     case EResourceType.Picture:
                     case EResourceType.Picture8x:
-                        resource = new SciPictureRow(EGameType.SCI0);
+                        resource = new PictureRow(EGameType.SCI0);
                         // pict.FromByteArray(UnpackedDataArray);
                         // item.ResourceData = pict;
                         break;
                     default:
-                        resource = new Dummy();
+                        resource = new Dummy(EGameType.SCI0);
                         break;
                 };
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SCI
 {
-    public class SCI1 : CSciBase
+    public class SCI1 : SciBase
     {
         /// <summary>
         /// load a compiled game and not the sources and the project file
@@ -112,12 +112,12 @@ namespace SCI
                         {
                             case EResourceType.View:
                             case EResourceType.View8x:
-                                ((SciView)item).LoadViewSCI1(new System.IO.MemoryStream(UnpackedDataArray));
+                                ((View)item).LoadViewSCI1(new System.IO.MemoryStream(UnpackedDataArray));
                                 //item.ResourceData = view;
                                 break;
                             case EResourceType.Picture:
                             case EResourceType.Picture8x:
-                                ((SciPicture)item).FromStream(stream);
+                                ((Picture)item).FromStream(stream);
                                 //item.ResourceData = pict;
                                 break;
                             default:
@@ -171,16 +171,16 @@ namespace SCI
                     switch ((EResourceType)item.Key)
                     {
                         case EResourceType.View8x:
-                            resource = new SciView(EGameType.SCI1);
+                            resource = new View(EGameType.SCI1);
                             break;
                         case EResourceType.Palette8x:
-                            resource = new SciPalette(EGameType.SCI1);
+                            resource = new Palette(EGameType.SCI1);
                             break;
                         case EResourceType.Picture8x:
-                            resource = new SciPicture(EGameType.SCI1);
+                            resource = new Picture(EGameType.SCI1);
                             break;
                         default:
-                            resource = new Dummy();
+                            resource = new Dummy(EGameType.SCI1);
                             break;
                     }
 

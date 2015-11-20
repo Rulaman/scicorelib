@@ -1,16 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-
-namespace SCI
+﻿namespace SCI
 {
-    public abstract class CSciBase
+    public abstract class SciBase
     {
-        private List<CResource> PaletteResourceList;
+        private System.Collections.Generic.List<CResource> PaletteResourceList;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private List<CResource> _ResourceList = new List<CResource>();
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        private System.Collections.Generic.List<CResource> _ResourceList = new System.Collections.Generic.List<CResource>();
 
-        public List<CResource> ResourceList
+        public System.Collections.Generic.List<CResource> ResourceList
         {
             get { return _ResourceList; }
             protected set { _ResourceList = value; }
@@ -23,7 +20,7 @@ namespace SCI
 
             if (PaletteResourceList == null)
             {
-                PaletteResourceList = new List<CResource>();
+                PaletteResourceList = new System.Collections.Generic.List<CResource>();
 
                 foreach (CResource item in ResourceList)
                 {

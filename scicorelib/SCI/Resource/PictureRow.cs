@@ -1,53 +1,43 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-
 namespace SCI.Resource
 {
-    public class SciPictureRow : CResource
+    public class PictureRow : CResource
     {
 		public override EResourceType ResourceType
 		{
 			get { return EResourceType.Picture; }
 		}
 
-		private EGameType GameType;
-        public SciPictureRow(EGameType gametype)
-        {
-            GameType = gametype;
-        }
+        public PictureRow(EGameType gametype) : base(gametype) { }
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Size InternalSize = new Size();
+		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+		private System.Drawing.Size InternalSize = new System.Drawing.Size();
 
         public object Tag;
 
-        public Int16 Len;
+        public short Len;
         public byte NumOfLoops;
         public byte IsScalable;
         public byte ScaleRes;
-        public Int32 PalOffset;
-        public Color[] Entries;
+        public int PalOffset;
+        public System.Drawing.Color[] Entries;
 
-        public List<SciPicture> PictureList = new List<SciPicture>();
+        public System.Collections.Generic.List<Picture> PictureList = new System.Collections.Generic.List<Picture>();
 
         public void FromFile(string filename)
         {
-            FileStream fs = new FileStream(filename, System.IO.FileMode.Open);
+			System.IO.FileStream fs = new System.IO.FileStream(filename, System.IO.FileMode.Open);
             FromStream(fs, fs.Length);
             fs.Close();
         }
 
         public void FromByteArray(byte[] array)
         {
-            FromStream(new MemoryStream(array), array.Length);
+            FromStream(new System.IO.MemoryStream(array), array.Length);
         }
 
-        public void FromStream(System.IO.Stream stream, Int64 length)
+        public void FromStream(System.IO.Stream stream, long length)
         {
-            System.IO.BinaryReader br = new BinaryReader(stream);
+            System.IO.BinaryReader br = new System.IO.BinaryReader(stream);
 
             Len = br.ReadInt16();
             NumOfLoops = br.ReadByte();
@@ -60,7 +50,7 @@ namespace SCI.Resource
 
             for (int entry = 0; entry < NumOfLoops; entry++)
             {
-                SciPicture pict = new SciPicture(GameType);
+                Picture pict = new Picture(GameType);
                 pict.FromStream(stream);
                 PictureList.Add(pict);
             }
@@ -76,7 +66,7 @@ namespace SCI.Resource
                 PictureList[entry].ReadColorDataFromStream(stream);
             }
 
-            foreach (SciPicture item in PictureList)
+            foreach (Picture item in PictureList)
             {
                 item.DecodeImage(Entries);
             }
@@ -84,20 +74,20 @@ namespace SCI.Resource
 
         public void Save(string filename)
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         public void Save(System.IO.Stream stream)
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
-        public Color[] DecodeColorInformation(string filename)
+        public System.Drawing.Color[] DecodeColorInformation(string filename)
         {
-            FileStream fileStream = new FileStream(filename, FileMode.Open);
-            BinaryReader binaryReader = new BinaryReader(fileStream);
+			System.IO.FileStream fileStream = new System.IO.FileStream(filename, System.IO.FileMode.Open);
+			System.IO.BinaryReader binaryReader = new System.IO.BinaryReader(fileStream);
 
-            Color[] colors = DecodeColorInformation(binaryReader);
+			System.Drawing.Color[] colors = DecodeColorInformation(binaryReader);
 
             binaryReader.Close();
             fileStream.Close();
@@ -105,12 +95,12 @@ namespace SCI.Resource
             return colors;
         }
 
-        public Color[] DecodeColorInformation(BinaryReader binaryReader)
+        public System.Drawing.Color[] DecodeColorInformation(System.IO.BinaryReader binaryReader)
         {
-            Color[] colorArray;
-            Int16 NumberOfColors = 256; // mal fest angenommen
-            Int16 ColorOffset = 0;
-            Int16 UsedUsed; // Is Color Used flag
+			System.Drawing.Color[] colorArray;
+            short NumberOfColors = 256; // mal fest angenommen
+            short ColorOffset = 0;
+            short UsedUsed; // Is Color Used flag
 
             binaryReader.BaseStream.Position += 25;
 
@@ -122,11 +112,11 @@ namespace SCI.Resource
             UsedUsed = binaryReader.ReadByte();
             binaryReader.BaseStream.Position += 4;
 
-            colorArray = new Color[256];
+            colorArray = new System.Drawing.Color[256];
 
             for (int counter = 0; counter < 256; counter++)
             {
-                colorArray[counter] = Color.Black;
+                colorArray[counter] = System.Drawing.Color.Black;
             }
 
             for (int counter = ColorOffset; counter < NumberOfColors + ColorOffset; counter++)
@@ -141,10 +131,10 @@ namespace SCI.Resource
                         //colorInfoArray[counter].Used = (binaryReader.ReadByte() > 0) ? true : false;
                         binaryReader.ReadByte();
                     }
-                    Int16 red = binaryReader.ReadByte();
-                    Int16 green = binaryReader.ReadByte();
-                    Int16 blue = binaryReader.ReadByte();
-                    colorArray[counter] = Color.FromArgb(255, red, green, blue);
+                    short red = binaryReader.ReadByte();
+                    short green = binaryReader.ReadByte();
+                    short blue = binaryReader.ReadByte();
+                    colorArray[counter] = System.Drawing.Color.FromArgb(255, red, green, blue);
                 }
             }
 
@@ -153,20 +143,20 @@ namespace SCI.Resource
 
         public bool Load(string path)
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
-        public Int32 Height
+        public int Height
         {
             get { return InternalSize.Height; }
         }
 
-        public Int32 Width
+        public int Width
         {
             get { return InternalSize.Width; }
         }
 
-        public Size Size
+        public System.Drawing.Size Size
         {
             get { return InternalSize; }
         }

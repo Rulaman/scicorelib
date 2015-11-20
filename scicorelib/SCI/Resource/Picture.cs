@@ -1,36 +1,27 @@
-using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-
-namespace SCI
+namespace SCI.Resource
 {
-    public sealed class SciPicture : CResource
+    public sealed class Picture : CResource
     {
 		public override EResourceType ResourceType
 		{
 			get { return EResourceType.Picture; }
 		}
 
-		private EGameType GameType;
-        public SciPicture(EGameType gametype)
-        {
-            GameType = gametype;
-        }
+        public Picture(EGameType gametype):base(gametype) { }
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Size InternalSize = new Size();
+		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+		private System.Drawing.Size InternalSize = new System.Drawing.Size();
 
-        private Point ScreenPosition = new Point();
+        private System.Drawing.Point ScreenPosition = new System.Drawing.Point();
         private byte TransparentKey;
         private byte Compression;
-        private UInt16 Flags;
-        public Bitmap Image;
-        public Int32 OffsetRLE;
+        private ushort Flags;
+        public System.Drawing.Bitmap Image;
+        public int OffsetRLE;
         public byte[] ColorData;
         public object Tag;
 
-        public Image FromFile(string filename)
+        public System.Drawing.Image FromFile(string filename)
         {
             return Image;
         }
@@ -60,11 +51,11 @@ namespace SCI
             ColorData = br.ReadBytes(ColorData.Length);
         }
 
-        public void DecodeImage(Color[] Entries)
+        public void DecodeImage(System.Drawing.Color[] Entries)
         {
-            Bitmap b = new Bitmap(Width, Height, PixelFormat.Format8bppIndexed);
+			System.Drawing.Bitmap b = new System.Drawing.Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 
-            ColorPalette Palette = b.Palette;
+			System.Drawing.Imaging.ColorPalette Palette = b.Palette;
 
             for (int pos = 0; pos < 256; pos++)
             {
@@ -72,14 +63,14 @@ namespace SCI
             }
 
             b.Palette = Palette;
-            BitmapData bmpData = b.LockBits(new Rectangle(0, 0, b.Width, b.Height), ImageLockMode.ReadWrite, b.PixelFormat);
-            IntPtr ptr = bmpData.Scan0;
-            Int32 startPos = ColorData.Length / bmpData.Height;
+			System.Drawing.Imaging.BitmapData bmpData = b.LockBits(new System.Drawing.Rectangle(0, 0, b.Width, b.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, b.PixelFormat);
+            System.IntPtr ptr = bmpData.Scan0;
+            int startPos = ColorData.Length / bmpData.Height;
 
             for (int height = 0; height < b.Height; height++)
             {
                 System.Runtime.InteropServices.Marshal.Copy(ColorData, startPos * height, ptr, bmpData.Width);
-                ptr = (IntPtr)((int)ptr + bmpData.Stride);
+                ptr = (System.IntPtr)((int)ptr + bmpData.Stride);
             }
 
             b.UnlockBits(bmpData);
@@ -88,30 +79,30 @@ namespace SCI
 
         public void Save(string filename)
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         public void Save(System.IO.Stream stream)
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         public bool Load(string path)
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
-        public Int32 Height
+        public int Height
         {
             get { return InternalSize.Height; }
         }
 
-        public Int32 Width
+        public int Width
         {
             get { return InternalSize.Width; }
         }
 
-        public Size Size
+        public System.Drawing.Size Size
         {
             get { return InternalSize; }
         }

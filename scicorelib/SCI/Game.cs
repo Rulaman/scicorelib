@@ -85,6 +85,6 @@ namespace SCI
     {
         public EGameType Type;
         public List<CResource> ResourceList = new List<CResource>();
-        public CSciBase GameData;
+        public SciBase GameData;
     }
 }

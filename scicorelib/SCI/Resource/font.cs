@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace SCI.Resource
+﻿namespace SCI.Resource
 {
 	public class Font : CResource
 	{
@@ -9,13 +7,7 @@ namespace SCI.Resource
 			get { return EResourceType.Font; }
 		}
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private EGameType GameType;
-
-		public Font(EGameType gametype)
-		{
-			GameType = gametype;
-		}
+		public Font(EGameType gametype):base(gametype) { }
 
 		public FontCharacter[] Character;
 
