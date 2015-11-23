@@ -10,7 +10,7 @@ namespace SCI
         /// load a compiled game and not the sources and the project file
         /// give only the path as the parameter
         /// </summary>
-        public override bool Load(string path)
+        public override bool Expand(string path)
         {
             string mapfilename = "RESOURCE.MAP";
             string resourcefilename = "RESOURCE";
@@ -34,7 +34,7 @@ namespace SCI
 
                 System.IO.MemoryStream ms = new System.IO.MemoryStream(filearray);
 
-                ReadMapFile(ms);
+                ReadMapFile(ms, path);
 
                 string resfilesave = "";
 
@@ -58,8 +58,8 @@ namespace SCI
 
                         stream.Position = item.FileOffset;
 
-                        /* Resource entpacken */
-                        SciBinaryReader br = new SciBinaryReader(stream);
+						/* Resource entpacken */
+						IO.SciBinaryReader br = new IO.SciBinaryReader(stream);
                         /* byte typ = */
                         br.ReadByte();
                         /* UInt16 id = */
@@ -112,13 +112,11 @@ namespace SCI
                         {
                             case EResourceType.View:
                             case EResourceType.View8x:
-                                ((View)item).LoadViewSCI1(new System.IO.MemoryStream(UnpackedDataArray));
-                                //item.ResourceData = view;
+                                //((SciView)item).LoadViewSCI1(new System.IO.MemoryStream(UnpackedDataArray));
                                 break;
                             case EResourceType.Picture:
                             case EResourceType.Picture8x:
-                                ((Picture)item).FromStream(stream);
-                                //item.ResourceData = pict;
+                                //((SciPicture)item).FromStream(stream);
                                 break;
                             default:
                                 break;
@@ -130,10 +128,10 @@ namespace SCI
             return retval;
         }
 
-        private void ReadMapFile(System.IO.Stream stream)
+        private void ReadMapFile(System.IO.Stream stream, string path)
         {
             byte restype = 0;
-            SCI.SciBinaryReader mapFileReader = new SciBinaryReader(stream);
+			IO.SciBinaryReader mapFileReader = new IO.SciBinaryReader(stream);
             /* ? muss noch geswappt werden ? */
             mapFileReader.ReverseReading = false;
 
@@ -183,9 +181,8 @@ namespace SCI
                             resource = new Dummy(EGameType.SCI1);
                             break;
                     }
-
+					resource.Path = path;
                     //resource.ResourceType = (EResourceType)item.Key;
-
                     resource.ResourceNumber = mapFileReader.ReadUInt16();
                     UInt32 temp = mapFileReader.ReadUInt32();
 

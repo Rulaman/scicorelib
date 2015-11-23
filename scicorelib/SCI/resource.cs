@@ -4,8 +4,13 @@ using System.Diagnostics;
 
 namespace SCI
 {
-    public abstract class CResource : ISciResource
-    {
+	public abstract class CResource : ISciResource
+	{
+		public CResource(EGameType gametype)
+		{
+			_GameType = gametype;
+		}
+
 		[Browsable(true), Description("The type of the resource. Picture, View, Script, …")]
 		public abstract EResourceType ResourceType { get; }
 
@@ -79,9 +84,13 @@ namespace SCI
             internal set { _FileOffset = value; }
         }
 
-		public CResource(EGameType gametype)
+		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+		private string _Path;
+		public string Path
 		{
-			GameType = gametype;
+			get { return _Path; }
+			//set { CheckSetAndSend(ref _Path, value);
+			set { _Path = value; }
 		}
     }
 

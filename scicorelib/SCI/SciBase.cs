@@ -63,6 +63,6 @@
             return returnvalue;
         }
 
-        public abstract bool Load(string path);
+        public abstract bool Expand(string path);
     }
 }
