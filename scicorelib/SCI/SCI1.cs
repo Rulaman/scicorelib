@@ -1,16 +1,16 @@
 ﻿using SCI.Resource;
 using System;
-using System.Collections.Generic;
 
 namespace SCI
 {
     public class SCI1 : SciBase
     {
-        /// <summary>
-        /// load a compiled game and not the sources and the project file
-        /// give only the path as the parameter
-        /// </summary>
-        public override bool Expand(string path)
+		/// <summary>
+		/// load a compiled game and not the sources and the project file give only the path as the parameter
+		/// </summary>
+		/// <param name="path">The path to the (compiled) game.</param>
+		/// <returns>True if the game could loaded, otherwise false.</returns>
+		public override bool Expand(string path)
         {
             string mapfilename = "RESOURCE.MAP";
             string resourcefilename = "RESOURCE";
@@ -135,9 +135,9 @@ namespace SCI
             /* ? muss noch geswappt werden ? */
             mapFileReader.ReverseReading = false;
 
-            /*SCI 1*/
-            Dictionary<byte, int> resourcearray = new Dictionary<byte, int>();
-            List<int> offsetlist = new List<int>();
+			/*SCI 1*/
+			System.Collections.Generic.Dictionary<byte, int> resourcearray = new System.Collections.Generic.Dictionary<byte, int>();
+			System.Collections.Generic.List<int> offsetlist = new System.Collections.Generic.List<int>();
             while (0xFF != (restype = mapFileReader.ReadByte()))
             {
                 UInt16 offset = mapFileReader.ReadUInt16();
@@ -147,7 +147,7 @@ namespace SCI
             }
 
             int i = 0;
-            foreach (KeyValuePair<byte, int> item in resourcearray)
+            foreach (System.Collections.Generic.KeyValuePair<byte, int> item in resourcearray)
             {
                 mapFileReader.BaseStream.Position = item.Value;
 

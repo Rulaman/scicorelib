@@ -6,7 +6,7 @@ namespace SCI
     public class Game
     {
 		public EGameType Type = EGameType.None;
-		public System.Collections.Generic.List<CResource> ResourceList = new System.Collections.Generic.List<CResource>();
+		//public System.Collections.Generic.List<CResource> ResourceList = new System.Collections.Generic.List<CResource>();
 		public SciBase GameData;
 
 		/// <summary>
@@ -34,7 +34,7 @@ namespace SCI
                     if (game.Expand(path))
                     {
                         Type = EGameType.SCI1;
-                        ResourceList = game.ResourceList;
+                        //ResourceList = game.ResourceList;
                         GameData = (SciBase)game;
                     }
                 }
@@ -46,7 +46,7 @@ namespace SCI
                     if (game.Expand(path))
                     {
                         Type = EGameType.SCI0;
-                        ResourceList = game.ResourceList;
+                        //ResourceList = game.ResourceList;
                         GameData = (SciBase)game;
                     }
                 }
@@ -57,13 +57,17 @@ namespace SCI
                 if (game.Expand(path))
                 {
                     Type = EGameType.SCI3;
-                    ResourceList = game.ResourceList;
+                    //ResourceList = game.ResourceList;
                     GameData = (SciBase)game;
                 }
             }
 
 			if (game != null)
 			{
+				foreach(CResource item in GameData.ResourceList)
+				{
+					
+				}
 			}
         }
     }

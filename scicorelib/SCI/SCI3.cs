@@ -1,6 +1,5 @@
 ﻿using SCI.Resource;
 using System;
-using System.Collections.Generic;
 
 namespace SCI
 {
@@ -132,9 +131,9 @@ namespace SCI
             /* ? muss noch geswappt werden ? */
             mapFileReader.ReverseReading = false;
 
-            /*SCI 3*/
-            Dictionary<byte, int> resourcearray = new Dictionary<byte, int>();
-            List<int> offsetlist = new List<int>();
+			/*SCI 3*/
+			System.Collections.Generic.Dictionary<byte, int> resourcearray = new System.Collections.Generic.Dictionary<byte, int>();
+			System.Collections.Generic.List<int> offsetlist = new System.Collections.Generic.List<int>();
 
             while (0xFF != (restype = mapFileReader.ReadByte()))
             {
@@ -145,7 +144,7 @@ namespace SCI
             }
 
             int i = 0;
-            foreach (KeyValuePair<byte, int> item in resourcearray)
+            foreach (System.Collections.Generic.KeyValuePair<byte, int> item in resourcearray)
             {
                 mapFileReader.BaseStream.Position = item.Value;
 
