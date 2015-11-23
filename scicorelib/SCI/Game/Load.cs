@@ -60,7 +60,7 @@ namespace SCI
 			{
 				foreach(ResourceBase item in GameData.ResourceList)
 				{
-					
+					item.Save(path);	
 				}
 			}
         }
