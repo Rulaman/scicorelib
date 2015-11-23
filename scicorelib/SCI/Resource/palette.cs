@@ -1,6 +1,6 @@
-﻿namespace SCI.Resource
+﻿namespace SCI.Resources
 {
-    public class Palette : CResource
+    public class Palette : ResourceBase
     {
 		public override EResourceType ResourceType
 		{

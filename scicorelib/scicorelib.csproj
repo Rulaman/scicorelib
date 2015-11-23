@@ -49,32 +49,31 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SCI\common.cs" />
-    <Compile Include="SCI\Data\resources.cs" />
-    <Compile Include="SCI\Data\Types.cs" />
+    <Compile Include="SCI\IO\BinaryReader.cs" />
     <Compile Include="SCI\IO\Compression\CompressionBase.cs" />
-    <Compile Include="SCI\resource.cs" />
-    <Compile Include="SCI\Resource\cursor.cs" />
-    <Compile Include="SCI\Resource\font.cs" />
-    <Compile Include="SCI\Resource\message.cs" />
-    <Compile Include="SCI\scibase.cs" />
+    <Compile Include="SCI\Resource\ResourceBase.cs" />
+    <Compile Include="SCI\Resource\Cursor.cs" />
+    <Compile Include="SCI\Resource\Font.cs" />
+    <Compile Include="SCI\Resource\Message.cs" />
+    <Compile Include="SCI\Game\scibase.cs" />
     <None Include="SCI\IO\Compression\huffman.cs" />
     <Compile Include="SCI\IO\Compression\lzw.cs" />
-    <Compile Include="SCI\Resource\palette.cs" />
+    <Compile Include="SCI\Resource\Palette.cs" />
     <Compile Include="SCI\Resource\view.cs" />
     <Compile Include="SCI\Resource\Picture.cs" />
     <Compile Include="SCI\Resource\PictureRow.cs" />
-    <Compile Include="SCI\game.cs" />
-    <Compile Include="SCI\Game\gametypes.cs" />
-    <Compile Include="SCI\Game\interface.cs" />
+    <Compile Include="SCI\enums.cs" />
     <Compile Include="SCI\Game\Load.cs" />
     <Compile Include="SCI\Install\installer.cs" />
     <Compile Include="SCI\IO\Compression\dcl.cs" />
     <Compile Include="SCI\IO\Compression\lzs.cs" />
-    <Compile Include="SCI\sci0.cs" />
-    <Compile Include="SCI\sci3.cs" />
-    <Compile Include="SCI\sci1.cs" />
+    <Compile Include="SCI\Game\sci0.cs" />
+    <Compile Include="SCI\Game\sci3.cs" />
+    <Compile Include="SCI\Game\sci1.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="SCI\Data\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

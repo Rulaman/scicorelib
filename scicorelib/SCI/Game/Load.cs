@@ -1,6 +1,3 @@
-using SCI.Data;
-using System;
-
 namespace SCI
 {
     public class Game
@@ -19,7 +16,7 @@ namespace SCI
             if (System.IO.File.Exists(System.IO.Path.Combine(path, "RESOURCE.MAP")))
             {
                 System.IO.FileStream stream = System.IO.File.Open(System.IO.Path.Combine(path, "RESOURCE.MAP"), System.IO.FileMode.Open);
-                Int32 value = stream.ReadByte();
+                int value = stream.ReadByte();
 
                 stream.Position = stream.Length - 6;
 
@@ -34,7 +31,6 @@ namespace SCI
                     if (game.Expand(path))
                     {
                         Type = EGameType.SCI1;
-                        //ResourceList = game.ResourceList;
                         GameData = (SciBase)game;
                     }
                 }
@@ -46,7 +42,6 @@ namespace SCI
                     if (game.Expand(path))
                     {
                         Type = EGameType.SCI0;
-                        //ResourceList = game.ResourceList;
                         GameData = (SciBase)game;
                     }
                 }
@@ -57,14 +52,13 @@ namespace SCI
                 if (game.Expand(path))
                 {
                     Type = EGameType.SCI3;
-                    //ResourceList = game.ResourceList;
                     GameData = (SciBase)game;
                 }
             }
 
 			if (game != null)
 			{
-				foreach(CResource item in GameData.ResourceList)
+				foreach(ResourceBase item in GameData.ResourceList)
 				{
 					
 				}

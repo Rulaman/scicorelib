@@ -1,6 +1,6 @@
-﻿namespace SCI.Resource
+﻿namespace SCI.Resources
 {
-	public class Font : CResource
+	public class Font : ResourceBase
 	{
 		public override EResourceType ResourceType
 		{

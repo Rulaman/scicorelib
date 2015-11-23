@@ -1,6 +1,6 @@
-﻿namespace SCI.Resource
+﻿namespace SCI.Resources
 {
-    public class Message: CResource
+    public class Message: ResourceBase
     {
 		public override EResourceType ResourceType
 		{

@@ -1,4 +1,4 @@
-﻿using SCI.Resource;
+﻿using SCI.Resources;
 using System;
 
 namespace SCI
@@ -36,7 +36,7 @@ namespace SCI
 
                 string resfilesave = "";
 
-                foreach (CResource item in ResourceList)
+                foreach (ResourceBase item in ResourceList)
                 {
                     string resfile = System.IO.Path.Combine(path, String.Format("RESSCI.{0}", item.FileNumber.ToString("000")));
 
@@ -96,10 +96,13 @@ namespace SCI
                             default:
                                 break;
                         };
+
+						item.Data = new byte[item.UncompressedSize];
+						Array.Copy(UnpackedDataArray, item.Data, item.UncompressedSize);
                     }
                 }
 
-                foreach (CResource item in ResourceList)
+                foreach (ResourceBase item in ResourceList)
                 {
                     switch (item.ResourceType)
                     {
@@ -161,7 +164,7 @@ namespace SCI
 
                 while (mapFileReader.BaseStream.Position < off2)
                 {
-                    CResource resource = null;
+                    ResourceBase resource = null;
 
                     switch ((EResourceType)item.Key)
                     {

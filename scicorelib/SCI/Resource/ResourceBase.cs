@@ -1,8 +1,8 @@
 ﻿namespace SCI
 {
-	public abstract class CResource : ISciResource
+	public abstract class ResourceBase
 	{
-		public CResource(EGameType gametype)
+		public ResourceBase(EGameType gametype)
 		{
 			_GameType = gametype;
 		}
@@ -105,9 +105,17 @@
 			//set { CheckSetAndSend(ref _Path, value);
 			set { _Path = value; }
 		}
+
+		public void Save(string path)
+		{
+			string filename = System.IO.Path.Combine(path, string.Format("{0}.{1}", ResourceNumber, Common.GetFileEnding(ResourceType)));
+			System.IO.FileStream fs = System.IO.File.Open(filename, System.IO.FileMode.OpenOrCreate);
+			fs.Write(Data, 0, Data.Length);
+			fs.Close();
+		}
     }
 
-    public class Dummy : CResource
+    public class Dummy : ResourceBase
     {
 		public Dummy(EGameType gametype) : base(gametype) { }
 

@@ -1,6 +1,6 @@
-namespace SCI.Resource
+namespace SCI.Resources
 {
-    public sealed class Picture : CResource
+    public sealed class Picture : ResourceBase
     {
 		public override EResourceType ResourceType
 		{

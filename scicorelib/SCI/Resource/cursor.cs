@@ -1,6 +1,6 @@
-﻿namespace SCI.Resource
+﻿namespace SCI.Resources
 {
-	public class Cursor: CResource
+	public class Cursor: ResourceBase
 	{
 		public override EResourceType ResourceType
 		{

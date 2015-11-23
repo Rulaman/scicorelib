@@ -2,27 +2,27 @@
 {
     public abstract class SciBase
     {
-        private System.Collections.Generic.List<CResource> PaletteResourceList;
+        private System.Collections.Generic.List<ResourceBase> PaletteResourceList;
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        private System.Collections.Generic.List<CResource> _ResourceList = new System.Collections.Generic.List<CResource>();
+        private System.Collections.Generic.List<ResourceBase> _ResourceList = new System.Collections.Generic.List<ResourceBase>();
 
-        public System.Collections.Generic.List<CResource> ResourceList
+        public System.Collections.Generic.List<ResourceBase> ResourceList
         {
             get { return _ResourceList; }
             protected set { _ResourceList = value; }
         }
 
-        public CResource FindPaletteResource(int resourceid)
+        public ResourceBase FindPaletteResource(int resourceid)
         {
-            CResource returnvalue = null;
+            ResourceBase returnvalue = null;
             string id = resourceid.ToString();
 
             if (PaletteResourceList == null)
             {
-                PaletteResourceList = new System.Collections.Generic.List<CResource>();
+                PaletteResourceList = new System.Collections.Generic.List<ResourceBase>();
 
-                foreach (CResource item in ResourceList)
+                foreach (ResourceBase item in ResourceList)
                 {
                     switch (item.ResourceType)
                     {
@@ -36,7 +36,7 @@
 
             while ((returnvalue == null) && (int.Parse(id) <= 99999))
             {
-                foreach (CResource item in PaletteResourceList)
+                foreach (ResourceBase item in PaletteResourceList)
                 {
                     if (item.ResourceNumber == int.Parse(id))
                     {
@@ -50,7 +50,7 @@
 
             if (returnvalue == null)
             {
-                foreach (CResource item in PaletteResourceList)
+                foreach (ResourceBase item in PaletteResourceList)
                 {
                     if (item.FileNumber == 99)
                     {

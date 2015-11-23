@@ -1,6 +1,6 @@
-namespace SCI.Resource
+namespace SCI.Resources
 {
-    public class View : CResource
+    public class View : ResourceBase
     {
 		public override EResourceType ResourceType
 		{

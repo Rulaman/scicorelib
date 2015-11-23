@@ -1,6 +1,6 @@
-namespace SCI.Resource
+namespace SCI.Resources
 {
-    public class PictureRow : CResource
+    public class PictureRow : ResourceBase
     {
 		public override EResourceType ResourceType
 		{
