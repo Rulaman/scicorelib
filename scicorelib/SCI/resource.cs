@@ -75,6 +75,16 @@ namespace SCI
             get { return _FileOffset; }
             internal set { _FileOffset = value; }
         }
+
+
+		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+		private string _Path;
+		public string Path
+		{
+			get { return _Path; }
+			//set { CheckSetAndSend(ref _Path, value);
+			set { _Path = value; }
+		}
     }
 
     public class Dummy : CResource

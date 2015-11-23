@@ -11,7 +11,7 @@ namespace SCI
         /// </summary>
         /// <param name="path">The path to the (compiled) game.</param>
         /// <returns>True if the game could loaded, otherwise false.</returns>
-        public override bool Load(string path)
+        public override bool Expand(string path)
         {
             bool retval = true;
             System.IO.FileStream stream;
@@ -32,7 +32,7 @@ namespace SCI
 
                 System.IO.MemoryStream ms = new System.IO.MemoryStream(filearray);
 
-                ReadMapFile(ms);
+                ReadMapFile(ms, path);
                 filearray = null;
 
                 string resfilesave = "";
@@ -57,8 +57,8 @@ namespace SCI
 
                         stream.Position = item.FileOffset;
 
-                        /* Resource entpacken */
-                        SciBinaryReader br = new SciBinaryReader(stream);
+						/* Resource entpacken */
+						IO.SciBinaryReader br = new IO.SciBinaryReader(stream);
 
                         /* byte typ = */
                         br.ReadByte();
@@ -80,22 +80,19 @@ namespace SCI
                         {
                             case EResourceType.Palette:
                             case EResourceType.Palette8x:
-                                ((SciPalette)item).ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
-                                //item.ResourceData = palette;
+                          //      ((SciPalette)item).ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
                                 break;
                             case EResourceType.View:
                             case EResourceType.View8x:
-                                ((SciView)item).LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
-                                //item.ResourceData = view;
+                         //       ((SciView)item).LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
                                 break;
                             case EResourceType.Picture:
                             case EResourceType.Picture8x:
-                                ((SciPictureRow)item).FromByteArray(UnpackedDataArray);
-                                //item.ResourceData = pict;
+                        //        ((SciPictureRow)item).FromByteArray(UnpackedDataArray);
                                 break;
                             case EResourceType.Message:
                             case EResourceType.Message8x:
-                                ((SciMessage)item).DecodeMessage(new SciBinaryReader(new System.IO.MemoryStream(UnpackedDataArray)));
+                       //         ((SciMessage)item).DecodeMessage(new IO.SciBinaryReader(new System.IO.MemoryStream(UnpackedDataArray)));
                                     break;
                             default:
                                 break;
@@ -110,12 +107,12 @@ namespace SCI
                         case EResourceType.View:
                         case EResourceType.View8x:
                             /* Resource entpacken */
-                            CResource resource = FindPaletteResource(item.ResourceNumber);
+                            //CResource resource = FindPaletteResource(item.ResourceNumber);
 
-                            if (resource != null)
-                            { 
-                                ((SciView)item).DecodeColors(((SciPalette)resource).ColorInfo);
-                            }
+                            //if (resource != null)
+                            //{ 
+                            //    ((SciView)item).DecodeColors(((SciPalette)resource).ColorInfo);
+                            //}
                             break;
                         case EResourceType.Picture:
                         case EResourceType.Picture8x:
@@ -129,10 +126,10 @@ namespace SCI
             return retval;
         }
 
-        private void ReadMapFile(System.IO.Stream stream)
+        private void ReadMapFile(System.IO.Stream stream, string path)
         {
             byte restype = 0;
-            SCI.SciBinaryReader mapFileReader = new SciBinaryReader(stream);
+			IO.SciBinaryReader mapFileReader = new IO.SciBinaryReader(stream);
             /* ? muss noch geswappt werden ? */
             mapFileReader.ReverseReading = false;
 
@@ -191,6 +188,7 @@ namespace SCI
                             break;
                     };
 
+					resource.Path = path;
                     resource.ResourceType = (EResourceType)item.Key;
                     resource.ResourceNumber = mapFileReader.ReadUInt16();
                     resource.FileOffset = (Int32)mapFileReader.ReadUInt32();

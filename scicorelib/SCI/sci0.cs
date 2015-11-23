@@ -10,7 +10,7 @@ namespace SCI
         /// </summary>
         /// <param name="path">The path to the (compiled) game.</param>
         /// <returns>True if the game could loaded, otherwise false.</returns>
-        public override bool Load(string path)
+        public override bool Expand(string path)
         {
             bool retval = false;
             string file = System.IO.Path.Combine(path, "RESOURCE.MAP");
@@ -22,12 +22,12 @@ namespace SCI
             {
                 /* Parse the map file */
                 System.IO.FileStream stream = System.IO.File.Open(file, System.IO.FileMode.Open);
-                ReadMapFile(stream);
+                ReadMapFile(stream, path);
                 stream.Close();
 
                 /* try to load game now */
                 string resfilesave = "";
-                SciBinaryReader br = null;
+                IO.SciBinaryReader br = null;
 
                 foreach (CResource item in ResourceList)
                 {
@@ -44,7 +44,7 @@ namespace SCI
                             stream.Close();
                             stream = System.IO.File.Open(resfile, System.IO.FileMode.Open);
                             resfilesave = resfile;
-                            br = new SciBinaryReader(stream);
+                            br = new IO.SciBinaryReader(stream);
                         }
 
                         stream.Position = item.FileOffset;
@@ -122,10 +122,10 @@ namespace SCI
             return retval;
         }
 
-        private void ReadMapFile(System.IO.Stream stream)
+        private void ReadMapFile(System.IO.Stream stream, string path)
         {
-            // RESOURCE.MAP
-            SCI.SciBinaryReader mapFileReader = new SciBinaryReader(stream);
+			// RESOURCE.MAP
+			IO.SciBinaryReader mapFileReader = new IO.SciBinaryReader(stream);
             /* ? muss noch geswappt werden ? */
             //mapFileReader.ReverseReading = false;
             UInt16 restypenum = 0;
@@ -160,6 +160,8 @@ namespace SCI
                         resource = new Dummy();
                         break;
                 };
+
+				resource.Path = path;
 
                 resource.ResourceType = (EResourceType)(restypenum >> 11);        // XXXX X... .... ....
                 resource.ResourceNumber = (UInt16)(restypenum & 0x7FF);  // .... .XXX XXXX XXXX
