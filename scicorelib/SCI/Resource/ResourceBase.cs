@@ -1,4 +1,6 @@
-﻿namespace SCI
+﻿using System;
+
+namespace SCI.Resources
 {
 	public abstract class ResourceBase
 	{
@@ -114,6 +116,8 @@
 			fs.Write(Data, 0, Data.Length);
 			fs.Close();
 		}
+
+		public abstract void Decode();
     }
 
     public class Dummy : ResourceBase
@@ -125,6 +129,11 @@
 		public override EResourceType ResourceType
 		{
 			get { return _ResourceType; }
+		}
+
+		public override void Decode()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

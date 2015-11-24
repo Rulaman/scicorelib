@@ -106,5 +106,26 @@ namespace SCI.Resources
         {
             get { return InternalSize; }
         }
-    }
+
+		public override void Decode()
+		{
+			//if ( Path != null )
+			//{
+			//	System.IO.Stream fs = System.IO.File.Open(Path, System.IO.FileMode.Open);
+			//	Data = new byte[fs.Length];
+			//	fs.Read(Data, 0, Data.Length);
+			//	fs.Close();
+			//}
+
+
+			//if ( Data != null )
+			//{
+			//	System.IO.MemoryStream memorystream = new System.IO.MemoryStream(Data);
+			//	System.IO.BinaryReader br = new System.IO.BinaryReader(memorystream);
+
+			//}
+
+			
+		}
+	}
 }

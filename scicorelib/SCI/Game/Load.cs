@@ -119,7 +119,7 @@ namespace SCI
 
 				if (game != null)
 				{
-					foreach (ResourceBase item in GameData.ResourceList)
+					foreach ( Resources.ResourceBase item in GameData.ResourceList)
 					{
 						item.Save(path);
 					}

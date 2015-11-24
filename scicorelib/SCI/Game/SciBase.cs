@@ -2,27 +2,27 @@
 {
     public abstract class SciBase
     {
-        private System.Collections.Generic.List<ResourceBase> PaletteResourceList;
+        private System.Collections.Generic.List<Resources.ResourceBase> PaletteResourceList;
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        private System.Collections.Generic.List<ResourceBase> _ResourceList = new System.Collections.Generic.List<ResourceBase>();
+        private System.Collections.Generic.List<Resources.ResourceBase> _ResourceList = new System.Collections.Generic.List<Resources.ResourceBase>();
 
-        public System.Collections.Generic.List<ResourceBase> ResourceList
+        public System.Collections.Generic.List<Resources.ResourceBase> ResourceList
         {
             get { return _ResourceList; }
             protected set { _ResourceList = value; }
         }
 
-        public ResourceBase FindPaletteResource(int resourceid)
+        public Resources.ResourceBase FindPaletteResource(int resourceid)
         {
-            ResourceBase returnvalue = null;
+			Resources.ResourceBase returnvalue = null;
             string id = resourceid.ToString();
 
             if (PaletteResourceList == null)
             {
-                PaletteResourceList = new System.Collections.Generic.List<ResourceBase>();
+                PaletteResourceList = new System.Collections.Generic.List<Resources.ResourceBase>();
 
-                foreach (ResourceBase item in ResourceList)
+                foreach ( Resources.ResourceBase item in ResourceList)
                 {
                     switch (item.ResourceType)
                     {
@@ -36,7 +36,7 @@
 
             while ((returnvalue == null) && (int.Parse(id) <= 99999))
             {
-                foreach (ResourceBase item in PaletteResourceList)
+                foreach ( Resources.ResourceBase item in PaletteResourceList)
                 {
                     if (item.ResourceNumber == int.Parse(id))
                     {
@@ -50,7 +50,7 @@
 
             if (returnvalue == null)
             {
-                foreach (ResourceBase item in PaletteResourceList)
+                foreach ( Resources.ResourceBase item in PaletteResourceList)
                 {
                     if (item.FileNumber == 99)
                     {
@@ -69,7 +69,7 @@
 			bool retval = true;
 
 			string[] sa = System.IO.Directory.GetFiles(path, "*", System.IO.SearchOption.TopDirectoryOnly);
-			ResourceBase resource = null;
+			Resources.ResourceBase resource = null;
 
 			foreach ( string item in sa )
 			{
@@ -97,9 +97,13 @@
 				{
 				case EResourceType.Audio:
 					break;
+				case EResourceType.Cursor:
+				case EResourceType.Cursor8x:
+					resource = new Resources.Cursor(EGameType.SCI3);
+					break;
 				case EResourceType.Picture:
 				case EResourceType.Picture8x:
-					resource = new Resources.Picture(EGameType.SCI3);
+					resource = new Resources.PictureRow(EGameType.SCI3);
 					break;
 				case EResourceType.View:
 				case EResourceType.View8x:
@@ -110,7 +114,7 @@
 					resource = new Resources.Message(EGameType.SCI3);
 					break;
 				default:
-					resource = new Dummy(EGameType.None, type);
+					resource = new Resources.Dummy(EGameType.None, type);
 					break;
 				}
 

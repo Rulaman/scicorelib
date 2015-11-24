@@ -54,7 +54,7 @@
     <None Include="SCI\IO\Compression\huffman.cs" />
     <Compile Include="SCI\IO\Compression\lzw.cs" />
     <Compile Include="SCI\Resource\Palette.cs" />
-    <Compile Include="SCI\Resource\view.cs" />
+    <Compile Include="SCI\Resource\View.cs" />
     <Compile Include="SCI\Resource\Picture.cs" />
     <Compile Include="SCI\Resource\PictureRow.cs" />
     <Compile Include="SCI\enums.cs" />

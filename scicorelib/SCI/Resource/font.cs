@@ -79,7 +79,12 @@
 				}
 			}
 		}
-    }
+
+		public override void Decode()
+		{
+			throw new System.NotImplementedException();
+		}
+	}
 
 	public class FontHeader
 	{

@@ -107,5 +107,10 @@
         {
             ReadFromStream(new System.IO.BinaryReader(stream), inversive);
         }
-    }
+
+		public override void Decode()
+		{
+			throw new System.NotImplementedException();
+		}
+	}
 }

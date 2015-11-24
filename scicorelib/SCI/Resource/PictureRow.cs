@@ -160,5 +160,17 @@ namespace SCI.Resources
         {
             get { return InternalSize; }
         }
-    }
+
+		public override void Decode()
+		{
+			if ( Path != null )
+			{
+				FromFile(Path);
+			}
+			else  if ( Data != null )
+			{
+				FromByteArray(Data);
+			}
+		}
+	}
 }

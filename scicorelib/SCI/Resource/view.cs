@@ -576,5 +576,10 @@ namespace SCI.Resources
 
             return colorinfo;
         }
-    }
+
+		public override void Decode()
+		{
+			throw new System.NotImplementedException();
+		}
+	}
 }

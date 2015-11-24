@@ -128,5 +128,17 @@
 
 			Image.UnlockBits(bdat);
 		}
-    }
+
+		public override void Decode()
+		{
+			if ( Path != null )
+			{
+				Decode(Path);
+            }
+			else if ( Data != null )
+			{
+				Decode(new System.IO.BinaryReader(new System.IO.MemoryStream(Data)));
+			}
+		}
+	}
 }

@@ -58,5 +58,10 @@
                 Messages[counter].Text = System.Text.Encoding.UTF7.GetString(bytearray).Split(new char[] { '\0' })[0];
             }
         }
-    }
+
+		public override void Decode()
+		{
+			throw new System.NotImplementedException();
+		}
+	}
 }
