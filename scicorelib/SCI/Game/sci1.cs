@@ -181,7 +181,7 @@ namespace SCI
                             resource = new Picture(EGameType.SCI1);
                             break;
                         default:
-                            resource = new Dummy(EGameType.SCI1);
+                            resource = new Dummy(EGameType.SCI1, (EResourceType)item.Key);
                             break;
                     }
 					resource.Path = path;

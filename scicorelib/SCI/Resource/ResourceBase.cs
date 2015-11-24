@@ -118,11 +118,13 @@
 
     public class Dummy : ResourceBase
     {
-		public Dummy(EGameType gametype) : base(gametype) { }
+		public Dummy(EGameType gametype, EResourceType type) : base(gametype) { _ResourceType = type; }
+
+		private EResourceType _ResourceType = EResourceType.None;
 
 		public override EResourceType ResourceType
 		{
-			get { return EResourceType.None; }
+			get { return _ResourceType; }
 		}
 	}
 }

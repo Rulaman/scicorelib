@@ -77,20 +77,20 @@ namespace SCI.Resources
             Image = b;
         }
 
-        public void Save(string filename)
-        {
-            throw new System.NotImplementedException();
-        }
+        //public void Save(string filename)
+        //{
+        //    throw new System.NotImplementedException();
+        //}
 
-        public void Save(System.IO.Stream stream)
-        {
-            throw new System.NotImplementedException();
-        }
+        //public void Save(System.IO.Stream stream)
+        //{
+        //    throw new System.NotImplementedException();
+        //}
 
-        public bool Load(string path)
-        {
-            throw new System.NotImplementedException();
-        }
+        //public bool Load(string path)
+        //{
+        //    throw new System.NotImplementedException();
+        //}
 
         public int Height
         {

@@ -72,15 +72,15 @@ namespace SCI.Resources
             }
         }
 
-        public void Save(string filename)
-        {
-            throw new System.NotImplementedException();
-        }
+        //public void Save(string filename)
+        //{
+        //    throw new System.NotImplementedException();
+        //}
 
-        public void Save(System.IO.Stream stream)
-        {
-            throw new System.NotImplementedException();
-        }
+        //public void Save(System.IO.Stream stream)
+        //{
+        //    throw new System.NotImplementedException();
+        //}
 
         public System.Drawing.Color[] DecodeColorInformation(string filename)
         {

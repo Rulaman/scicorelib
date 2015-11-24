@@ -132,7 +132,7 @@ namespace SCI
                         // item.ResourceData = pict;
                         break;
                     default:
-                        resource = new Dummy(EGameType.SCI0);
+                        resource = new Dummy(EGameType.SCI0, (EResourceType)(restypenum >> 11));
                         break;
                 };
 

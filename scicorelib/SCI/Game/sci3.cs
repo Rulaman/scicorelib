@@ -185,7 +185,7 @@ namespace SCI
                             resource = new Message(EGameType.SCI3);
                             break;
                         default:
-                            resource = new Dummy(EGameType.SCI3);
+                            resource = new Dummy(EGameType.SCI3, (EResourceType)item.Key);
                             break;
                     };
 					resource.Path = path;
