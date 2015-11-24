@@ -64,5 +64,6 @@
         }
 
         public abstract bool Expand(string path);
-    }
+		public abstract bool Load(string path);
+	}
 }

@@ -5,12 +5,18 @@ namespace SCI
 {
     public class SCI0 : SciBase
     {
-        /// <summary>
-        /// load a compiled game and not the sources and the project file give only the path as the parameter
-        /// </summary>
-        /// <param name="path">The path to the (compiled) game.</param>
-        /// <returns>True if the game could loaded, otherwise false.</returns>
-        public override bool Expand(string path)
+		public override bool Load(string path)
+		{
+			bool retval = true;
+			return retval;
+		}
+
+		/// <summary>
+		/// load a compiled game and not the sources and the project file give only the path as the parameter
+		/// </summary>
+		/// <param name="path">The path to the (compiled) game.</param>
+		/// <returns>True if the game could loaded, otherwise false.</returns>
+		public override bool Expand(string path)
         {
             bool retval = false;
             string file = System.IO.Path.Combine(path, "RESOURCE.MAP");

@@ -19,7 +19,7 @@ namespace SCI
         View = 0,
 		[ResourceType("p56")]
 		Picture = 1,
-		[ResourceType("scr")]
+		[ResourceType("csc")]
 		Script = 2,
 		[ResourceType("snd")]
 		Sound = 4,

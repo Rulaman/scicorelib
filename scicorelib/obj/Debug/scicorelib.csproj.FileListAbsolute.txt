@@ -1,0 +1,5 @@
+C:\_privat\VisualStudio\Projekte\SCI\scicorelib\scicorelib\obj\Debug\scicorelib.csprojResolveAssemblyReference.cache
+C:\_privat\VisualStudio\Projekte\SCI\scicorelib\scicorelib\bin\Debug\scicorelib.dll
+C:\_privat\VisualStudio\Projekte\SCI\scicorelib\scicorelib\bin\Debug\scicorelib.pdb
+C:\_privat\VisualStudio\Projekte\SCI\scicorelib\scicorelib\obj\Debug\scicorelib.dll
+C:\_privat\VisualStudio\Projekte\SCI\scicorelib\scicorelib\obj\Debug\scicorelib.pdb

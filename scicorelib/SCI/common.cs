@@ -15,34 +15,79 @@ namespace SCI
 		{
 			return Name;
 		}
+
+		public static string Get(System.Type tp, string name)
+		{
+			System.Reflection.MemberInfo[] mi = tp.GetMember(name);
+			if (mi != null && mi.Length > 0)
+			{
+				ResourceTypeAttribute attr = System.Attribute.GetCustomAttribute(mi[0],
+					typeof(ResourceTypeAttribute)) as ResourceTypeAttribute;
+
+				if (attr != null)
+				{
+					return attr.Name;
+				}
+			}
+			return null;
+		}
 	}
 
 	public static class Common
 	{
 		public static string GetFileEnding(EResourceType types)
 		{
-			//System.Type dataType = System.Enum.GetUnderlyingType(typeof(EResourceType));
-
-			//foreach (System.Reflection.FieldInfo field in 	
-			//	typeof(EResourceType).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.GetField | System.Reflection.BindingFlags.Public))
-			//{
-			//	object value = field.GetValue(null);
-			//	//Console.WriteLine("{0}={1}", field.Name,Convert.ChangeType(value, dataType));
-			//	foreach (System.Attribute attrib in field.GetCustomAttributes(true))
-			//	{
-			//		//Console.WriteLine("\t{0}", attrib);
-			//	}
-			//}
-			////Console.WriteLine("Any key to quit.");
-			////Console.ReadLine();
-
-
-			var type = typeof(EResourceType);
-			var memInfo = type.GetMember(types.ToString());
+			var memInfo = typeof(EResourceType).GetMember(types.ToString());
 			var attributes = memInfo[0].GetCustomAttributes(typeof(ResourceTypeAttribute), false);
 			var description = ((ResourceTypeAttribute)attributes[0]).Name;
 
 			return description.ToString();
+		}
+
+		static EResourceType? GetValueByAttribute<EResourceType, ResourceTypeAttribute>() where EResourceType : struct
+		{
+			System.Type type = typeof(EResourceType);
+			System.Reflection.FieldInfo[] fields = type.GetFields();
+
+			foreach (System.Reflection.FieldInfo field in fields)
+			{
+				System.Attribute[] attributes = System.Attribute.GetCustomAttributes(field);
+
+				foreach (System.Attribute attribute in attributes)
+				{
+					if (attribute is ResourceTypeAttribute) return (EResourceType)field.GetValue(null);
+				}
+			}
+			return null;
+		}
+
+
+
+		public static EResourceType GetResourceTypeByFileending(string ending)
+		{
+			ending = ending.Substring(1);
+			System.Type type = typeof(EResourceType);
+			System.Reflection.FieldInfo[] fields = type.GetFields();
+
+			foreach (System.Reflection.FieldInfo field in fields)
+			{
+				System.Attribute[] attributes = System.Attribute.GetCustomAttributes(field);
+
+				foreach (System.Attribute attribute in attributes)
+				{
+					if (attribute is ResourceTypeAttribute && attribute.ToString() == ending)
+					{
+						EResourceType t =  (EResourceType)field.GetValue(null);
+						return t;
+					}
+				}
+			}
+
+			System.Reflection.FieldInfo myf = typeof(EResourceType).GetField(ending);
+
+
+
+			return EResourceType.None;// description;
 		}
 
 		public static byte[] StringToByteArray(string str)

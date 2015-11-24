@@ -5,6 +5,12 @@ namespace SCI
 {
     public class SCI1 : SciBase
     {
+		public override bool Load(string path)
+		{
+			bool retval = true;
+			return retval;
+		}
+
 		/// <summary>
 		/// load a compiled game and not the sources and the project file give only the path as the parameter
 		/// </summary>
