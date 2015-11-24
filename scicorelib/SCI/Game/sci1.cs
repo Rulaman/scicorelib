@@ -133,7 +133,9 @@ namespace SCI
                 }
             }
 
-            return retval;
+			stream.Close();
+
+			return retval;
         }
 
         private void ReadMapFile(System.IO.Stream stream, string path)
@@ -172,25 +174,9 @@ namespace SCI
 
                 while (mapFileReader.BaseStream.Position < off2)
                 {
-                    ResourceBase resource = null;
+					ResourceBase resource = GetResourceByType((EResourceType)item.Key, EGameType.SCI1);
 
-                    switch ((EResourceType)item.Key)
-                    {
-                        case EResourceType.View8x:
-                            resource = new View(EGameType.SCI1);
-                            break;
-                        case EResourceType.Palette8x:
-                            resource = new Palette(EGameType.SCI1);
-                            break;
-                        case EResourceType.Picture8x:
-                            resource = new Picture(EGameType.SCI1);
-                            break;
-                        default:
-                            resource = new Dummy(EGameType.SCI1, (EResourceType)item.Key);
-                            break;
-                    }
 					resource.Path = path;
-                    //resource.ResourceType = (EResourceType)item.Key;
                     resource.ResourceNumber = mapFileReader.ReadUInt16();
                     UInt32 temp = mapFileReader.ReadUInt32();
 

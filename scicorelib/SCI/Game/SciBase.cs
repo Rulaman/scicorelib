@@ -101,6 +101,10 @@
 				case EResourceType.Cursor8x:
 					resource = new Resources.Cursor(EGameType.SCI3);
 					break;
+				case EResourceType.Font:
+				case EResourceType.Font8x:
+					resource = new Resources.Font(EGameType.SCI3);
+					break;
 				case EResourceType.Picture:
 				case EResourceType.Picture8x:
 					resource = new Resources.PictureRow(EGameType.SCI3);
@@ -128,5 +132,43 @@
 
 			return retval;
 		}
-	}
+
+		public Resources.ResourceBase GetResourceByType(EResourceType resourcetype, EGameType gametype)
+		{
+			Resources.ResourceBase resource = null;
+
+			switch ( resourcetype )
+			{
+			case EResourceType.Cursor:
+			case EResourceType.Cursor8x:
+				resource = new Resources.Cursor(gametype);
+				break;
+			case EResourceType.Palette:
+			case EResourceType.Palette8x:
+				resource = new Resources.Palette(gametype);
+				break;
+			case EResourceType.Font:
+			case EResourceType.Font8x:
+				resource = new Resources.Font(gametype);
+				break;
+			case EResourceType.View:
+			case EResourceType.View8x:
+				resource = new Resources.View(gametype);
+				break;
+			case EResourceType.Picture:
+			case EResourceType.Picture8x:
+				resource = new Resources.PictureRow(gametype);
+				break;
+			case EResourceType.Message:
+			case EResourceType.Message8x:
+				resource = new Resources.Message(gametype);
+				break;
+			default:
+				resource = new Resources.Dummy(gametype, resourcetype);
+				break;
+			};
+
+			return resource;
+		}
+}
 }

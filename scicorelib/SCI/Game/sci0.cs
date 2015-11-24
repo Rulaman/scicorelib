@@ -109,41 +109,15 @@ namespace SCI
             /* ? muss noch geswappt werden ? */
             //mapFileReader.ReverseReading = false;
             UInt16 restypenum = 0;
-            ResourceBase resource = null;
 
             while (0xFFFF != restypenum)
             {
                 restypenum = mapFileReader.ReadUInt16();
                 UInt32 resfileoff = mapFileReader.ReadUInt32();
 
-                switch ((EResourceType)(restypenum >> 11))
-                {
-                    case EResourceType.Palette:
-                    case EResourceType.Palette8x:
-                        resource = new Palette(EGameType.SCI0);
-                        // palette.ReadFromStream(new System.IO.MemoryStream(UnpackedDataArray), true);
-                        // item.ResourceData = palette;
-                        break;
-                    case EResourceType.View:
-                    case EResourceType.View8x:
-                        resource = new View(EGameType.SCI0);
-                        // view.LoadViewSCI11(new System.IO.MemoryStream(UnpackedDataArray));
-                        // item.ResourceData = view;
-                        break;
-                    case EResourceType.Picture:
-                    case EResourceType.Picture8x:
-                        resource = new PictureRow(EGameType.SCI0);
-                        // pict.FromByteArray(UnpackedDataArray);
-                        // item.ResourceData = pict;
-                        break;
-                    default:
-                        resource = new Dummy(EGameType.SCI0, (EResourceType)(restypenum >> 11));
-                        break;
-                };
+				ResourceBase resource = GetResourceByType((EResourceType)(restypenum >> 11), EGameType.SCI0);
 
 				resource.Path = path;
-
-                //resource.ResourceType = (EResourceType)(restypenum >> 11);        // XXXX X... .... ....
                 resource.ResourceNumber = (UInt16)(restypenum & 0x7FF);  // .... .XXX XXXX XXXX
                 resource.FileNumber = (byte)(resfileoff >> 26);      // XXXX XX.. .... .... .... .... .... ....
                 resource.FileOffset = (int)(resfileoff & 0x3FFFFFF);      // .... ..XX XXXX XXXX XXXX XXXX XXXX XXXX

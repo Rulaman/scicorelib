@@ -119,10 +119,16 @@ namespace SCI
 
 				if (game != null)
 				{
+					
 					foreach ( Resources.ResourceBase item in GameData.ResourceList)
 					{
 						item.Save(path);
 					}
+
+					System.IO.FileStream fs = System.IO.File.Open(path, System.IO.FileMode.OpenOrCreate);
+					byte[] b = Common.StringToByteArray("Game-" + Type);
+					fs.Write(b, 0, b.Length);
+					fs.Close();
 				}
 			}
 		}

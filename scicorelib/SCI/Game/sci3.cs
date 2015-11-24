@@ -129,6 +129,7 @@ namespace SCI
                     };
                 }
             }
+			stream.Close();
 
             return retval;
         }
@@ -170,32 +171,9 @@ namespace SCI
 
                 while (mapFileReader.BaseStream.Position < off2)
                 {
-                    ResourceBase resource = null;
+                    ResourceBase resource = GetResourceByType((EResourceType)item.Key, EGameType.SCI3);
 
-                    switch ((EResourceType)item.Key)
-                    {
-                        case EResourceType.Palette:
-                        case EResourceType.Palette8x:
-                            resource = new Palette(EGameType.SCI3);
-                            break;
-                        case EResourceType.View:
-                        case EResourceType.View8x:
-                            resource = new View(EGameType.SCI3);
-                            break;
-                        case EResourceType.Picture:
-                        case EResourceType.Picture8x:
-                            resource = new PictureRow(EGameType.SCI3);
-                            break;
-                        case EResourceType.Message:
-                        case EResourceType.Message8x:
-                            resource = new Message(EGameType.SCI3);
-                            break;
-                        default:
-                            resource = new Dummy(EGameType.SCI3, (EResourceType)item.Key);
-                            break;
-                    };
 					resource.Path = path;
-                    //resource.ResourceType = (EResourceType)item.Key;
                     resource.ResourceNumber = mapFileReader.ReadUInt16();
                     resource.FileOffset = (Int32)mapFileReader.ReadUInt32();
 

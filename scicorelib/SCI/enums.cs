@@ -27,7 +27,7 @@ namespace SCI
 		Etc = 5,
 		[ResourceType("voc")]
 		Vocab = 6,
-		[ResourceType("fnt")]
+		[ResourceType("fon")]
 		Font = 7,
 		[ResourceType("cur")]
 		Cursor = 8,

@@ -17,6 +17,8 @@
 			System.IO.BinaryReader binaryReader = new System.IO.BinaryReader(filestream);
 
 			Decode(binaryReader);
+
+			filestream.Close();
 		}
 
 		public void Decode(System.IO.Stream stream)
@@ -82,7 +84,14 @@
 
 		public override void Decode()
 		{
-			throw new System.NotImplementedException();
+			if ( Path != null )
+			{
+				Decode(Path);
+			}
+			else if ( Data != null )
+			{
+				Decode(new System.IO.MemoryStream(Data));
+			}
 		}
 	}
 
