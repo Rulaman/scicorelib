@@ -32,11 +32,6 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <BaseIntermediateOutputPath>C:\Work\output\VisualStudio\$(MSBuildProjectName)\obj\$(Configuration)</BaseIntermediateOutputPath>
-    <IntermediateOutputPath Condition=" '$(PlatformName)' == 'AnyCPU' ">$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
-    <IntermediateOutputPath Condition=" '$(PlatformName)' != 'AnyCPU' ">$(BaseIntermediateOutputPath)$(PlatformName)\$(Configuration)\</IntermediateOutputPath>
-    <OutDir>C:\Work\output\VisualStudio\$(MSBuildProjectName)\bin\$(Configuration)</OutDir>
-    <OutputPath>..\..\..\..\..\..\..\..\bin\Release\</OutputPath>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>

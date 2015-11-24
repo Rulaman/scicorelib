@@ -64,6 +64,65 @@
         }
 
         public abstract bool Expand(string path);
-		public abstract bool Load(string path);
+		public virtual bool Load(string path)
+		{
+			bool retval = true;
+
+			string[] sa = System.IO.Directory.GetFiles(path, "*", System.IO.SearchOption.TopDirectoryOnly);
+			ResourceBase resource = null;
+
+			foreach ( string item in sa )
+			{
+				string name = System.IO.Path.GetFileNameWithoutExtension(item);
+				int number = -1;
+
+				int.TryParse(name, out number);
+
+				if ( number == -1 )
+				{
+					/* keine gültige Resourcendatei */
+					continue;
+				}
+
+				string ending = System.IO.Path.GetExtension(item);
+
+				if ( ending == "" )
+				{
+					continue;
+				}
+
+				EResourceType type = Common.GetResourceTypeByFileending(ending);
+
+				switch ( type )
+				{
+				case EResourceType.Audio:
+					break;
+				case EResourceType.Picture:
+				case EResourceType.Picture8x:
+					resource = new Resources.Picture(EGameType.SCI3);
+					break;
+				case EResourceType.View:
+				case EResourceType.View8x:
+					resource = new Resources.View(EGameType.SCI3);
+					break;
+				case EResourceType.Message:
+				case EResourceType.Message8x:
+					resource = new Resources.Message(EGameType.SCI3);
+					break;
+				default:
+					resource = new Dummy(EGameType.None, type);
+					break;
+				}
+
+				resource.Path = item;
+				resource.ResourceNumber = number;
+				resource.UncompressedSize = (uint)(new System.IO.FileInfo(item).Length);
+				resource.CompressionType = ECompressionType.None;
+
+				ResourceList.Add(resource);
+			}
+
+			return retval;
+		}
 	}
 }

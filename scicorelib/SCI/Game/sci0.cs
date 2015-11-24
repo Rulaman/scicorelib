@@ -7,8 +7,7 @@ namespace SCI
     {
 		public override bool Load(string path)
 		{
-			bool retval = true;
-			return retval;
+			return base.Load(path);
 		}
 
 		/// <summary>
