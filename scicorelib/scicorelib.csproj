@@ -44,8 +44,10 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SCI\common.cs" />
+    <Compile Include="SCI\Game\GameType.cs" />
     <Compile Include="SCI\IO\BinaryReader.cs" />
     <Compile Include="SCI\IO\Compression\CompressionBase.cs" />
+    <Compile Include="SCI\IO\Compression\CompressionType.cs" />
     <Compile Include="SCI\Resource\ResourceBase.cs" />
     <Compile Include="SCI\Resource\Cursor.cs" />
     <Compile Include="SCI\Resource\Font.cs" />
@@ -54,10 +56,10 @@
     <None Include="SCI\IO\Compression\huffman.cs" />
     <Compile Include="SCI\IO\Compression\lzw.cs" />
     <Compile Include="SCI\Resource\Palette.cs" />
+    <Compile Include="SCI\Resource\ResourceType.cs" />
     <Compile Include="SCI\Resource\View.cs" />
     <Compile Include="SCI\Resource\Picture.cs" />
     <Compile Include="SCI\Resource\PictureRow.cs" />
-    <Compile Include="SCI\enums.cs" />
     <Compile Include="SCI\Game\Load.cs" />
     <Compile Include="SCI\Install\installer.cs" />
     <Compile Include="SCI\IO\Compression\dcl.cs" />

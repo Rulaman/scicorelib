@@ -1,5 +1,8 @@
 ﻿namespace SCI
 {
+	using Resources;
+	using IO.Compression;
+
 	public abstract class SciBase
 	{
 		private System.Collections.Generic.List<Resources.ResourceBase> PaletteResourceList;
@@ -91,7 +94,7 @@
 					continue;
 				}
 
-				EResourceType type = Common.GetResourceTypeByFileending(ending);
+				EResourceType type = ResourceTypeConverter.GetResourceTypeByFileending(ending);
 
 				resource = GetResourceByType(type, EGameType.SCI3);
 				resource.Path = item;

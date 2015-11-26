@@ -2,7 +2,9 @@
 
 namespace SCI.Resources
 {
-	public abstract class ResourceBase
+	using IO.Compression;
+
+    public abstract class ResourceBase
 	{
 		public ResourceBase(EGameType gametype)
 		{
@@ -111,7 +113,7 @@ namespace SCI.Resources
 
 		public void Save(string path)
 		{
-			string filename = System.IO.Path.Combine(path, string.Format("{0}\\{1}.{2}", "entpackt", ResourceNumber, Common.GetFileEnding(ResourceType)));
+			string filename = System.IO.Path.Combine(path, string.Format("{0}\\{1}.{2}", "entpackt", ResourceNumber, ResourceTypeConverter.GetFileEnding(ResourceType)));
 			System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filename));
 			System.IO.FileStream fs = System.IO.File.Open(filename, System.IO.FileMode.OpenOrCreate);
 			fs.Write(Data, 0, Data.Length);

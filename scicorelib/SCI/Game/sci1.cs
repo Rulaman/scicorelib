@@ -1,5 +1,8 @@
 ﻿namespace SCI
 {
+	using Resources;
+	using IO.Compression;
+
 	public class SCI1: SciBase
 	{
 		public override bool Load(string path)
