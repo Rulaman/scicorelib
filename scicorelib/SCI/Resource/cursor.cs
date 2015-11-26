@@ -7,7 +7,8 @@
 			get { return EResourceType.Cursor; }
 		}
 
-		public Cursor(EGameType gametype): base(gametype) { }
+		public Cursor(EGameType gametype) : base(gametype)
+		{ }
 
 		public System.Drawing.Point Hotspot = System.Drawing.Point.Empty;
 		private ushort[] TransparencyMask = new ushort[16];
@@ -34,21 +35,21 @@
 			ushort xhotspot = binaryReader.ReadUInt16();
 			ushort yhotspot = binaryReader.ReadUInt16();
 
-			switch (GameType)
+			switch ( GameType )
 			{
-				case EGameType.SCI0:
-					xhotspot = 0;
-					break;
+			case EGameType.SCI0:
+				xhotspot = 0;
+				break;
 			};
 
 			Hotspot = new System.Drawing.Point(xhotspot, yhotspot);
 
-			for (int i = 0; i < 16; i++)
+			for ( int i = 0; i < 16; i++ )
 			{
 				TransparencyMask[i] = binaryReader.ReadUInt16();
 			}
 
-			for (int i = 0; i < 16; i++)
+			for ( int i = 0; i < 16; i++ )
 			{
 				ColorMask[i] = binaryReader.ReadUInt16();
 			}
@@ -63,12 +64,12 @@
 			ushort transpLine = 0;
 			ushort colorLine = 0;
 
-			for (int y = 0; y < CursorSize.Width; y++)
+			for ( int y = 0; y < CursorSize.Width; y++ )
 			{
 				transpLine = TransparencyMask[y];
 				colorLine = ColorMask[y];
 
-				for (int x = 0; x < CursorSize.Height; x++)
+				for ( int x = 0; x < CursorSize.Height; x++ )
 				{
 					int index = y * bdat.Stride + (x * 4);
 
@@ -80,43 +81,43 @@
 					byte valg = 0;
 					byte valb = 0;
 
-					switch (GameType)
+					switch ( GameType )
 					{
-						case EGameType.SCI0:
+					case EGameType.SCI0:
 
-							if  (t == false /* && c == false */ )
+						if ( t == false /* && c == false */ )
+						{
+							/* weiße Transparenz */
+							vala = 255;
+							valr = 255;
+							valg = 255;
+							valb = 255;
+						}
+						else
+						{
+							if ( c == false )
 							{
-								/* weiße Transparenz */
-								vala = 255;
+								vala = 0;
+								valr = 0;
+								valg = 0;
+								valb = 0;
+							}
+							else
+							{
+								vala = 0;
 								valr = 255;
 								valg = 255;
 								valb = 255;
 							}
-							else
-							{
-								if (c == false)
-								{
-									vala = 0;
-									valr = 0;
-									valg = 0;
-									valb = 0;
-								}
-								else
-								{
-									vala = 0;
-									valr = 255;
-									valg = 255;
-									valb = 255;
-								}
-							}
-							
-							break;
-						case EGameType.SCI01:
-						case EGameType.SCI1:
-							break;
-						default:
-							/* in other games not used */
-							break;
+						}
+
+						break;
+					case EGameType.SCI01:
+					case EGameType.SCI1:
+						break;
+					default:
+						/* in other games not used */
+						break;
 					};
 
 					System.Runtime.InteropServices.Marshal.WriteByte(bdat.Scan0, index, vala);
@@ -134,7 +135,7 @@
 			if ( Path != null )
 			{
 				Decode(Path);
-            }
+			}
 			else if ( Data != null )
 			{
 				Decode(new System.IO.BinaryReader(new System.IO.MemoryStream(Data)));

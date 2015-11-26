@@ -1,69 +1,69 @@
 ﻿namespace SCI
 {
-    public abstract class SciBase
-    {
-        private System.Collections.Generic.List<Resources.ResourceBase> PaletteResourceList;
+	public abstract class SciBase
+	{
+		private System.Collections.Generic.List<Resources.ResourceBase> PaletteResourceList;
 
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        private System.Collections.Generic.List<Resources.ResourceBase> _ResourceList = new System.Collections.Generic.List<Resources.ResourceBase>();
+		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+		private System.Collections.Generic.List<Resources.ResourceBase> _ResourceList = new System.Collections.Generic.List<Resources.ResourceBase>();
 
-        public System.Collections.Generic.List<Resources.ResourceBase> ResourceList
-        {
-            get { return _ResourceList; }
-            protected set { _ResourceList = value; }
-        }
+		public System.Collections.Generic.List<Resources.ResourceBase> ResourceList
+		{
+			get { return _ResourceList; }
+			protected set { _ResourceList = value; }
+		}
 
-        public Resources.ResourceBase FindPaletteResource(int resourceid)
-        {
+		public Resources.ResourceBase FindPaletteResource(int resourceid)
+		{
 			Resources.ResourceBase returnvalue = null;
-            string id = resourceid.ToString();
+			string id = resourceid.ToString();
 
-            if (PaletteResourceList == null)
-            {
-                PaletteResourceList = new System.Collections.Generic.List<Resources.ResourceBase>();
+			if ( PaletteResourceList == null )
+			{
+				PaletteResourceList = new System.Collections.Generic.List<Resources.ResourceBase>();
 
-                foreach ( Resources.ResourceBase item in ResourceList)
-                {
-                    switch (item.ResourceType)
-                    {
-                        case EResourceType.Palette:
-                        case EResourceType.Palette8x:
-                            PaletteResourceList.Add(item);
-                            break;
-                    };
-                }
-            }
+				foreach ( Resources.ResourceBase item in ResourceList )
+				{
+					switch ( item.ResourceType )
+					{
+					case EResourceType.Palette:
+						PaletteResourceList.Add(item);
+						break;
+					};
+				}
+			}
 
-            while ((returnvalue == null) && (int.Parse(id) <= 99999))
-            {
-                foreach ( Resources.ResourceBase item in PaletteResourceList)
-                {
-                    if (item.ResourceNumber == int.Parse(id))
-                    {
-                        returnvalue = item;
-                        break;
-                    }
-                }
+			while ( (returnvalue == null) && (int.Parse(id) <= 99999) )
+			{
+				foreach ( Resources.ResourceBase item in PaletteResourceList )
+				{
+					if ( item.ResourceNumber == int.Parse(id) )
+					{
+						returnvalue = item;
+						break;
+					}
+				}
 
-                id += "0";
-            }
+				id += "0";
+			}
 
-            if (returnvalue == null)
-            {
-                foreach ( Resources.ResourceBase item in PaletteResourceList)
-                {
-                    if (item.FileNumber == 99)
-                    {
-                        returnvalue = item;
-                        break;
-                    }
-                }
-            }
+			if ( returnvalue == null )
+			{
+				foreach ( Resources.ResourceBase item in PaletteResourceList )
+				{
+					if ( item.FileNumber == 99 )
+					{
+						returnvalue = item;
+						break;
+					}
+				}
+			}
 
-            return returnvalue;
-        }
+			return returnvalue;
+		}
 
-        public abstract bool Expand(string path);
+		public abstract bool Expand(string path);
+
 		public virtual bool Load(string path)
 		{
 			bool retval = true;
@@ -93,35 +93,7 @@
 
 				EResourceType type = Common.GetResourceTypeByFileending(ending);
 
-				switch ( type )
-				{
-				case EResourceType.Audio:
-					break;
-				case EResourceType.Cursor:
-				case EResourceType.Cursor8x:
-					resource = new Resources.Cursor(EGameType.SCI3);
-					break;
-				case EResourceType.Font:
-				case EResourceType.Font8x:
-					resource = new Resources.Font(EGameType.SCI3);
-					break;
-				case EResourceType.Picture:
-				case EResourceType.Picture8x:
-					resource = new Resources.PictureRow(EGameType.SCI3);
-					break;
-				case EResourceType.View:
-				case EResourceType.View8x:
-					resource = new Resources.View(EGameType.SCI3);
-					break;
-				case EResourceType.Message:
-				case EResourceType.Message8x:
-					resource = new Resources.Message(EGameType.SCI3);
-					break;
-				default:
-					resource = new Resources.Dummy(EGameType.None, type);
-					break;
-				}
-
+				resource = GetResourceByType(type, EGameType.SCI3);
 				resource.Path = item;
 				resource.ResourceNumber = number;
 				resource.UncompressedSize = (uint)(new System.IO.FileInfo(item).Length);
@@ -140,27 +112,21 @@
 			switch ( resourcetype )
 			{
 			case EResourceType.Cursor:
-			case EResourceType.Cursor8x:
 				resource = new Resources.Cursor(gametype);
 				break;
 			case EResourceType.Palette:
-			case EResourceType.Palette8x:
 				resource = new Resources.Palette(gametype);
 				break;
 			case EResourceType.Font:
-			case EResourceType.Font8x:
 				resource = new Resources.Font(gametype);
 				break;
 			case EResourceType.View:
-			case EResourceType.View8x:
 				resource = new Resources.View(gametype);
 				break;
 			case EResourceType.Picture:
-			case EResourceType.Picture8x:
 				resource = new Resources.PictureRow(gametype);
 				break;
 			case EResourceType.Message:
-			case EResourceType.Message8x:
 				resource = new Resources.Message(gametype);
 				break;
 			default:
@@ -170,5 +136,5 @@
 
 			return resource;
 		}
-}
+	}
 }

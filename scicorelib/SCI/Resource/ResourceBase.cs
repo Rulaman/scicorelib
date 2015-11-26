@@ -25,7 +25,8 @@ namespace SCI.Resources
 		}
 
 		[System.ComponentModel.Browsable(true), System.ComponentModel.Description("The type of the resource. Picture, View, Script, …")]
-		public abstract EResourceType ResourceType { get; }
+		public abstract EResourceType ResourceType
+		{ get; }
 
 		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
 		private EGameType _GameType;
@@ -37,65 +38,65 @@ namespace SCI.Resources
 			internal set { _GameType = value; }
 		}
 
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        protected ECompressionType _CompressionType;
+		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+		protected ECompressionType _CompressionType;
 
-        [System.ComponentModel.Browsable(true), System.ComponentModel.Description("The compression method of the resource. Huffmann, DCL, STACpack, …")]
-        public ECompressionType CompressionType
-        {
-            get { return _CompressionType; }
-            internal set { _CompressionType = value; }
-        }
+		[System.ComponentModel.Browsable(true), System.ComponentModel.Description("The compression method of the resource. Huffmann, DCL, STACpack, …")]
+		public ECompressionType CompressionType
+		{
+			get { return _CompressionType; }
+			internal set { _CompressionType = value; }
+		}
 
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        protected uint _CompressedSize;
+		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+		protected uint _CompressedSize;
 
-        [System.ComponentModel.Browsable(true), System.ComponentModel.Description("The compressed size of the resource.")]
-        public uint CompressedSize
-        {
-            get { return _CompressedSize; }
-            internal set { _CompressedSize = value; }
-        }
+		[System.ComponentModel.Browsable(true), System.ComponentModel.Description("The compressed size of the resource.")]
+		public uint CompressedSize
+		{
+			get { return _CompressedSize; }
+			internal set { _CompressedSize = value; }
+		}
 
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        protected uint _UncompressedSize;
+		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+		protected uint _UncompressedSize;
 
-        [System.ComponentModel.Browsable(true), System.ComponentModel.Description("The uncompressed size of the resource.")]
-        public uint UncompressedSize
-        {
-            get { return _UncompressedSize; }
-            internal set { _UncompressedSize = value; }
-        }
+		[System.ComponentModel.Browsable(true), System.ComponentModel.Description("The uncompressed size of the resource.")]
+		public uint UncompressedSize
+		{
+			get { return _UncompressedSize; }
+			internal set { _UncompressedSize = value; }
+		}
 
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        protected int _ResourceNumber;
+		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+		protected int _ResourceNumber;
 
-        [System.ComponentModel.Browsable(true), System.ComponentModel.Description("The number of the resource.")]
-        public int ResourceNumber
-        {
-            get { return _ResourceNumber; }
-            internal set { _ResourceNumber = value; }
-        }
+		[System.ComponentModel.Browsable(true), System.ComponentModel.Description("The number of the resource.")]
+		public int ResourceNumber
+		{
+			get { return _ResourceNumber; }
+			internal set { _ResourceNumber = value; }
+		}
 
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        protected byte _FileNumber;
+		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+		protected byte _FileNumber;
 
-        [System.ComponentModel.Browsable(true), System.ComponentModel.Description("The file in with the resource is located.")]
-        public byte FileNumber
-        {
-            get { return _FileNumber; }
-            internal set { _FileNumber = value; }
-        }
+		[System.ComponentModel.Browsable(true), System.ComponentModel.Description("The file in with the resource is located.")]
+		public byte FileNumber
+		{
+			get { return _FileNumber; }
+			internal set { _FileNumber = value; }
+		}
 
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        protected int _FileOffset;
+		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+		protected int _FileOffset;
 
-        [System.ComponentModel.Browsable(true), System.ComponentModel.Description("The offset within the file of the resource.")]
-        public int FileOffset
-        {
-            get { return _FileOffset; }
-            internal set { _FileOffset = value; }
-        }
+		[System.ComponentModel.Browsable(true), System.ComponentModel.Description("The offset within the file of the resource.")]
+		public int FileOffset
+		{
+			get { return _FileOffset; }
+			internal set { _FileOffset = value; }
+		}
 
 		[System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
 		private string _Path;
@@ -118,11 +119,12 @@ namespace SCI.Resources
 		}
 
 		public abstract void Decode();
-    }
+	}
 
-    public class Dummy : ResourceBase
-    {
-		public Dummy(EGameType gametype, EResourceType type) : base(gametype) { _ResourceType = type; }
+	public class Dummy: ResourceBase
+	{
+		public Dummy(EGameType gametype, EResourceType type) : base(gametype)
+		{ _ResourceType = type; }
 
 		private EResourceType _ResourceType = EResourceType.None;
 

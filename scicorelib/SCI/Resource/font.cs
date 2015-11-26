@@ -1,13 +1,14 @@
 ﻿namespace SCI.Resources
 {
-	public class Font : ResourceBase
+	public class Font: ResourceBase
 	{
 		public override EResourceType ResourceType
 		{
 			get { return EResourceType.Font; }
 		}
 
-		public Font(EGameType gametype):base(gametype) { }
+		public Font(EGameType gametype) : base(gametype)
+		{ }
 
 		public FontCharacter[] Character;
 
@@ -39,7 +40,7 @@
 
 			System.Collections.Generic.List<ushort> posList = new System.Collections.Generic.List<ushort>();
 
-			for (int i = 0; i < fh.NumberOfCharacters; i++)
+			for ( int i = 0; i < fh.NumberOfCharacters; i++ )
 			{
 				posList.Add(binaryReader.ReadUInt16());
 			}
@@ -49,12 +50,12 @@
 			ushort[] positionArray = new ushort[fh.NumberOfCharacters];
 			Character = new FontCharacter[fh.NumberOfCharacters];
 
-			for (int counter = 0; counter < fh.NumberOfCharacters; counter++)
+			for ( int counter = 0; counter < fh.NumberOfCharacters; counter++ )
 			{
 				positionArray[counter] = (ushort)(binaryReader.ReadUInt16() + 2);
 			}
 
-			for (int counter = 0; counter < fh.NumberOfCharacters; counter++)
+			for ( int counter = 0; counter < fh.NumberOfCharacters; counter++ )
 			{
 				binaryReader.BaseStream.Position = positionArray[counter];
 
@@ -67,7 +68,7 @@
 				Character[counter].WidthOriginal = Character[counter].Width;
 				Character[counter].HeightOriginal = Character[counter].Height;
 
-				if (counter == fh.NumberOfCharacters - 1)
+				if ( counter == fh.NumberOfCharacters - 1 )
 				{
 					Character[fh.NumberOfCharacters - 1].ByteLines = binaryReader.ReadBytes((ushort)(binaryReader.BaseStream.Length - (positionArray[counter] + 2)));
 					Character[fh.NumberOfCharacters - 1].ByteLinesOriginal = new byte[Character[fh.NumberOfCharacters - 1].ByteLines.Length];
@@ -102,6 +103,7 @@
 		public ushort NumberOfCharacters;
 		public ushort LineDistance;
 	}
+
 	public class FontCharacter
 	{
 		public System.UInt16 Width;
@@ -120,11 +122,11 @@
 
 		public void UndoRedoListAdd(byte[] bytearray)
 		{
-			if (UndoRedoList.Count == 0)
+			if ( UndoRedoList.Count == 0 )
 			{
 				UndoRedoList.Add(bytearray);
 			}
-			else if (ArraysEqual(UndoRedoList[UndoRedoPosition], bytearray))
+			else if ( ArraysEqual(UndoRedoList[UndoRedoPosition], bytearray) )
 			{
 			}
 			else
@@ -133,13 +135,15 @@
 				UndoRedoPosition++;
 			}
 		}
+
 		public void UndoRedoListClear()
 		{
 			UndoRedoList.Clear();
 		}
+
 		public void UndoRedoListTidyUp()
 		{
-			while (UndoRedoList.Count - 1 > UndoRedoPosition)
+			while ( UndoRedoList.Count - 1 > UndoRedoPosition )
 			{
 				UndoRedoList.RemoveAt(UndoRedoList.Count - 1);
 			}
@@ -149,6 +153,7 @@
 		{
 			get { return (UndoRedoList.Count - 1 > UndoRedoPosition); }
 		}
+
 		public bool UndoPossible
 		{
 			get { return (UndoRedoPosition > 0); }
@@ -156,15 +161,16 @@
 
 		public void Undo()
 		{
-			if (UndoRedoPosition > 0)
+			if ( UndoRedoPosition > 0 )
 			{
 				UndoRedoPosition--;
 				ByteLines = UndoRedoList[UndoRedoPosition];
 			}
 		}
+
 		public void Redo()
 		{
-			if (UndoRedoPosition < (UndoRedoList.Count))
+			if ( UndoRedoPosition < (UndoRedoList.Count) )
 			{
 				UndoRedoPosition++;
 				ByteLines = UndoRedoList[UndoRedoPosition];
@@ -173,18 +179,18 @@
 
 		private static bool ArraysEqual(byte[] a1, byte[] a2)
 		{
-			if (a1 == a2)
+			if ( a1 == a2 )
 				return true;
 
-			if (a1 == null || a2 == null)
+			if ( a1 == null || a2 == null )
 				return false;
 
-			if (a1.Length != a2.Length)
+			if ( a1.Length != a2.Length )
 				return false;
 
-			for (int i = 0; i < a1.Length; i++)
+			for ( int i = 0; i < a1.Length; i++ )
 			{
-				if (a1[i] != a2[i])
+				if ( a1[i] != a2[i] )
 					return false;
 			}
 			return true;
